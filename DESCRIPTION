@@ -1,0 +1,24 @@
+Package: TSIS
+Type: Package
+Title: Time-series isoform switch of alternative splicing
+Version: 0.1.0
+Date: 2016-11-10
+Author: Wenbin Guo <wenbin.guo@hutton.ac.uk>
+Maintainer: Wenbin Guo <wenbin.guo@hutton.ac.uk>
+Description: Alternative splicing (AS) is an essential process in plant and animal
+    genomes, which regulates protein abundance and increases the protein biodiversity.
+    In the AS regulation, one of the cases is a pair of isoforms
+    from the same gene reverse their relative expression abundance (usage) at some stress
+    reaction points, denoting as isoform switch event. Isoform switches often play pivotal
+    roles in re-programming of gene regulation in response to biotic and abiotic stimuli,
+    for instance the transcript isoform degradation of nonsense-mediated decay in a
+    surveillance pathway.This package is used to explore, score and visualize the isoform
+    switch patterns in isoform expression time-series data. All the analyses have
+    been integrated into a Shiny app, in which users can implement as easy as mouse click.
+License: GPL-3
+LazyData: TRUE
+Depends:
+    R (>= 3.2.3)
+RoxygenNote: 5.0.1
+Suggests: knitr, rmarkdown
+VignetteBuilder: knitr
