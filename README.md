@@ -340,6 +340,19 @@ Zhang, R., et al. AtRTD2: A Reference Transcript Dataset for accurate quantifica
 
 ##Session Info
 
-```{r session, echo=FALSE}
-sessionInfo()
-```
+## R version 3.2.5 (2016-04-14)
+## Platform: i386-w64-mingw32/i386 (32-bit)
+## Running under: Windows 7 (build 7601) Service Pack 1
+## 
+## attached base packages:
+## [1] stats     graphics  grDevices utils     datasets  methods   base     
+## 
+## other attached packages:
+## [1] TSIS_0.1.0
+## 
+## loaded via a namespace (and not attached):
+##  [1] Rcpp_0.12.5     lattice_0.20-33 png_0.1-7       gtools_3.5.0   
+##  [5] zoo_1.7-13      digest_0.6.10   rprojroot_1.1   grid_3.2.5     
+##  [9] backports_1.0.4 magrittr_1.5    evaluate_0.10   stringi_1.1.1  
+## [13] rmarkdown_1.2   splines_3.2.5   tools_3.2.5     stringr_1.0.0  
+## [17] yaml_2.1.13     htmltools_0.3.5 knitr_1.15.1
