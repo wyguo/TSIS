@@ -113,7 +113,7 @@ ts.intersection(x1=as.numeric(data.exp.splined[iso1,]),x2=as.numeric(data.exp.sp
 ####Step 2: score the isoform switches
 
 We defined 5 parameters to score the quality of isoform switch. The first two are the frequency of switch and the sum of average distance before and after switch, used as Score 1 and Score 2 in [iso-kTSP](https://bitbucket.org/regulatorygenomicsupf/iso-ktsp) (see [Figure 1(A)](#Figure1)
-method for two condition comparisons [(Sebestyen, et al., 2015)](http://biorxiv.org/content/early/2014/07/04/006908). To investigate the switches of two isoforms $iso_i$ and $iso_j$ in two conditions $c_1$ and $c_2$, Score 1 is defined as
+method for two condition comparisons [(Sebestyen, et al., 2015)](http://biorxiv.org/content/early/2014/07/04/006908). To investigate the switches of two isoforms \(iso_i\) and $iso_j$ in two conditions $c_1$ and $c_2$, Score 1 is defined as
 \[S_1(iso_i,iso_j|c_1,c_2)=|p(iso_1>iso2|c_1)+p(iso_1<iso_2|c_2)-1|,\]
 where $p(iso_1>iso2|c_1)$ and $p(iso_1<iso_2|c_2)$ are the frequencies/probabilities that the samples of one isoform is greater or less than the other in corresponding conditions. Score 2 is defined as
 \[S_2(iso_i,iso_j|c_1,c_2)=|mean.dist(iso_i,iso_2|c_1)|+|mean.dist(ios_1,iso_2|c_2)|,\]
