@@ -19,7 +19,7 @@ output:
 ###Install dependency packages
 
 ```{r,eval=F}
-install.packages(c("shiny", "shinythemes","ggplot2","plotly" "zoo","gtools"), dependencies=TRUE)
+install.packages(c("shiny", "shinythemes","ggplot2","plotly","zoo","gtools"), dependencies=TRUE)
 
 ```
 
