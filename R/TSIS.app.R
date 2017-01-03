@@ -129,10 +129,9 @@ TSIS.app <- function(data.size.max=100) {
                                                          HTML('Press Scoring buttom to implement the scoring of isoform switches. The details of parameters:
                                                               <ul><li><b>Start time point and end time point:</b> The start time point and end time point of the time course. The time steps are assumed to be 1. </li>
                                                               <li><b>Number of replicates:</b> The number of replicates for the time points. </li>
-                                                              <li><b>Min time points of interval:</b> Pre-filter the isoform pairs if all the interval only with time points <
-                                                              Min time points of interval. </li>
-                                                              <li><b>Min distance of isoforms:</b> Pre-filter the isoform pairs if the average distance between two isoforms at
-                                                              every sample point < Min distance of isoforms.</li>
+                                                              <li><b>Min time points of interval:</b> Pre-filtering, if the time points in all intervals < min.t.points, skip this pair of isoforms. </li>
+                                                              <li><b>Min distance of isoforms:</b> Pre-filtering, if the sample distances in the time courses (mean expression or splined value)
+                                                                     for intersection search all < min.distance, skip this pair of isoforms.</li>
                                                               <li><b>Using rank of expression:</b> Logical, to take ranks of expression in each sample or not. </li>
                                                               <li><b>Method for intersections:</b> Using either mean values or natural spline fitted smooth curves (see detail of splines::ns() function in splines R package) of time-series expresssion
                                                               to determine the intersection poitns of time coures for the isoforms.</li>
@@ -182,7 +181,7 @@ TSIS.app <- function(data.size.max=100) {
                                                               <li><b>P-value cutoff:</b> The p-value cut-off for both columns "left.pval" and "right.pval" in the output table. </li>
                                                               <li><b>Min time points of interval:</b> The minimun time points for both columns "left.t.points" and "right.t.points" in the output table.</li>
                                                               <li><b>Correlation cutoff:</b> The cut-off for Pearson correaltion of isoform pairs.</li>
-                                                              <li><b>Lower boundary of time, Upper boundary of time:</b> The lower and upper boundary of time duration for investigation. </li>
+                                                              <li><b>Lower boundary of time, Upper boundary of time:</b> The lower and upper boundary of time duration region for investigation. </li>
                                                               <li><b>Subset of isoforms:</b> Logical, to output only subset of the results or not? If TRUE, the subset of isoform list must be provided. </li>
                                                               <li><b>Pairs of maximun isoform ratio:</b> Logical, to output subset of the results of isoforms with maximum ratio or not? </li>
                                                               </ul>')
@@ -210,11 +209,11 @@ TSIS.app <- function(data.size.max=100) {
                                                        wellPanel(
                                                          HTML('The columns in the output table:
                                                               <ul><li><b>iso1, iso2:</b> the isoform pairs. </li>
-                                                              <li><b>iso1.mean.ratio, iso2.mean.ratio:</b> The ratios of isoforms to their gene. </li>
+                                                              <li><b>iso1.mean.ratio, iso2.mean.ratio:</b> The mean ratios of isoforms to their gene. </li>
                                                               <li><b>left.interval, right.interval:</b>The breaks of the left and right intervals before and after swtich, respectively. </li>
                                                               <li><b>x.value, y.value:</b> The x axis and y axis value of the swtich points in the plot coordinates.</li>
                                                               <li><b>prob:</b> The probability of switch, which is defined as  <i>|probability(iso1>iso2|in left.interval)+probability(iso2>iso1|in right.interval)-1|</i>.</li>
-                                                              <li><b>dist:</b> The average distance of switch, which is defined as  <i>|mean distance(iso1,iso2|in left.interval)|+|mean distance(iso1,iso2|in right.interval)|</i>.</li>
+                                                              <li><b>dist:</b> The sum of average distance before and after switch, which is defined as  <i>|mean distance(iso1,iso2|in left.interval)|+|mean distance(iso1,iso2|in right.interval)|</i>.</li>
                                                               <li><b>left.pval, right.pval:</b> The paired t-test p-values for the samples in the left and rigth intervals for the switch points.</li>
                                                               <li><b>left.t.points, right.t.points:</b> The number of time points in the left and rigth intervals for the switch points.</li>
                                                               <li><b>cor:</b> The Pearson correlation of isoforms iso1 and iso2.</li>
@@ -456,7 +455,7 @@ TSIS.app <- function(data.size.max=100) {
                  'scores.csv'
                },
                content=function(file){
-                 write.table(score.show$scores,file,row.names = F,col.names = T,sep=',',quote = F)
+                 write.csv(score.show$scores,file,row.names = F)
                }
              )
 

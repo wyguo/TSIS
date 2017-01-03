@@ -1,5 +1,8 @@
+## ----style, echo = FALSE, results = 'asis'-------------------------------
+BiocStyle::markdown()
+
 ## ----eval=F--------------------------------------------------------------
-#  install.packages(c("shiny", "shinythemes","ggplot2", "zoo","gtools"), dependencies=TRUE)
+#  install.packages(c("shiny", "shinythemes","ggplot2","plotly","zoo","gtools"), dependencies=TRUE)
 #  
 
 ## ----eval=F--------------------------------------------------------------
@@ -53,12 +56,6 @@ t.test(c(1,1,2,2,3,4),c(3,4,5,5,6,6),paired = T)$p.value
 
 ## ------------------------------------------------------------------------
 cor(c(1,2,3,3,5,6,4,5,6,1,2,3),c(4,5,6,1,2,4,1,2,3,4,5,6),method = 'pearson')
-
-## ----echo=F,fit.width=5,fig.height=4,fig.align='center'------------------
-knitr::include_graphics('D:/PhD project/GNW test/test round 2016/TSIS/vignettes/Figure1small.png')
-
-# ![**Figure 1: Isoform switch methods.** Expression data with 3 replicates for each condition/time point is simulated for isoforms $iso_1$ and $iso_2$. (A) is the iso-kTSP algorithm for comparisons of two conditions $c_1$ and $c_2$. The iso-kTSP is extended to time-series isoform switch (TSIS) in figure (B). The time-series with 4 time points is divided into 3 intervals with breaks of isoform switch poitns, which are the intersections of average exprssion of 3 replicates. The intervals are assimlated as the conditions in iso-kTPS. Thereby, the scores for each switch point can been determined based on the intervals before and after switch occurring. Additionally, 3 parameters in interval basis are defined to further filtrate switch results, the p-value of paird t-test for sample differences, the time points number in each interval and the Pearson correlation of two isoforms. ](D:/PhD project/GNW test/test round 2016/TSIS/vignettes/Figure1.png){#Figure1}
-
 
 ## ------------------------------------------------------------------------
 ##load the data
@@ -128,7 +125,7 @@ plotTSIS(data2plot = data.exp,scores = scores.mean2int.filtered,iso1 = 'AT3G6160
 
 
 ## ----eval=F--------------------------------------------------------------
-#  TSIS.app()
+#  TSIS.app(data.size.max = 100)
 
 ## ----session, echo=FALSE-------------------------------------------------
 sessionInfo()

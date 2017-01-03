@@ -55,7 +55,7 @@ The detailed steps:
 
 \bold{Step 1: search for time course intersection points.}
 
-The expression for a pair of isoforms iso1 and iso2 may experience a number isoform switch in the whole
+The expression for a pair of isoforms \eqn{iso_i} and \eqn{iso_j} may experience a number isoform switch in the whole
 time duration. Two methods have been included to search for these switch points where the isoforms reverse relative
 expression profiles.
 \itemize{
@@ -67,7 +67,7 @@ fitted curves for each pair of isoforms. See details in \code{\link{ts.spline}}}
 
 \bold{Step 2: score the isoform switches}
 
-We defined 5 parameters to score the quality of isoform switch. The first two are the frequency of switch and the
+We defined 5 parameters to score the quality of isoform switch. The first two are the frequency/probability of switch and the
 sum of average distance before and after switch, used as Score 1 and Score 2 in iso-kTSP \url{https://bitbucket.org/regulatorygenomicsupf/iso-ktsp}
 method for two condition comparisons (Sebestyen, et al., 2015).
 To investigate the switches of two isoforms \eqn{iso_i} and \eqn{iso_j} in two conditions \eqn{c_1} and \eqn{c_2}, \bold{Score 1} is defined as
@@ -77,17 +77,17 @@ is greater or less than the other in corresponding conditions. \bold{Score 2} is
 \deqn{S_2(iso_i,iso_j|c_1,c_2)=|mean.dist(iso_i,iso_2|c_1)|+|mean.dist(ios_1,iso_2|c_2)|}
 where \eqn{mean.dist(iso_i,iso_2|c_1)} and \eqn{mean.dist(ios_1,iso_2|c_2)} are the mean distances of samples in conditions \eqn{c_1} and \eqn{c_2}, respectively.
 
-However, the time-series for a pair of isoforms may undergo a number of switch points in the time duration. To extend the
-iso-kTSP to TSIS, the time duration is divided in to intervals with the intersection points determined in Step 1.
-For each pair of consecutive intervals before and after switch, they can be assimilated as two conditions to
-implement the calculation of Score 1 and Scoe 2.
+However, the time-series for a pair of isoforms may undergo a number of switches in the time duration.
+The time duration is divided into intervals with the intersection points determined in Step 1.
+To extend the iso-kTSP to TSIS, the samples in each pair of consecutive intervals before and after
+switch are assimilated as samples in two conditions to implement the calculation of Score 1 and Score 2.
 
 The time-series isoform switches are more complex than the comparisons over two conditions. In addition to
 Score 1 and Score 2 for each switch point, we defined other 3 parameters as metrics of switch qualities.
 
 \itemize{
 \item{\bold{Score 3:}}{ p-value of paired t-test for the two isoform sample differences within each interval.}
-\item{\bold{Score 4:}}{ Time points number within each interval.}
+\item{\bold{Score 4:}}{ Time point number within each interval.}
 \item{\bold{Score 5:}}{ Pearson correlation of two isoforms.}
 }
 Note: since each switch point has a left and right adjoined intervals before and after

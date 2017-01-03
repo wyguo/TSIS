@@ -12,13 +12,13 @@ Description: Alternative splicing (AS) is an essential process in plant and anim
     reaction points, denoting as isoform switch event. Isoform switches often play pivotal
     roles in re-programming of gene regulation in response to biotic and abiotic stimuli,
     for instance the transcript isoform degradation of nonsense-mediated decay in a
-    surveillance pathway.This package is used to explore, score and visualize the isoform
+    surveillance pathway. This package is used to determine, score and visualize the isoform
     switch patterns in isoform expression time-series data. All the analyses have
-    been integrated into a Shiny app, in which users can implement as easy as mouse click.
+    been integrated into a Shiny App, in which users can implement analysis as easy as mouse click.
 License: GPL-3
 LazyData: TRUE
 Depends:
     R (>= 3.2.3)
 RoxygenNote: 5.0.1
-Suggests: knitr, rmarkdown
+Suggests: BiocStyle, knitr, rmarkdown
 VignetteBuilder: knitr
