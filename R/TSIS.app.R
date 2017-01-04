@@ -19,7 +19,17 @@ TSIS.app <- function(data.size.max=100) {
   library(plotly)
   # library(TSIS)
 
+  ##download tutorial
+  if(!file.exists('tutorial'))
+    dir.create('tutorial')
+  if(!file.exists('tutorial/tutorial-shiny.html')){
+    download.file('https://github.com/wyguo/TSIS/raw/master/vignettes/tutorial-shiny.zip',
+                  destfile = 'tutorial/tutorial-shiny.zip',quiet = T)
+    unzip('tutorial/tutorial-shiny.zip',exdir = 'tutorial')
+    invisible(file.remove('tutorial/tutorial-shiny.zip'))
+  }
 
+  ##shiny app
 
   shinyApp(options = list(launch.browser=T),
            ui = navbarPage("Time-series isoform switch",
@@ -308,7 +318,7 @@ TSIS.app <- function(data.size.max=100) {
            server = function(input, output,session) {
 
              output$tutorial<-renderUI({
-               includeHTML("vignettes/tutorial-shiny.html")
+               includeHTML("tutorial/tutorial-shiny.html")
              })
 
 
