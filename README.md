@@ -209,6 +209,7 @@ Parameters for TSIS::iso.switch function:
 
 - **verbose**, logical, to track the progressing of runing (TRUE) or not (FALSE).
 
+
 **Example 1: search intersection points with mean expression **
 
 ```{r}
