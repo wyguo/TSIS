@@ -1,8 +1,8 @@
 ---
-title: 'TSIS: an R package to infer time-series isoform switch of alternative splicing'
-subtitle: 'User manual'
+title: "TSIS: an R package to infer time-series isoform switch of alternative splicing"
+subtitle: User manual
 author: "Wenbin Guo"
-date: '`r Sys.Date()`'
+date: "`r Sys.Date()`"
 output:
   html_document:
     code_folding: show
@@ -11,22 +11,19 @@ output:
     theme: cerulean
     toc: yes
     toc_depth: 4
-  word_document:
-    toc: yes
-    toc_depth: '4'
 ---
 
 
-#Installation and loading
+##Installation and loading
 
-##Install dependency packages
+###Install dependency packages
 
 ```{r,eval=F}
 install.packages(c("shiny", "shinythemes","ggplot2","plotly","zoo","gtools"), dependencies=TRUE)
 
 ```
 
-##Install TSIS package
+###Install TSIS package
 Install [TSIS](https://github.com/wyguo/TSIS) package from github using [devtools](https://cran.r-project.org/web/packages/devtools/index.html) package.
 ```{r,eval=F}
 ##if devtools is not installed, typing
@@ -36,36 +33,27 @@ library(devtools)
 devtools::install_github("wyguo/TSIS")
 ```
 
-##Loading
+###Loading
 
 Once installed, TSIS package can be loaded as normal
 ```{r,eval=T}
 library(TSIS)
 ```
 
+##TSIS workflow
 
-##Installation Error
-
-There is a big issue to use [devtools](https://cran.r-project.org/web/packages/devtools/index.html) to install R packages from [Github](https://github.com/) or [Bioconductor](https://www.bioconductor.org/). If the installed R software is located in a directory with space, for example in "C:\\Program Files", users may get error message "C:\\Program is not recognized as an internal or external command". It is because [devtools](https://cran.r-project.org/web/packages/devtools/index.html) cannot properly escape paths. This issue is not soloved currently. The recommeneded solution is to remove and reinstall R in a directory with no space. Users can check the software location by typing
-
-```{r,eval=F}
-R.home()
-```
-
-#TSIS workflow
-
-##Prepare the input data
+###Prepare the input data
 Three types of dataset are required for TSIS analysis.
 
 - Dataset 1: Time-series isoform expression data with $T$ time points and $R$ replicates, with rownames of isoforms and colnames of samples. The expression can be in the format of read counts, TPM (transcript per million), isoform expression ratio to genes, etc.
 
 - Dataset 2: Gene and isoform mapping table corresponding to Dataset 1, with first column of gene names and second column of isoform names.
 
-- Dataset 3: Optional. Names of subset of isoforms. Users can output subset of the results by providing a list of isoforms.
+- Dataset 3: Names of subset of isoforms. Users can output subset of the results by providing a list of isoforms.
 
 
 The [TSIS](https://github.com/wyguo/TSIS) package provides example datasets of "AtRTD2" of 300 genes and 766 isoforms, with 26 time points, 3 biological replicates and 3 technique replicates. The experiments were designed to investigate the cold response of genome in Arabidopsis. The isoform expression is in TPM format. 
-For the experiments and data quantification details, please see the AtRTD2 paper [(Zhang, et al.,2016)](http://biorxiv.org/content/early/2016/05/06/051938). 
+For the experiments and data quantification details, plase see the AtRTD2 paper [(Zhang, et al.,2016)](http://biorxiv.org/content/early/2016/05/06/051938). 
 
 ```{r,echo=T}
 ##26 time points, 3 biological replicates and 3 technical replicates, in total 234 sample points. 
@@ -74,17 +62,18 @@ AtRTD2$mapping[1:10,]
 colnames(AtRTD2$data.exp)[1:10]
 ```
 
-Note: The data loaded to the Shiny App must be in *.csv format for loading convenience. Users can download the [example datasets](https://github.com/wyguo/TSIS/examples) from https://github.com/wyguo/TSIS/tree/master/examples or by typing the following codes:
+The data loaded to this 
+Shiny App must be in *.csv format for loading convenience. Users can downlad the [example datasets](https://github.com/wyguo/TSIS/examples) from https://github.com/wyguo/examples or by typing the following codes:
 
 ```{r,echo=T,eval=F}
 AtRTD2.example(dir='data')
 ```
-where "dir" is the folder to save the data in the working directory. If it does not exist, a new folder will be created with the name. 
+where "dir" is the folder to save the data in the working directory. If it does not exists, a new folder will be created with the name. 
 
 
-##Score the isoform switch
+###Score the isoform switch
 
-###Step 1: search the intersections <h2 id="step1"> </h2>
+####Step 1: search the intersections {#step1}
 
 The expression for a pair of isoforms $iso_1$ and $iso_2$ may experience a number isoform switch in the whole time duration. Two methods have been included to search for these switch points where the isoforms reverse relative expression profiles. 
 
@@ -106,7 +95,7 @@ ts.intersection(x1=as.numeric(data.exp.mean[iso1,]),x2=as.numeric(data.exp.mean[
 
 ```
 
-- Method 2: use nature spline curves to fit the time-series data and find intersection points of the fitted curves for each pair of isoforms. See details in TSIS::ts.spline and [splines](https://stat.ethz.ch/R-manual/R-devel/library/splines/html/ns.html) package.
+- Method 2: use nature spline curves to fit the time-series data and find intersection points of the fitted curves for each pair of isoforms. See details in \code{\link{ts.spline}} and \code{\link{ns}} in code{\link{splines}} package.
 
 ```{r,echo=T}
 ##use function TSIS::ts.spline to fit the samples with smooth curve.
@@ -121,24 +110,20 @@ data.exp.splined[,1:4]
 ts.intersection(x1=as.numeric(data.exp.splined[iso1,]),x2=as.numeric(data.exp.splined[iso2,]))
 ```
 
-###Step 2: score the isoform switches
+####Step 2: score the isoform switches
 
-We defined 5 parameters to score the quality of isoform switch. The first two are the probability/frequency of switch and the sum of average distance before and after switch, used as Score 1 and Score 2 in [iso-kTSP](https://bitbucket.org/regulatorygenomicsupf/iso-ktsp) method (see <a href="#fig1">Figure 1(A)</a>)
+We defined 5 parameters to score the quality of isoform switch. The first two are the frequency of switch and the sum of average distance before and after switch, used as Score 1 and Score 2 in [iso-kTSP](https://bitbucket.org/regulatorygenomicsupf/iso-ktsp) (see [Figure 1(A)](#Figure1)
 method for two condition comparisons [(Sebestyen, et al., 2015)](http://biorxiv.org/content/early/2014/07/04/006908). To investigate the switches of two isoforms $iso_i$ and $iso_j$ in two conditions $c_1$ and $c_2$, Score 1 is defined as
-
 \[S_1(iso_i,iso_j|c_1,c_2)=|p(iso_1>iso2|c_1)+p(iso_1<iso_2|c_2)-1|,\]
-
-where $p(iso_1>iso2|c_1)$ and $p(iso_1<iso_2|c_2)$ are the frequencies/probabilities that the samples of one isoform is greater or less than in the other in corresponding conditions. Score 2 is defined as
-
+where $p(iso_1>iso2|c_1)$ and $p(iso_1<iso_2|c_2)$ are the frequencies/probabilities that the samples of one isoform is greater or less than the other in corresponding conditions. Score 2 is defined as
 \[S_2(iso_i,iso_j|c_1,c_2)=|mean.dist(iso_i,iso_2|c_1)|+|mean.dist(ios_1,iso_2|c_2)|,\]
-
 where $mean.dist(iso_i,iso_2|c_1)$ and $mean.dist(ios_1,iso_2|c_2)$ are the mean distances of samples in conditions $c_1$ and $c_2$, respectively.
 
-However, the time-series for a pair of isoforms may undergo a number of switches in the time duration. The time duration is divided into intervals with the intersection points determined in <a href="#step1">Step 1</a>. For example, in <a href="#fig1">Figure 1(B)</a>, the duration of four time points is divided into interval 1 to 3 with the intersection points of switch1 and switch2.  To extend the iso-kTSP to TSIS, the samples in each pair of consecutive intervals before and after switch are assimilated as samples in two conditions to implement the calculation of Score 1 and Score 2. 
+However, the time-series for a pair of isoforms may undergo a number of switch points in the time duration. To extend the iso-kTSP to TSIS, the time duration is divided in to intervals with the intersection points determined in [Step 1](#step1). For example, in [Figure 1(B)](#Figure1), the duration of four time points is divided into interval 1 to 3 with the intersection points of switch1 and switch2. For each pair of consecutive intervals before and after switch, they can be assimlated as two conditions to implement the calculation of Score 1 and Scoe 2.
 
 The time-series isoform switches are more complex than the comparisons over two conditions. In addition to Score 1 and Score 2 for each switch point, we defined other 3 parameters as metrics of switch qualities. 
 
-- p-value of paired t-test for the two isoform sample differences within each interval. For example, the p-value for interval 2 in <a href="#fig1">Figure 1(B)</a> is
+- p-value of paired t-test for the two isoform sample differences within each interval. For example, the p-value for interval2 is
 ```{r}
 t.test(c(1,1,2,2,3,4),c(3,4,5,5,6,6),paired = T)$p.value
 ```
@@ -150,13 +135,11 @@ t.test(c(1,1,2,2,3,4),c(3,4,5,5,6,6),paired = T)$p.value
 cor(c(1,2,3,3,5,6,4,5,6,1,2,3),c(4,5,6,1,2,4,1,2,3,4,5,6),method = 'pearson')
 ```
 
+![](https://github.com/wyguo/TSIS/blob/master/vignettes/Figure1small.png)
 
-![](https://github.com/wyguo/TSIS/blob/master/vignettes/fig/Figure1small.png)<h2 id="fig1"> </h2>
+**Figure 1: Isoform switch methods.** Expression data with 3 replicates for each condition/time point is simulated for isoforms $iso_1$ and $iso_2$. (A) is the iso-kTSP algorithm for comparisons of two conditions $c_1$ and $c_2$. The iso-kTSP is extended to time-series isoform switch (TSIS) in figure (B). The time-series with 4 time points is divided into 3 intervals with breaks of isoform switch poitns, which are the intersections of average exprssion of 3 replicates. The intervals are assimlated as the conditions in iso-kTPS. Thereby, the scores for each switch point can been determined based on the intervals before and after switch occurring. Additionally, 3 parameters in interval basis are defined to further filtrate switch results, the p-value of paird t-test for sample differences, the time points number in each interval and the Pearson correlation of two isoforms.
 
-**Figure 1: Isoform switch analysis methods.** Expression data with 3 replicates for each condition/time point is simulated for isoforms $iso_1$ and $iso_2$. (A) is the iso-kTSP algorithm for comparisons of two conditions $c_1$ and $c_2$. The iso-kTSP is extended to time-series isoform switch (TSIS) in figure (B). The time-series with 4 time points is divided into 3 intervals with breaks of isoform switch poitns, which are the intersections of average exprssion of 3 replicates. The intervals are assimlated as the conditions in iso-kTPS. Thereby, the scores for each switch point can been determined based on the intervals before and after switch occurring. Additionally, 3 parameters in interval basis are defined to further filtrate switch results, the p-value of paird t-test for sample differences, the time point number in each interval and the Pearson correlation of two isoforms. 
-
-
-## Filtrate results 
+### Filtrate results 
 A prospective isoform switch should be:
 
 - Have high Score 1 of swtich frequency/probability.
@@ -169,16 +152,16 @@ A prospective isoform switch should be:
 
 - For further details, users can investigate the co-expressed isoform pairs with high Pearson correlation. Note: the isoform pairs with high negative correlation may show better switch pattern if look at the time-series plots. 
 
-## Subset of results
+### Subset of results
 Users may need to investigate subset of isoforms for specific purpose. Three options have been build-in the TSIS package.
 
 - Users can set the lower and upper boundaries of a region in the time duration to study the switches only within this region.
 
 - Users can provide a name list of isoforms to only show the results cantain the isoforms in the list.
 
-- Users can output subset of results with highest ratio (the proportion of isoforms to the gene) isoforms.
+- Users can output subset of results with high ratios (the proportions of isoforms to the genes) isoforms.
 
-## Scripts for scoring
+### Scripts for scoring
 All the steps of searching intersection points, scoring and filtering are intergrated in two functions TSIS::iso.switch and TSIS::score.filer. We use the datasets TSIS::AtRTD2 in the package as an example to do the analysis. Please go the documentation for function details. 
 
 ```{r}
@@ -190,7 +173,7 @@ dim(mapping)
 
 ```
 
-###Scoring
+####Scoring
 
 Parameters for TSIS::iso.switch function:
 
@@ -210,8 +193,7 @@ Parameters for TSIS::iso.switch function:
 
 - **verbose**, logical, to track the progressing of runing (TRUE) or not (FALSE).
 
-
-**Example 1: search intersection points with mean expression**
+**Example 1: search intersection points with mean expression **
 
 ```{r}
 ##Scores
@@ -228,7 +210,7 @@ scores.spline2int<-suppressMessages(iso.switch(data.exp=data.exp,mapping =mappin
                      min.t.points =2,min.distance=1,spline =T,spline.df = 9,verbose = F))
 ```
 
-###Filtering
+####Filtering
 
 Parameters for TSIS::score.filter function:
 
@@ -283,7 +265,7 @@ scores.mean2int.filtered.subset[1:5,]
 
 ```
 
-###Visualization
+####Visualization
 
 Parameters for TSIS::plotTSIS function:
 
@@ -316,7 +298,7 @@ Parameters for TSIS::plotTSIS function:
 - **ribbon.plot**, logical, to show ribbon plot (TRUE) or error bar plot (FALSE). See ribbon plot details in [ggplot2::geom_smooth](http://docs.ggplot2.org/current/geom_smooth.html).
 
 
-####Error bar plot
+#####Error bar plot
 ```{r,eval=F,fig.width=8.5,fig.height=4}
 plotTSIS(data2plot = data.exp,scores = scores.mean2int.filtered,iso1 = 'AT3G61600_P1',
         iso2 = 'AT3G61600_P2',gene.name = NULL,y.lab = 'Expression',make.plotly = F,
@@ -326,10 +308,9 @@ plotTSIS(data2plot = data.exp,scores = scores.mean2int.filtered,iso1 = 'AT3G6160
         errorbar.width = 0.2,spline = F,spline.df = NULL,ribbon.plot = F )
 
 ```
+![](https://github.com/wyguo/TSIS/blob/master/vignettes/error_bar.png)
 
-![](https://github.com/wyguo/TSIS/blob/master/vignettes/fig/error_bar.png)
-
-####Ribbon plot
+#####Ribbon plot
 ```{r,eval=F,fig.width=8.5,fig.height=4}
 plotTSIS(data2plot = data.exp,scores = scores.mean2int.filtered,iso1 = 'AT3G61600_P1',
         iso2 = 'AT3G61600_P2',gene.name = NULL,y.lab = 'Expression',make.plotly = F,
@@ -339,24 +320,41 @@ plotTSIS(data2plot = data.exp,scores = scores.mean2int.filtered,iso1 = 'AT3G6160
         errorbar.width = 0.2,spline = F,spline.df = NULL,ribbon.plot = T )
 
 ```
+![](https://github.com/wyguo/TSIS/blob/master/vignettes/ribbon.png)
 
-![](https://github.com/wyguo/TSIS/blob/master/vignettes/fig/ribbon.png)
-
-#Shiny app- as easy as mouse click
+##Shiny app- as easy as mouse click
 All the functions of scoring, filtering, visulisation and saving results have been integrated into a [Shiny app](https://shiny.rstudio.com/). Users can implement the analysis as easy as mouse click. To start the app, simply typing the following code in the R console:
 
 ```{r,eval=F}
-TSIS.app(data.size.max = 100)
+TSIS.app()
 ```
 
-where data.size.max is the maximum size limit for unload files in Shiny. Default is 100 (MB).
 
-
-
-#References
+##References
 Chang, W., et al. 2016. shiny: Web Application Framework for R. https://CRAN.R-project.org/package=shiny
 
 Sebestyen, E., Zawisza, M. and Eyras, E. Detection of recurrent alternative splicing switches in tumor samples reveals novel signatures of cancer. Nucleic Acids Res 2015;43(3):1345-1356.
 
 Zhang, R., et al. AtRTD2: A Reference Transcript Dataset for accurate quantification of alternative splicing and expression changes in Arabidopsis thaliana RNA-seq data. bioRxiv 2016.
 
+
+##Session Info
+
+```{r,eval=F}
+## R version 3.2.5 (2016-04-14)
+## Platform: i386-w64-mingw32/i386 (32-bit)
+## Running under: Windows 7 (build 7601) Service Pack 1
+## 
+## attached base packages:
+## [1] stats     graphics  grDevices utils     datasets  methods   base     
+## 
+## other attached packages:
+## [1] TSIS_0.1.0
+## 
+## loaded via a namespace (and not attached):
+##  [1] Rcpp_0.12.5     lattice_0.20-33 png_0.1-7       gtools_3.5.0   
+##  [5] zoo_1.7-13      digest_0.6.10   rprojroot_1.1   grid_3.2.5     
+##  [9] backports_1.0.4 magrittr_1.5    evaluate_0.10   stringi_1.1.1  
+## [13] rmarkdown_1.2   splines_3.2.5   tools_3.2.5     stringr_1.0.0  
+## [17] yaml_2.1.13     htmltools_0.3.5 knitr_1.15.1
+```
