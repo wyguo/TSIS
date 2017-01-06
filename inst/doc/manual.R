@@ -15,6 +15,9 @@ BiocStyle::markdown()
 ## ----eval=T--------------------------------------------------------------
 library(TSIS)
 
+## ----eval=F--------------------------------------------------------------
+#  R.home()
+
 ## ----echo=T--------------------------------------------------------------
 ##26 time points, 3 biological replicates and 3 technical replicates, in total 234 sample points. 
 AtRTD2$data.exp[1:10,1:3]
