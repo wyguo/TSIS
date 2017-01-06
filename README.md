@@ -347,9 +347,3 @@ Sebestyen, E., Zawisza, M. and Eyras, E. Detection of recurrent alternative spli
 
 Zhang, R., et al. AtRTD2: A Reference Transcript Dataset for accurate quantification of alternative splicing and expression changes in Arabidopsis thaliana RNA-seq data. bioRxiv 2016.
 
-
-#Session Info
-
-```{r session, echo=FALSE}
-sessionInfo()
-```
