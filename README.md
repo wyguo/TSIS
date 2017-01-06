@@ -75,7 +75,7 @@ where "dir" is the folder to save the data in the working directory. If it does 
 
 ##Score the isoform switch
 
-###Step 1: search the intersections {#step1}
+###Step 1: search the intersections <h2 id="step1"> </h2>
 
 The expression for a pair of isoforms $iso_1$ and $iso_2$ may experience a number isoform switch in the whole time duration. Two methods have been included to search for these switch points where the isoforms reverse relative expression profiles. 
 
@@ -121,7 +121,7 @@ where $p(iso_1>iso2|c_1)$ and $p(iso_1<iso_2|c_2)$ are the frequencies/probabili
 \[S_2(iso_i,iso_j|c_1,c_2)=|mean.dist(iso_i,iso_2|c_1)|+|mean.dist(ios_1,iso_2|c_2)|,\]
 where $mean.dist(iso_i,iso_2|c_1)$ and $mean.dist(ios_1,iso_2|c_2)$ are the mean distances of samples in conditions $c_1$ and $c_2$, respectively.
 
-However, the time-series for a pair of isoforms may undergo a number of switches in the time duration. The time duration is divided into intervals with the intersection points determined in [Step 1](#step1). For example, in [Figure 1(B)](#Figure1), the duration of four time points is divided into interval 1 to 3 with the intersection points of switch1 and switch2.  To extend the iso-kTSP to TSIS, the samples in each pair of consecutive intervals before and after switch are assimilated as samples in two conditions to implement the calculation of Score 1 and Score 2. 
+However, the time-series for a pair of isoforms may undergo a number of switches in the time duration. The time duration is divided into intervals with the intersection points determined in <a href="#step1">Step 1</a>. For example, in [Figure 1(B)](#Figure1), the duration of four time points is divided into interval 1 to 3 with the intersection points of switch1 and switch2.  To extend the iso-kTSP to TSIS, the samples in each pair of consecutive intervals before and after switch are assimilated as samples in two conditions to implement the calculation of Score 1 and Score 2. 
 
 The time-series isoform switches are more complex than the comparisons over two conditions. In addition to Score 1 and Score 2 for each switch point, we defined other 3 parameters as metrics of switch qualities. 
 
