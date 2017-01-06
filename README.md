@@ -16,6 +16,16 @@ output:
     toc_depth: '4'
 ---
 
+
+latexImg = function(latex){
+
+    link = paste0('http://latex.codecogs.com/gif.latex?',
+           gsub('\\=','%3D',URLencode(latex)))
+
+    link = gsub("(%..)","\\U\\1",link,perl=TRUE)
+    return(paste0('![](',link,')'))
+}
+
 #Installation and loading
 
 ##Install dependency packages
@@ -115,6 +125,8 @@ ts.intersection(x1=as.numeric(data.exp.splined[iso1,]),x2=as.numeric(data.exp.sp
 
 We defined 5 parameters to score the quality of isoform switch. The first two are the probability/frequency of switch and the sum of average distance before and after switch, used as Score 1 and Score 2 in [iso-kTSP](https://bitbucket.org/regulatorygenomicsupf/iso-ktsp) method (see <a href="#fig1">Figure 1(A)</a>)
 method for two condition comparisons [(Sebestyen, et al., 2015)](http://biorxiv.org/content/early/2014/07/04/006908). To investigate the switches of two isoforms $iso_i$ and $iso_j$ in two conditions $c_1$ and $c_2$, Score 1 is defined as
+
+latexImg('S_1(iso_i,iso_j|c_1,c_2)=|p(iso_1>iso2|c_1)+p(iso_1<iso_2|c_2)-1|')
 
 \[S_1(iso_i,iso_j|c_1,c_2)=|p(iso_1>iso2|c_1)+p(iso_1<iso_2|c_2)-1|,\]
 
