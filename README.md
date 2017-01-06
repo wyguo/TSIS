@@ -43,6 +43,15 @@ Once installed, TSIS package can be loaded as normal
 library(TSIS)
 ```
 
+
+##Installation Error
+
+There is a big issue to use [devtools](https://cran.r-project.org/web/packages/devtools/index.html) to install R packages from [Github](https://github.com/) or [Bioconductor](https://www.bioconductor.org/). If the installed R software is located in a directory with space, for example in "C:\\Program Files", users may get error message "C:\\Program is not recognized as an internal or external command". It is because [devtools](https://cran.r-project.org/web/packages/devtools/index.html) cannot properly escape paths. This issue is not soloved currently. The recommeneded solution is to remove and reinstall R in a directory with no space. Users can check the software location by typing
+
+```{r,eval=F}
+R.home()
+```
+
 #TSIS workflow
 
 ##Prepare the input data
