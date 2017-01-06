@@ -19,6 +19,10 @@ TSIS.app <- function(data.size.max=100) {
   library(plotly)
   # library(TSIS)
 
+  message('Generating tutorial...')
+  message(paste0('Tutorial is saved in ',getwd(),'/tutorial'))
+  message('Starting Shiny App...')
+
   ##download tutorial
   if(!file.exists('tutorial'))
     dir.create('tutorial')
