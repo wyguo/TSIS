@@ -74,7 +74,7 @@ AtRTD2$mapping[1:10,]
 colnames(AtRTD2$data.exp)[1:10]
 ```
 
-Note: The data loaded to the Shiny App must be in *.csv format for loading convenience. Users can download the [example datasets](https://github.com/wyguo/TSIS/examples) from https://github.com/wyguo/examples or by typing the following codes:
+Note: The data loaded to the Shiny App must be in *.csv format for loading convenience. Users can download the [example datasets](https://github.com/wyguo/TSIS/examples) from https://github.com/wyguo/TSIS/examples or by typing the following codes:
 
 ```{r,echo=T,eval=F}
 AtRTD2.example(dir='data')
