@@ -230,10 +230,18 @@ AtRTD2$data.exp[1:10,1:3]</code></pre>
 ## 8  AT1G01060    AT1G01060.4
 ## 9  AT1G01060 AT1G01060_JS31
 ## 10 AT1G01060   AT1G01060_P1</code></pre>
+<<<<<<< HEAD
 <pre class="r"><code>AtRTD2$sub.isoforms[1:10]</code></pre>
 <pre><code>##  [1] &quot;AT1G13350_P1&quot; &quot;AT1G01020_P1&quot; &quot;AT1G01060_P1&quot; &quot;AT1G01110_P1&quot;
 ##  [5] &quot;AT1G01220_P1&quot; &quot;AT1G01260_P1&quot; &quot;AT1G01290_P1&quot; &quot;AT1G01520_P1&quot;
 ##  [9] &quot;AT1G01550_P1&quot; &quot;AT1G01690_P1&quot;</code></pre>
+=======
+<pre class="r"><code>colnames(AtRTD2$data.exp)[1:10]</code></pre>
+<pre><code>##  [1] &quot;T1_biorep1_techrep1&quot; &quot;T1_biorep1_techrep2&quot; &quot;T1_biorep1_techrep3&quot;
+##  [4] &quot;T1_biorep2_techrep1&quot; &quot;T1_biorep2_techrep2&quot; &quot;T1_biorep2_techrep3&quot;
+##  [7] &quot;T1_biorep3_techrep1&quot; &quot;T1_biorep3_techrep2&quot; &quot;T1_biorep3_techrep3&quot;
+## [10] &quot;T2_biorep1_techrep1&quot;</code></pre>
+>>>>>>> origin/master
 <p>Note: The data loaded to the Shiny App must be in *.csv format for loading convenience. Users can download the <a href="https://github.com/wyguo/TSIS/examples">example datasets</a> from <a href="https://github.com/wyguo/TSIS/tree/master/examples" class="uri">https://github.com/wyguo/TSIS/tree/master/examples</a> or by typing the following codes:</p>
 <pre class="r"><code>AtRTD2.example(dir='data')</code></pre>
 <p>where “dir” is the folder to save the data in the working directory. If it does not exist, a new folder will be created with the name.</p>
@@ -385,7 +393,11 @@ scores.mean2int&lt;-iso.switch(data.exp=data.exp,mapping =mapping,
 <pre><code>##  Score 3: P-values of sample differences before and after switch</code></pre>
 <pre><code>##  Score 4: Time points in each intervals</code></pre>
 <pre><code>##  Score 5: Pearson correlation of isoforms</code></pre>
+<<<<<<< HEAD
 <pre><code>## Time for analysis: 6.926 secs</code></pre>
+=======
+<pre><code>## Time for analysis: 6.94 secs</code></pre>
+>>>>>>> origin/master
 <pre><code>## Done!!!</code></pre>
 <p><strong>Example 2: search intersection points with spline method</strong></p>
 <pre class="r"><code>##Scores

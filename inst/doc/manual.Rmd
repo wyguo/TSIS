@@ -16,8 +16,14 @@ BiocStyle::markdown()
 ```
 
 
+<<<<<<< HEAD
 #Installation and loading
 
+=======
+
+#Installation and loading
+
+>>>>>>> origin/master
 ##Install dependency packages
 
 ```{r,eval=F}
@@ -79,12 +85,22 @@ Note: The data loaded to the Shiny App must be in *.csv format for loading conve
 AtRTD2.example(dir='data')
 ```
 where "dir" is the folder to save the data in the working directory. If it does not exist, a new folder will be created with the name. 
+<<<<<<< HEAD
 
+=======
+>>>>>>> origin/master
 
+##Score the isoform switch
+
+<<<<<<< HEAD
+###Step 1: search the intersections 
+
+=======
 ##Score the isoform switch
 
 ###Step 1: search the intersections 
 
+>>>>>>> origin/master
 <h2 id="step1"> </h2>
 
 The expression for a pair of isoforms $iso_1$ and $iso_2$ may experience a number isoform switch in the whole time duration. Two methods have been included to search for these switch points where the isoforms reverse relative expression profiles. 
@@ -147,6 +163,7 @@ t.test(c(1,1,2,2,3,4),c(3,4,5,5,6,6),paired = T)$p.value
 cor(c(1,2,3,3,5,6,4,5,6,1,2,3),c(4,5,6,1,2,4,1,2,3,4,5,6),method = 'pearson')
 ```
 
+<<<<<<< HEAD
 ![](Figure1small.png)
 
 <h2 id="fig1"> </h2>
@@ -154,6 +171,13 @@ cor(c(1,2,3,3,5,6,4,5,6,1,2,3),c(4,5,6,1,2,4,1,2,3,4,5,6),method = 'pearson')
 **Figure 1: Isoform switch analysis methods.** Expression data with 3 replicates for each condition/time point is simulated for isoforms $iso_1$ and $iso_2$. (A) is the iso-kTSP algorithm for comparisons of two conditions $c_1$ and $c_2$. The iso-kTSP is extended to time-series isoform switch (TSIS) in figure (B). The time-series with 4 time points is divided into 3 intervals with breaks of isoform switch poitns, which are the intersections of average exprssion of 3 replicates. The intervals are assimlated as the conditions in iso-kTPS. Thereby, the scores for each switch point can been determined based on the intervals before and after switch occurring. Additionally, 3 parameters in interval basis are defined to further filtrate switch results, the p-value of paird t-test for sample differences, the time point number in each interval and the Pearson correlation of two isoforms.
 
 
+=======
+![](Figure1small.png)<h2 id="fig1"> </h2>
+
+**Figure 1: Isoform switch analysis methods.** Expression data with 3 replicates for each condition/time point is simulated for isoforms $iso_1$ and $iso_2$. (A) is the iso-kTSP algorithm for comparisons of two conditions $c_1$ and $c_2$. The iso-kTSP is extended to time-series isoform switch (TSIS) in figure (B). The time-series with 4 time points is divided into 3 intervals with breaks of isoform switch poitns, which are the intersections of average exprssion of 3 replicates. The intervals are assimlated as the conditions in iso-kTPS. Thereby, the scores for each switch point can been determined based on the intervals before and after switch occurring. Additionally, 3 parameters in interval basis are defined to further filtrate switch results, the p-value of paird t-test for sample differences, the time point number in each interval and the Pearson correlation of two isoforms.
+
+
+>>>>>>> origin/master
 ## Filtrate results 
 A prospective isoform switch should be:
 
