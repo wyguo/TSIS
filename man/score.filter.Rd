@@ -48,7 +48,7 @@ negative correlation may show better switch pattern if look at the time-series p
 \itemize{
 \item{}{Users can set the lower and upper boundaries of a region in the time duration to study the switches only within this region.}
 \item{}{Users can provide a name list of isoforms to only show the results cantain the isoforms in the list.}
-\item{}{Users can output subset of results with high ratios (the proportions of isoforms to the genes) isoforms.}
+\item{}{Users can output subset of results with highest ratios (the proportions of isoforms to the genes) isoforms.}
 }
 }
 

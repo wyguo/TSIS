@@ -51,4 +51,5 @@ AtRTD2.example<-function(dir='data'){
     write.csv(dat,file=paste0(dir,'/',x,'.csv'),row.names = F)
 
   })
+  return('Done!')
 }

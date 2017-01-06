@@ -2,10 +2,10 @@
 #'
 #' @param data2plot the expession data frame used to plot the isoforms. The row names of the data frame are the isoforms to plot and the column names are
 #' time points and the replicates of time points.The column ordering should be for example t1.replicate1, t1.replicate2, ..., t2.replicate1, t2.replicate2, ...
-#' @param scores the output scores of functions \code{\link{iso.switch}} and \code{\link{score.filter}}. If the scores are not NULL, they are used to highlight and label the selected
-#' intersection points.
+#' @param scores the output scores of functions \code{\link{iso.switch}} and \code{\link{score.filter}}. Default is NULL. To show score labels on the plot,
+#' the scores must be provided.
 #' @param iso1,iso2 character string names of the first and second isoforms to plot. If \code{iso1} and \code{iso2} are NULL,
-#' the input \code{data2plot} must be a data frame of two rows with \code{rownames(data2plot)=c(iso1,iso2)}.
+#' the input \code{data2plot} must be a data frame of two rows and the row names are used as isoforms to plot.
 #' @param gene.name a character string of gene name to show as the title of the plot. If \code{gene.name=NULL}, the plot title will be "iso1_vs_iso2".
 #' @param y.lab the y label of the plot, default is "Expression".
 #' @param make.plotly logical, to plot \code{\link{plotly}} format figures (TRUE) or plain ggplot2 format figures(FALSE)?. See details in \code{\link{ggplotly}} in \code{\link{plotly}} R pacakge.
@@ -21,7 +21,7 @@
 #' @param errorbar.width,errorbar.size the width and size of error bars. See detials in \code{\link{geom_errorbar}} in \code{\link{ggplot2}} R pacakge.
 #' @param line.width,point.size line width and point marker size of the plots.
 #' @param spline logical, to plot the spline smoothed lines (TRUE) or the lines of mean expression (FALSE).
-#' @param spline.df the degree of freedom used for spline.  The value must be the same as in the function \code{iso.switch}. See spline details in \code{\link{geom_smooth}} in \code{\link{ggplot2}}
+#' @param spline.df the degree of freedom used for spline.  The value must be the same as in the function \code{\link{iso.switch}}. See spline details in \code{\link{geom_smooth}} in \code{\link{ggplot2}}
 #' and \code{\link{ns}} in \code{\link{splines}}.
 #' @param ribbon.plot logcial, to make ribbon plot (TRUE) or error bar plot (FALSE). See ribbon plot details in \code{\link{geom_smooth}} in \code{\link{ggplot2}} R pacakge.
 #'
