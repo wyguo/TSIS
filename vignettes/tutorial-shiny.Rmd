@@ -141,7 +141,8 @@ Note: The data loaded into the Shiny App must be in *.csv format for loading con
 ```{r,echo=T,eval=F}
 AtRTD2.example(dir='data')
 ```
-where "dir" is the folder to save the data in the working directory. If it does not exist, a new folder will be created with the name. 
+
+The data will be saved in a folder "example data" in the working directory. 
 
 ### Parameter settings
 

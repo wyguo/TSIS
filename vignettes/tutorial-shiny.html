@@ -284,7 +284,7 @@ AtRTD2$mapping[1:10,]
 AtRTD2$sub.isoforms[1:10]</code></pre>
 <p>Note: The data loaded into the Shiny App must be in *.csv format for loading convenience. Users can download the <a href="https://github.com/wyguo/TSIS/examples">example datasets</a> from <a href="https://github.com/wyguo/TSIS/tree/master/examples" class="uri">https://github.com/wyguo/TSIS/tree/master/examples</a> or by typing the following codes:</p>
 <pre class="r"><code>AtRTD2.example(dir='data')</code></pre>
-<p>where “dir” is the folder to save the data in the working directory. If it does not exist, a new folder will be created with the name.</p>
+<p>The data will be saved in a folder “example data” in the working directory.</p>
 </div>
 <div id="parameter-settings" class="section level3">
 <h3>Parameter settings</h3>
@@ -349,7 +349,7 @@ scores.mean2int&lt;-iso.switch(data.exp=data.exp,mapping =mapping,
 <pre><code>##  Score 3: P-values of sample differences before and after switch</code></pre>
 <pre><code>##  Score 4: Time points in each intervals</code></pre>
 <pre><code>##  Score 5: Pearson correlation of isoforms</code></pre>
-<pre><code>## Time for analysis: 6.806 secs</code></pre>
+<pre><code>## Time for analysis: 6.692 secs</code></pre>
 <pre><code>## Done!!!</code></pre>
 <p><strong>Example 2: search intersection points with spline method</strong></p>
 <pre class="r"><code>##Scores

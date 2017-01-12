@@ -39,18 +39,24 @@
 #' @examples
 #' AtRTD2.example(dir='data')
 #'
-AtRTD2.example<-function(dir='data'){
-  if(!file.exists(dir))
-    dir.create(dir)
-  sapply(names(AtRTD2),function(x){
-    dat<-AtRTD2[[x]]
-    if(x=='data.exp'){
-      dat<-data.frame(isoforms=rownames(dat),dat,row.names = NULL)
-    } else if(x=='sub.isoforms'){
-      dat<-data.frame(isoforms=dat,row.names = NULL)
-    }
-    write.csv(dat,file=paste0(dir,'/',x,'.csv'),row.names = F)
+AtRTD2.example<-function(dir='.'){
+  # if(!file.exists(dir))
+  #   dir.create(dir)
 
-  })
+  download.file('https://github.com/wyguo/TSIS/raw/master/data/example_data.zip',
+                destfile = 'example data.zip',quiet = T)
+  unzip('example data.zip',exdir = '.')
+  invisible(file.remove('example data.zip'))
+
+  # sapply(names(AtRTD2),function(x){
+  #   dat<-AtRTD2[[x]]
+  #   if(x=='data.exp'){
+  #     dat<-data.frame(isoforms=rownames(dat),dat,row.names = NULL)
+  #   } else if(x=='sub.isoforms'){
+  #     dat<-data.frame(isoforms=dat,row.names = NULL)
+  #   }
+  #   write.csv(dat,file=paste0(dir,'/',x,'.csv'),row.names = F)
+  #
+  # })
   return('Done!')
 }

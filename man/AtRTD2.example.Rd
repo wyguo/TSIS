@@ -4,7 +4,7 @@
 \alias{AtRTD2.example}
 \title{Save AtRTD2 data into csv files}
 \usage{
-AtRTD2.example(dir = "data")
+AtRTD2.example(dir = ".")
 }
 \arguments{
 \item{dir}{directory to save data. If the directory does not exist, a new folder will be created with the provided name.}

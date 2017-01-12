@@ -23,7 +23,7 @@ library(TSIS)
 #  AtRTD2$sub.isoforms[1:10]
 
 ## ----echo=T,eval=F-------------------------------------------------------
-#  AtRTD2.example(dir='data')
+#  AtRTD2.example()
 
 ## ----echo=T,eval=T-------------------------------------------------------
 ##load the data
