@@ -4,13 +4,18 @@
 \alias{switch.density}
 \title{Density plot}
 \usage{
-switch.density(x, make.plotly = T, title = "Density of switch points", ...)
+switch.density(x, t.start = 1, t.end = 26, make.plotly = T,
+  plot.type = "Density_line", title = "Density of switch points", ...)
 }
 \arguments{
 \item{x}{a numeric vector to plot th density.}
 
+\item{t.start, t.end}{start and end time points. Time step is assumed to be 1.}
+
 \item{make.plotly}{logical, to plot \code{\link{plotly}} format figures (TRUE)
 or general plot (FALSE)?. See details in \code{\link{ggplotly}} in \code{\link{plotly}} R pacakge.}
+
+\item{plot.type}{the plot types. Options are "Density_line" for density line plot, "Density_bar" for density bar plot and "Frequency_bar" for frequency bar plot.}
 
 \item{...}{additional parameters pass to \code{\link{density}}}
 }

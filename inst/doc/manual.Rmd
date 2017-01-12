@@ -15,7 +15,6 @@ vignette: >
 BiocStyle::markdown()
 ```
 
-
 # Description
 ## Introduction
 Transcript isoform, here referred as isoform, switch is an event that a pair of isoforms reverse the order of relative expression abundance in response to external and internal stimuli. Here, we provide a [TSIS](https://github.com/wyguo/TSIS) R package, which is the first tool for detecting isoform switch for time-series data. The TSIS method is an extension of [iso-kTSP](https://bitbucket.org/regulatorygenomicsupf/iso-ktsp) 
@@ -116,7 +115,7 @@ The first tab panel includes this user manual.
 
 ## Tab panel 2: Isoform switch analysis
 
-There are five sections in this panel.
+There are four sections in this panel.
 
 ### Input data files
 Three types of information are required for TSIS analysis.
@@ -150,10 +149,6 @@ This section is used to set the parameters for TSIS scoring and filtering. The m
 
 ### Density of switch points
 The density plot of switch time for all pair of isoforms. 
-
-### Input datasets visualization
-
-The data table of input information.
 
 ### Output scores for isoform switch
 

@@ -94,11 +94,14 @@ TSIS.app <- function(data.size.max=100) {
                                                          HTML('Only the results of provided subset of isoforms and their isoform partners will be shown in the results.')
 
                                                        ),
-                                                       titlePanel('Density of switch points'),
+                                                       titlePanel('Density/Frequency of switch points'),
                                                        wellPanel(
                                                          plotlyOutput('density',height = "300px"),
-                                                         HTML('<b>Figure:</b> Density plot of switch time points. The plot is made based
+                                                         HTML('<b>Figure:</b> Density/Frequency plot of switch time points. The plot is made based
                                                               on the x.value in the scores output table, i.e. the occurring time points of isoform switches.'),
+                                                         radioButtons("densityplot.type", label = h4("Select plot type:"),
+                                                                      choices = list("Density line" = 'Density_line', "Density bar" = "Density_bar", "Frequency bar" = 'Frequency_bar'),
+                                                                      selected = 'Density_line',inline = T),
                                                          radioButtons("densityplot.format", label = h4("Select format to save:"),
                                                                       choices = list("html" = 'html', "png" = "png", "pdf" = 'pdf'),
                                                                       selected = 'html',inline = T),
@@ -204,21 +207,21 @@ TSIS.app <- function(data.size.max=100) {
                                                          )
                                                        )
                                                        ),
-                                              fluidRow(
-                                                titlePanel('Input datasets visualization (this part may be not necessary to be included in this App)'),
-                                                column(9,
-                                                       wellPanel(
-                                                         h4('Partial expression data table'),
-                                                         shiny::dataTableOutput('expression.table')
-                                                       )
-                                                ),
-                                                column(3,
-                                                       wellPanel(
-                                                         h4('Mapping data table'),
-                                                         shiny::dataTableOutput('target.table')
-                                                       )
-                                                )
-                                              ),
+                                              # fluidRow(
+                                              #   titlePanel('Input datasets visualization (this part may be not necessary to be included in this App)'),
+                                              #   column(9,
+                                              #          wellPanel(
+                                              #            h4('Partial expression data table'),
+                                              #            shiny::dataTableOutput('expression.table')
+                                              #          )
+                                              #   ),
+                                              #   column(3,
+                                              #          wellPanel(
+                                              #            h4('Mapping data table'),
+                                              #            shiny::dataTableOutput('target.table')
+                                              #          )
+                                              #   )
+                                              # ),
                                               fluidRow(
                                                 titlePanel('Output scores for isoform switch'),
                                                 column(12,
@@ -239,8 +242,11 @@ TSIS.app <- function(data.size.max=100) {
                                                        ))
                                               ),
                                               fluidRow(
-                                                column(12,
-                                                       div(align='right',downloadButton('download.scores', 'Download',class="btn btn-primary"))
+                                                column(10,
+                                                       div(align='right',downloadButton('download.scores', 'Download score table',class="btn btn-primary"))
+                                                ),
+                                                column(2,
+                                                       div(align='right',downloadButton('download.genes', 'Download gene names',class="btn btn-primary"))
                                                 )
                                               )
                                                        )
@@ -358,21 +364,21 @@ TSIS.app <- function(data.size.max=100) {
 
              })
 
-
-             output$expression.table <- shiny::renderDataTable(options=list(pageLength=10,aoColumnDefs = list(list(sClass="alignLeft",aTargets="_all")) ),{
-               if (is.null(data.exp()))
-                 return()
-
-               if(ncol(data.exp())>5)
-                 data.frame(isoforms=rownames(data.exp()),data.exp()[,1:4],`...`='...') else data.frame(isoforms=rownames(data.exp()),data.exp())
-             })
-
-             output$target.table <- shiny::renderDataTable(options=list(pageLength=10,aoColumnDefs = list(list(sClass="alignLeft",aTargets="_all")) ),{
-               if (is.null(mapping()))
-                 return()
-
-               mapping()
-             })
+#
+#              output$expression.table <- shiny::renderDataTable(options=list(pageLength=10,aoColumnDefs = list(list(sClass="alignLeft",aTargets="_all")) ),{
+#                if (is.null(data.exp()))
+#                  return()
+#
+#                if(ncol(data.exp())>5)
+#                  data.frame(isoforms=rownames(data.exp()),data.exp()[,1:4],`...`='...') else data.frame(isoforms=rownames(data.exp()),data.exp())
+#              })
+#
+#              output$target.table <- shiny::renderDataTable(options=list(pageLength=10,aoColumnDefs = list(list(sClass="alignLeft",aTargets="_all")) ),{
+#                if (is.null(mapping()))
+#                  return()
+#
+#                mapping()
+#              })
 
 
 
@@ -475,13 +481,23 @@ TSIS.app <- function(data.size.max=100) {
                }
              )
 
+             output$download.genes <- downloadHandler(
+               filename=function(){
+                 'genes.csv'
+               },
+               content=function(file){
+                 write.csv(data.frame(genes=unique(mapping()[which(as.vector(mapping()[,2]) %in% unique(c(as.vector(score.show$scores$iso1),as.vector(score.show$scores$iso2)))),1])),
+                                 file,row.names = F)
+               }
+             )
+
              ##plot the density
              # height = 400, width = 600
              output$density <- renderPlotly({
                if(is.null(score.show$scores))
                  return()
 
-               switch.density(x=score.show$scores$x.value,make.plotly = T,title = '')
+               switch.density(x=score.show$scores$x.value,t.start = input$t.start,t.end=input$t.end,plot.type = input$densityplot.type,make.plotly = T,title = '')
              })
 
 
@@ -493,10 +509,10 @@ TSIS.app <- function(data.size.max=100) {
                content = function(file,format=input$densityplot.format) {
                  if(format=='html')
                    suppressWarnings(htmlwidgets::saveWidget(as.widget(
-                     switch.density(x=score.show$scores$x.value,make.plotly = T,title = 'Switch time density plot')
+                     switch.density(x=score.show$scores$x.value,t.start = input$t.start,t.end=input$t.end,plot.type = input$densityplot.type,make.plotly = T,title = '')
                      ), file=file,selfcontained=T))
                  else ggsave(file,
-                             switch.density(x=score.show$scores$x.value,make.plotly = F,title = 'Switch time density plot'),
+                             switch.density(x=score.show$scores$x.value,t.start = input$t.start,t.end=input$t.end,plot.type = input$densityplot.type,make.plotly = F,title = ''),
                              width = 16,height = 12,units = "cm")
                })
 

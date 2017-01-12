@@ -16,7 +16,6 @@ output:
     toc_depth: '4'
 ---
 
-
 # Description
 ## Introduction
 Transcript isoform, here referred as isoform, switch is an event that a pair of isoforms reverse the order of relative expression abundance in response to external and internal stimuli. Here, we provide a [TSIS](https://github.com/wyguo/TSIS) R package, which is the first tool for detecting isoform switch for time-series data. The TSIS method is an extension of [iso-kTSP](https://bitbucket.org/regulatorygenomicsupf/iso-ktsp) 
@@ -117,7 +116,7 @@ The first tab panel includes this user manual.
 
 ## Tab panel 2: Isoform switch analysis
 
-There are five sections in this panel.
+There are four sections in this panel.
 
 ### Input data files
 Three types of information are required for TSIS analysis.
@@ -140,8 +139,9 @@ AtRTD2$sub.isoforms[1:10]
 Note: The data loaded into the Shiny App must be in *.csv format for loading convenience. Users can download the [example datasets](https://github.com/wyguo/TSIS/examples) from https://github.com/wyguo/TSIS/tree/master/examples or by typing the following codes:
 
 ```{r,echo=T,eval=F}
-AtRTD2.example(dir='data')
+AtRTD2.example()
 ```
+
 The data will be saved in a folder "example data" in the working directory. 
 
 ### Parameter settings
@@ -150,10 +150,6 @@ This section is used to set the parameters for TSIS scoring and filtering. The m
 
 ### Density of switch points
 The density plot of switch time for all pair of isoforms. 
-
-### Input datasets visualization
-
-The data table of input information.
 
 ### Output scores for isoform switch
 
@@ -269,6 +265,7 @@ plotTSIS(data2plot = data.exp,scores = scores.mean2int.filtered,iso1 = 'AT3G6160
 ```
 
 ![](https://github.com/wyguo/TSIS/blob/master/vignettes/fig/error_bar.png)<h2 id="error_bar"> </h2>
+
 
 ###Ribbon plot
 ```{r,eval=F,fig.width=8.5,fig.height=4}

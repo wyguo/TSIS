@@ -160,7 +160,6 @@ $(document).ready(function () {
 <li><a href="#input-data-files">Input data files</a></li>
 <li><a href="#parameter-settings">Parameter settings</a></li>
 <li><a href="#density-of-switch-points">Density of switch points</a></li>
-<li><a href="#input-datasets-visualization">Input datasets visualization</a></li>
 <li><a href="#output-scores-for-isoform-switch">Output scores for isoform switch</a></li>
 </ul></li>
 <li><a href="#tab-panel-3-switch-visualization">Tab panel 3: Switch visualization</a><ul>
@@ -267,7 +266,7 @@ devtools::install_github(&quot;wyguo/TSIS&quot;)</code></pre>
 </div>
 <div id="tab-panel-2-isoform-switch-analysis" class="section level2">
 <h2>Tab panel 2: Isoform switch analysis</h2>
-<p>There are five sections in this panel.</p>
+<p>There are four sections in this panel.</p>
 <div id="input-data-files" class="section level3">
 <h3>Input data files</h3>
 <p>Three types of information are required for TSIS analysis.</p>
@@ -283,7 +282,7 @@ AtRTD2$data.exp[1:10,1:3]
 AtRTD2$mapping[1:10,]
 AtRTD2$sub.isoforms[1:10]</code></pre>
 <p>Note: The data loaded into the Shiny App must be in *.csv format for loading convenience. Users can download the <a href="https://github.com/wyguo/TSIS/examples">example datasets</a> from <a href="https://github.com/wyguo/TSIS/tree/master/examples" class="uri">https://github.com/wyguo/TSIS/tree/master/examples</a> or by typing the following codes:</p>
-<pre class="r"><code>AtRTD2.example(dir='data')</code></pre>
+<pre class="r"><code>AtRTD2.example()</code></pre>
 <p>The data will be saved in a folder “example data” in the working directory.</p>
 </div>
 <div id="parameter-settings" class="section level3">
@@ -293,10 +292,6 @@ AtRTD2$sub.isoforms[1:10]</code></pre>
 <div id="density-of-switch-points" class="section level3">
 <h3>Density of switch points</h3>
 <p>The density plot of switch time for all pair of isoforms.</p>
-</div>
-<div id="input-datasets-visualization" class="section level3">
-<h3>Input datasets visualization</h3>
-<p>The data table of input information.</p>
 </div>
 <div id="output-scores-for-isoform-switch" class="section level3">
 <h3>Output scores for isoform switch</h3>
@@ -349,7 +344,7 @@ scores.mean2int&lt;-iso.switch(data.exp=data.exp,mapping =mapping,
 <pre><code>##  Score 3: P-values of sample differences before and after switch</code></pre>
 <pre><code>##  Score 4: Time points in each intervals</code></pre>
 <pre><code>##  Score 5: Pearson correlation of isoforms</code></pre>
-<pre><code>## Time for analysis: 6.692 secs</code></pre>
+<pre><code>## Time for analysis: 6.72 secs</code></pre>
 <pre><code>## Done!!!</code></pre>
 <p><strong>Example 2: search intersection points with spline method</strong></p>
 <pre class="r"><code>##Scores
