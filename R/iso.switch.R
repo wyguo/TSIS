@@ -147,6 +147,7 @@ iso.switch<-function(data.exp,mapping,t.start=1,t.end=26,nrep=9,rank=F,
 
       ##intersection points
       iso.inter<-ts.intersection(x1=x1,x2=x2)
+      iso.inter<-iso.inter[iso.inter$x.points<t.end & iso.inter$x.points>t.start,]
       ##check if have intersection points
       if(is.null(iso.inter))
         next
@@ -351,6 +352,8 @@ iso.switch.shiny<-function(data.exp,data2intersect=NULL,mapping,t.start=1,t.end=
 
         ##intersection points
         iso.inter<-ts.intersection(x1=x1,x2=x2)
+        iso.inter<-iso.inter[iso.inter$x.points<t.end & iso.inter$x.points>t.start,]
+
         ##check if have intersection points
         if(is.null(iso.inter))
           next

@@ -42,11 +42,11 @@ score.filter<-function(scores,prob.cutoff=0.5,dist.cutoff=1,t.points.cutoff=2,pv
                        x.value.limit=c(9,17)){
 
   if((is.null(data.exp) | is.null(mapping)) & max.ratio){
-    msg<-data.frame('Provided data is not proper',row.names = NULL)
+    msg<-data.frame('Expression data and mapping data are not provided.',row.names = NULL)
     colnames(msg)<-'Warnings:'
     return(msg)
   } else if(is.null(sub.isoform.list) & sub.isoform){
-    msg<-data.frame('Provided data is not proper',row.names = NULL)
+    msg<-data.frame('Subset of isoform names is not provided.',row.names = NULL)
     colnames(msg)<-'Warnings:'
     return(msg)
   } else {

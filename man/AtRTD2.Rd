@@ -9,9 +9,9 @@
 data(AtRTD2)
 }
 \description{
-The data sources include subset of TPM time-series transcript expression data with 26 time points, 3 biological replicates and 3
-technical replicates (234 sample points in total) from the AtRTD2 paper (Zhang, et al., 2016), a gene-isoform mapping table of 300
-genes (first column) and 766 transcripts (second column) and a subset of 100 isoforms.
+The example datasets "AtRTD2" with 300 genes and 766 isoforms, analysed in 26 time points, each with 3 biological replicates and 3 technical replicates.
+The experiments were designed to investigate the Arabidopsis gene expression response to cold. The isoform expression is in TPM (transcript per million) format.
+For the experiments and data quantification details, please see the AtRTD2 paper (Zhang, et al.,2016).
 }
 \examples{
 names(AtRTD2)

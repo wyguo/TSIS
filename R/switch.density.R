@@ -19,9 +19,8 @@
 #' switch.density(x,make.plotly =T)
 #'
 #'
-switch.density<-function(x,make.plotly=T,...){
+switch.density<-function(x,make.plotly=T,title="Density of switch points",...){
   x<-density(x,...)
-  title <- "Density of switch points"
   x.lab <- 'switch time'
   y.lab<-'Density'
   if(make.plotly)

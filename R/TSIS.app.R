@@ -82,7 +82,7 @@ TSIS.app <- function(data.size.max=100) {
                                                        wellPanel(
                                                          ##input subset of isoforms for investigation
                                                          h4('Subset of isoforms for investigation:'),
-                                                         fileInput('file.subtarget','Subset of isoforms',
+                                                         fileInput('file.subtarget','Select the subset of isoforms data file',
                                                                    accept = c(
                                                                      'text/csv',
                                                                      'text/comma-separated-values',
@@ -91,16 +91,18 @@ TSIS.app <- function(data.size.max=100) {
                                                                      '.csv',
                                                                      '.tsv'
                                                                    )),
-                                                         HTML('Only the results of provided subset of isoforms and their isoform partners will be shown in the results.'),
-                                                         br(),
-                                                         HTML('<b>Note:</b> The input data must be in *.csv format for loading convenience. The details of how to get example datasets are in
-                                                               the manual section.' )
+                                                         HTML('Only the results of provided subset of isoforms and their isoform partners will be shown in the results.')
 
                                                        ),
+                                                       titlePanel('Density of switch points'),
                                                        wellPanel(
                                                          plotlyOutput('density',height = "300px"),
                                                          HTML('<b>Figure:</b> Density plot of switch time points. The plot is made based
-                                                              on the x.value in the scores output table, i.e. the occurring time points of isoform switches.')
+                                                              on the x.value in the scores output table, i.e. the occurring time points of isoform switches.'),
+                                                         radioButtons("densityplot.format", label = h4("Select format to save:"),
+                                                                      choices = list("html" = 'html', "png" = "png", "pdf" = 'pdf'),
+                                                                      selected = 'html',inline = T),
+                                                         downloadButton('download.densityplot', 'Save',class="btn btn-primary")
                                                        )
                                                 ),
                                                 ##input taret part
@@ -203,7 +205,7 @@ TSIS.app <- function(data.size.max=100) {
                                                        )
                                                        ),
                                               fluidRow(
-                                                titlePanel('Input datasets'),
+                                                titlePanel('Input datasets visualization (this part may be not necessary to be included in this App)'),
                                                 column(9,
                                                        wellPanel(
                                                          h4('Partial expression data table'),
@@ -238,14 +240,14 @@ TSIS.app <- function(data.size.max=100) {
                                               ),
                                               fluidRow(
                                                 column(12,
-                                                       div(align='right',downloadButton('download.scores', 'Download'))
+                                                       div(align='right',downloadButton('download.scores', 'Download',class="btn btn-primary"))
                                                 )
                                               )
                                                        )
 
                                                        ),
                            ##Page 3
-                           tabPanel("Switch visulisation",
+                           tabPanel("Switch visualization",
                                     fluidRow(
                                       titlePanel('Switch plots'),
                                       column(2,
@@ -479,8 +481,24 @@ TSIS.app <- function(data.size.max=100) {
                if(is.null(score.show$scores))
                  return()
 
-               switch.density(x=score.show$scores$x.value,make.plotly = T)
+               switch.density(x=score.show$scores$x.value,make.plotly = T,title = '')
              })
+
+
+             output$download.densityplot <- downloadHandler(
+
+               filename = function() {
+                 paste0('Density plot.',input$densityplot.format)
+               },
+               content = function(file,format=input$densityplot.format) {
+                 if(format=='html')
+                   suppressWarnings(htmlwidgets::saveWidget(as.widget(
+                     switch.density(x=score.show$scores$x.value,make.plotly = T,title = 'Switch time density plot')
+                     ), file=file,selfcontained=T))
+                 else ggsave(file,
+                             switch.density(x=score.show$scores$x.value,make.plotly = F,title = 'Switch time density plot'),
+                             width = 16,height = 12,units = "cm")
+               })
 
 
              #########

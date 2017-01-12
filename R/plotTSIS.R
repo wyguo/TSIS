@@ -140,7 +140,7 @@ plotTSIS<-function(data2plot,scores=NULL,iso1=NULL,iso2=NULL,gene.name=NULL,y.la
         scale_fill_manual(values=c(gg_color_hue(2),rep('black',length(idx))),breaks=c(iso1,iso2,rep('switch_points',length(idx))))+
         scale_shape_manual(values=c(15,17,rep(16,length(idx))))
       if(show.scores)
-        g<-g+annotate('text',x = 1.1*sub.scores$x.value, y =sub.scores$y.value,
+        g<-g+annotate('text',x = 1.1*sub.scores$x.value, y =sub.scores$y.value+max(data2plot$mean)/20,
                       label = paste0('prob=',round(sub.scores$prob,2),'; dist=',round(sub.scores$dist,2),'; cor=',round(sub.scores$cor,2)))
     }
 
@@ -156,76 +156,4 @@ plotTSIS<-function(data2plot,scores=NULL,iso1=NULL,iso2=NULL,gene.name=NULL,y.la
     plotly::ggplotly(g) else g
 }
 
-
-
-#
-# plotTSIS.example<-function(font.size=8,annotate.size=2.3,
-#                           line.width=0.5,point.size=1.5,
-#                           grid.heights=c(3,1),legend.margin=unit(-0.1,"cm"),base_size=7,padding = unit(c(2, 2), "mm")){
-#   x<-seq(0,2.5,by=0.5)*pi
-#   set.seed(350)
-#   y1<-rep(2*sin(x)+2,3)+rnorm(18,mean=0,sd=1)+2
-#   set.seed(360)
-#   y2<-rep(-2*sin(x)+2.5,3)+rnorm(18,mean=0,sd=0.4)+2
-#
-#   data2plot<-data.frame(rbind(data.frame(isoforms='iso1',times=rep(1:6,3),value=y1),
-#                               data.frame(isoforms='iso2',times=rep(1:6,3),value=y2)))
-#   data2plot$times<-factor(data2plot$times,levels = unique(data2plot$times))
-#
-#   data.example<-data.frame(rbind(y1,y2),row.names = c('iso1','iso2'))
-#   colnames(data.example)<-paste0(rep(paste0('t',1:6),3),'_',rep(paste0('rep',1:3),each=6))
-#   data.example<-data.example[,gtools::mixedsort(colnames(data.example))]
-#
-#   scores=suppressMessages(
-#     iso.switch(data.exp = data.example,mapping = data.frame(genes='iso',isoforms=c('iso1','iso2')),
-#                t.end=6,nrep=3,min.t.points  =-1,min.distance = -1,verbose = F)
-#   )
-#   scores<-scores[order(scores$x.value,decreasing = F),]
-#
-#
-#   data2points<-data.frame(isoforms='switch_points',times=scores$x.value,mean=scores$y.value,error=0)
-#
-#
-#
-#   g<-plotTSIS(data2plot = data.example,scores = scores,gene.name = 'gene',plotly = F,y.lab = 'Expression',x.lower.boundary=1,x.upper.boundary = 6,
-#              t.start = 1,t.end= 6,nrep = 3,show.region = F,show.scores = F,show.errorbar =F,line.width=line.width,prob.cutoff = 0,point.size = 0,
-#              errorbar.size = 0.1,errorbar.width=0.1,spline = F,ribbon.plot = T)
-#   g<-g+geom_point(data = data2plot,aes(x=times,y=value),size=point.size)+theme_bw()+ guides(color=guide_legend(override.aes=list(fill=NA)))
-#   g<-g+geom_point(data=data2points,aes(x=times,y=mean,color=isoforms,fill=isoforms,shape=isoforms),size=point.size)
-#
-#
-#   g<-g+annotate("text",x=c(1,2,4,5.5),y=rep(0.5,4),label=c('Interval1','Interval2','Interval3','Interval4'),size=annotate.size)+
-#     annotate("text",x=data2points$times+0.75,y=data2points$mean+0.1,label=paste0('score1=',round(scores$prob,2),'\nscore2=',round(scores$dist,2)),size=annotate.size)+
-#     annotate("segment",
-#              x=c(0.85,scores$x.value[1]+0.1,scores$x.value[2]+0.1,scores$x.value[3]+0.1),
-#              xend=c(scores$x.value[1],scores$x.value[2]-0.1,scores$x.value[3]-0.1,6),
-#              y=c(rep(.9,4)),
-#              yend=c(rep(.9,4)),
-#              arrow = arrow(ends = 'both',type = 'closed',length = unit(0.1, "cm")),linetype=2,size=0.2
-#     )
-#
-#   g<-g+theme(title = element_text(size=font.size),
-#              text=element_text(size=font.size),legend.position='bottom',legend.margin=legend.margin,legend.key = element_rect(fill = "transparent", colour = "transparent"),
-#              plot.title=element_text(size=font.size),plot.margin=unit(c(0.1,0.1,0,0.1), "cm"))
-#
-#   idx<-c(format(c(scores$left.prob[1],scores$right.prob),nsmall=2,digits = 2),
-#          format(c(scores$left.dist[1],scores$right.dist),nsmall=2,digits = 2),
-#          format(c(scores$left.pval[1],scores$right.pval),nsmall=2,digits = 2),
-#          format(c(scores$left.t.points[1],scores$right.t.points),nsmall=2,digits = 2)
-#   )
-#
-#   idx<-matrix(as.numeric(idx),ncol=4,byrow = T)
-#   colnames(idx)<-paste0('Interval',1:4)
-#
-#   score.table<-data.frame(Parameters=c('Probability','Distance','p-Value','Time points in intervals'),round(idx,2),row.names = NULL)
-#
-#
-#   tt <- gridExtra::ttheme_default(padding = padding,base_size=base_size,colhead=list(fg_params = list(parse=TRUE)))
-#   score.table<-gridExtra::tableGrob(score.table,rows = NULL,theme = tt)
-#   gridExtra::grid.arrange(g, score.table,
-#                nrow=2,
-#                as.table=TRUE,
-#                heights=grid.heights)
-#
-# }
 

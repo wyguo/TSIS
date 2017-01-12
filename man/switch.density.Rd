@@ -4,7 +4,7 @@
 \alias{switch.density}
 \title{Density plot}
 \usage{
-switch.density(x, make.plotly = T, ...)
+switch.density(x, make.plotly = T, title = "Density of switch points", ...)
 }
 \arguments{
 \item{x}{a numeric vector to plot th density.}
