@@ -304,6 +304,7 @@ plotTSIS(data2plot = data.exp,scores = scores.mean2int.filtered,iso1 = 'AT5G6093
 
 ![](https://github.com/wyguo/TSIS/blob/master/vignettes/fig/AT5G60930_P2_1.png)
 <h2 id=”AT5G60930_P2_1”><h2>
+
 ###Ribbon plot
 
 ```{r}
