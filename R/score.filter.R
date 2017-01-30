@@ -50,12 +50,12 @@ score.filter<-function(scores,prob.cutoff=0.5,dist.cutoff=1,t.points.cutoff=2,pv
     colnames(msg)<-'Warnings:'
     return(msg)
   } else {
-    scores=scores[which(scores$left.t.points>=t.points.cutoff
-                        & scores$right.t.points >= t.points.cutoff
+    scores=scores[which(scores$before.t.points>=t.points.cutoff
+                        & scores$after.t.points >= t.points.cutoff
                         & scores$prob>prob.cutoff
                         & scores$dist >dist.cutoff
-                        & scores$left.pval <pval.cutoff
-                        & scores$right.pval<pval.cutoff
+                        & scores$before.pval <pval.cutoff
+                        & scores$after.pval<pval.cutoff
                         & abs(scores$cor)>cor.cutoff
                         & scores$x.value >=x.value.limit[1]
                         & scores$x.value <=x.value.limit[2]),]

@@ -27,6 +27,6 @@ rowratio<-function(x,group,reorder=T,na.rm=T){
   if(na.rm)
     ratio[is.na(ratio)]<-0
   if(reorder & !is.null(rownames(ratio)))
-    ratio<-ratio[gtools::mixedorder(rownames(ratio)),]
+    ratio<-ratio[gtools::mixedsort(rownames(ratio)),]
   return(ratio)
 }

@@ -25,7 +25,7 @@ rowmean<-function(x,group,reorder=T,na.rm=T){
   if(na.rm)
     means[is.na(means)]<-0
   if(reorder)
-    means<-means[gtools::mixedorder(rownames(means)),]
+    means<-means[gtools::mixedsort(rownames(means)),]
   return(means)
 }
 

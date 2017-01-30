@@ -41,17 +41,17 @@
 #' \item{\bold{Score 4:}}{ Time point number within each interval.}
 #' \item{\bold{Score 5:}}{ Pearson correlation of two isoforms.}
 #' }
-#' Note: since each switch point has a left and right adjoined intervals before and after
+#' Note: since each switch point has a before and after adjoined intervals before and after
 #' switch, two p-values and two numbers of time points for the intervals are assigned to each
 #' switch point, respectively.
 #'
-#' @param data.exp isoform expression data frame with row names of isoforms and column names of samples.
-#' @param mapping gene-isoform mapping data frame with first column of genes and second column of isoforms.
-#' @param t.start,t.end start and end time points of the time-series data. The time step is assumed to be 1.
+#' @param data.exp isoform expression data with row names of isoforms and column names of samples.
+#' @param mapping gene-isoform mapping data with first column of genes and second column of isoforms.
+#' @param t.start,t.end start and end time points of the time-series data. 1Time points are assumed to be continuous integer, e.g. 1,2,3,...
 #' @param nrep number of replicates for each time point.
 #' @param rank logical, to use rank of isoform expression for each sample (TRUE) or not (FALSE).
 #' @param min.t.points pre-filtering, if the number of time points in all intervals < \code{min.t.points}, skip this pair of isoforms.
-#' @param min.distance pre-filtering, if the sample distances in the time courses (mean expression or splined value) for
+#' @param min.distance pre-filtering, if the sample distances in the time-series (mean expression or splined value) for
 #' intersection search all < \code{min.distance}, skip this pair of isoforms.
 #' @param spline logical, to use spline method (TRUE) or mean expression (FALSE).
 #' @param spline.df the degree of freedom used in spline method. See \code{\link{ns}} in \code{\link{splines}} for details.
@@ -65,15 +65,16 @@
 #' \itemize{
 #' \item{iso1,iso2: }{the isoforms.}
 #' \item{iso1.mean.ratio, iso2.mean.ratio: }{the ratio of isoforms to their genes.}
-#' \item{left.interval, left.interval: }{the left (before switch) and right (after switch) intervals of a switch point.}
+#' \item{before.interval, before.interval: }{the intervals before and after a switch point.}
 #' \item{x.value, y.value: }{x and y coordinates of switch points.}
-#' \item{left.prob, right.prob: }{the frequencies/probabilities that the samples of a isoform is greater or less than the other in left and right intervals, respectively. }
-#' \item{left.dist, right.dist: }{the average sample distances in left and right intervals, respectively. }
-#' \item{left.pval, right.pval: }{p-values of paired t-test for samples in left and right intervals, respectively. }
-#' \item{left.t.points, right.t.points: }{number of time points in left and right intervals, respectively. }
-#' \item{prob: }{Score1.}
-#' \item{dist: }{Score2.}
-#' \item{cor: }{Pearson correlation of two isoforms.}
+#' \item{before.prob, after.prob: }{the frequencies/probabilities that the samples of a isoform is greater or less than the other in the intervals before and after
+#' switch, respectively. }
+#' \item{before.dist, after.dist: }{the average sample distances in the intervals before and after switch, respectively. }
+#' \item{before.pval, after.pval: }{p-values of paired t-test for samples in the intervals before and after switch, respectively. }
+#' \item{before.t.points, after.t.points: }{number of time points in the intervals before and after switch, respectively. }
+#' \item{prob: }{Feature 1, frequency/probability of switch}
+#' \item{dist: }{Feature 2, sum of average distances before and after switch.}
+#' \item{cor: }{Feature 5, Pearson correlation of two isoforms.}
 #'
 #' }
 #' @export
@@ -234,29 +235,29 @@ iso.switch<-function(data.exp,mapping,t.start=1,t.end=26,nrep=9,rank=F,
 
     ##score 1: prob
     score1.2side<-matrix(s[1,lf.idx],ncol=2,byrow = T)
-    colnames(score1.2side)<-c('left.prob','right.prob')
+    colnames(score1.2side)<-c('before.prob','after.prob')
     score1<-zoo::rollapply(as.numeric(s[1,]), width = 2, FUN = function(x) abs(sum(x)-1))
 
     ##score 2: distance
     score2<-abs(diff(s[2,]))
     score2.2side<-matrix(s[2,lf.idx],ncol=2,byrow = T)
-    colnames(score2.2side)<-c('left.dist','right.dist')
+    colnames(score2.2side)<-c('before.dist','after.dist')
 
     ##score 3: p-value
     score3<-matrix(s[3,lf.idx],ncol=2,byrow = T)
-    colnames(score3)<-c('left.pval','right.pval')
+    colnames(score3)<-c('before.pval','after.pval')
 
     ##score 4: interval length
     score4<-matrix(s[4,lf.idx],ncol=2,byrow = T)
-    colnames(score4)<-c('left.t.points','right.t.points')
+    colnames(score4)<-c('before.t.points','after.t.points')
 
 
     ###average ratio
     iso.mean.ratio<-data.frame(iso1.mean.ratio=data2intersect.ratio[iso1],iso2.mean.ratio=data2intersect.ratio[iso2])
 
-    ###left and right intervals
+    ###before and after intervals
     inter.lr<-matrix(unique(interval)[lf.idx],ncol=2,byrow = T)
-    colnames(inter.lr)<-c('left.interval','right.invertal')
+    colnames(inter.lr)<-c('before.interval','after.invertal')
 
 
     score<-data.frame(iso1=iso1,iso2=iso2,iso.mean.ratio,inter.lr,x.value=as.numeric(n.inters[1,]),y.value=as.numeric(n.inters[2,]),
@@ -439,29 +440,29 @@ iso.switch.shiny<-function(data.exp,data2intersect=NULL,mapping,t.start=1,t.end=
 
       ##score 1: prob
       score1.2side<-matrix(s[1,lf.idx],ncol=2,byrow = T)
-      colnames(score1.2side)<-c('left.prob','right.prob')
+      colnames(score1.2side)<-c('before.prob','after.prob')
       score1<-zoo::rollapply(as.numeric(s[1,]), width = 2, FUN = function(x) abs(sum(x)-1))
 
       ##score 2: distance
       score2<-abs(diff(s[2,]))
       score2.2side<-matrix(s[2,lf.idx],ncol=2,byrow = T)
-      colnames(score2.2side)<-c('left.dist','right.dist')
+      colnames(score2.2side)<-c('before.dist','after.dist')
 
       ##score 3: p-value
       score3<-matrix(s[3,lf.idx],ncol=2,byrow = T)
-      colnames(score3)<-c('left.pval','right.pval')
+      colnames(score3)<-c('before.pval','after.pval')
 
       ##score 4: interval length
       score4<-matrix(s[4,lf.idx],ncol=2,byrow = T)
-      colnames(score4)<-c('left.t.points','right.t.points')
+      colnames(score4)<-c('before.t.points','after.t.points')
 
 
       ###average ratio
       iso.mean.ratio<-data.frame(iso1.mean.ratio=data2intersect.ratio[iso1],iso2.mean.ratio=data2intersect.ratio[iso2])
 
-      ###left and right intervals
+      ###before and after intervals
       inter.lr<-matrix(unique(interval)[lf.idx],ncol=2,byrow = T)
-      colnames(inter.lr)<-c('left.interval','right.invertal')
+      colnames(inter.lr)<-c('before.interval','after.invertal')
 
 
       score<-data.frame(iso1=iso1,iso2=iso2,iso.mean.ratio,inter.lr,x.value=as.numeric(n.inters[1,]),y.value=as.numeric(n.inters[2,]),

@@ -63,7 +63,7 @@ TSIS.app <- function(data.size.max=100) {
                                                                      '.csv',
                                                                      '.tsv'
                                                                    )),
-                                                         p('The expression input is a data frame with columns of samples and rows are isoforms.'),
+                                                         p('The expression input is a data table with columns of samples and rows of isoforms.'),
                                                          br(),
 
                                                          ##isoforms mapping data
@@ -77,7 +77,7 @@ TSIS.app <- function(data.size.max=100) {
                                                                      '.csv',
                                                                      '.tsv'
                                                                    )),
-                                                         p('The mapping input is a data frame with first column of genes and second column of its isoforms.')
+                                                         p('The mapping input is a data table with first column of genes and second column of isoforms.')
                                                        ),
                                                        wellPanel(
                                                          ##input subset of isoforms for investigation
@@ -94,14 +94,23 @@ TSIS.app <- function(data.size.max=100) {
                                                          HTML('Only the results of provided subset of isoforms and their isoform partners will be shown in the results.')
 
                                                        ),
-                                                       titlePanel('Density/Frequency of switch points'),
+                                                       titlePanel('Density/Frequency of switch'),
                                                        wellPanel(
                                                          plotlyOutput('density',height = "300px"),
                                                          HTML('<b>Figure:</b> Density/Frequency plot of switch time points. The plot is made based
                                                               on the x.value in the scores output table, i.e. the occurring time points of isoform switches.'),
+                                                         fluidRow(
+                                                           column(6,
                                                          radioButtons("densityplot.type", label = h4("Select plot type:"),
-                                                                      choices = list("Density line" = 'Density_line', "Density bar" = "Density_bar", "Frequency bar" = 'Frequency_bar'),
-                                                                      selected = 'Density_line',inline = T),
+                                                                      choices = list("Frequency" = 'frequency',"Density" = 'density'),
+                                                                      selected = 'frequency',inline = T)
+                                                           ),
+                                                         column(6,
+                                                                radioButtons("show.density.line", label = h4("Density/frequency line:"),
+                                                                             choices = list("FALSE" = 'FALSE',"TRUE" = 'TRUE'),
+                                                                             selected = 'FALSE',inline = T)
+                                                                )
+                                                         ),
                                                          radioButtons("densityplot.format", label = h4("Select format to save:"),
                                                                       choices = list("html" = 'html', "png" = "png", "pdf" = 'pdf'),
                                                                       selected = 'html',inline = T),
@@ -113,7 +122,7 @@ TSIS.app <- function(data.size.max=100) {
                                                        titlePanel('Parameter settings'),
                                                        wellPanel(
                                                          fluidRow(
-                                                           h4('Parameters to calculate TS isoform switch scores'),
+                                                           h4('Scoring parameters'),
                                                            column(3,
                                                                   numericInput('t.start',label='Start time point:',value=1)
                                                            ),
@@ -127,7 +136,7 @@ TSIS.app <- function(data.size.max=100) {
                                                                   numericInput('min.t.points',label='Min time points of interval:',value=2)
                                                            ),
                                                            column(3,
-                                                                  numericInput('min.distance',label='Min distance of isofomrs:',value=1)
+                                                                  numericInput('min.distance',label='Min distance of isoforms:',value=1)
                                                            ),
                                                            column(3,
                                                                   selectInput('rank','Using rank of expression',c('FALSE','TRUE'))
@@ -145,22 +154,22 @@ TSIS.app <- function(data.size.max=100) {
 
                                                          br(),
                                                          br(),
-                                                         HTML('Press Scoring buttom to implement the scoring of isoform switches. The details of parameters:
-                                                              <ul><li><b>Start time point and end time point:</b> The start time point and end time point of the time course. The time steps are assumed to be 1. </li>
+                                                         HTML('Press Scoring button to implement the scoring of isoform switches. The details of parameters:
+                                                              <ul><li><b>Start time point and end time point:</b> The start time point and end time point of the time-series. Time points are assumed to be continuous integer, e.g. 1, 2,3, .... </li>
                                                               <li><b>Number of replicates:</b> The number of replicates for the time points. </li>
                                                               <li><b>Min time points of interval:</b> Pre-filtering, if the time points in all intervals < min.t.points, skip this pair of isoforms. </li>
-                                                              <li><b>Min distance of isoforms:</b> Pre-filtering, if the sample distances in the time courses (mean expression or splined value)
+                                                              <li><b>Min distance of isoforms:</b> Pre-filtering, if the sample distances in the time-series (mean expression or splined value)
                                                                      for intersection search all < min.distance, skip this pair of isoforms.</li>
                                                               <li><b>Using rank of expression:</b> Logical, to take ranks of expression in each sample or not. </li>
-                                                              <li><b>Method for intersections:</b> Using either mean values or natural spline fitted smooth curves (see detail of splines::ns() function in splines R package) of time-series expresssion
-                                                              to determine the intersection poitns of time coures for the isoforms.</li>
+                                                              <li><b>Method for intersections:</b> Using either mean values or natural spline fitted smooth curves (see detail in ns() function in splines R package) of time-series expression
+                                                              to determine the intersection points of isoforms.</li>
                                                               <li><b>Degree of spline:</b> The degree of spline in splines::ns() function.</li>
                                                               </ul>'),
                                                          HTML('Note: the parameters for pre-filtering will reduce the computational intensity for large scale datasets.')
                                                          ),
                                                        wellPanel(
                                                          fluidRow(
-                                                           h4('Parameters to filter TS isoform switch scores'),
+                                                           h4('Filtering parameters'),
                                                            column(3,
                                                                   numericInput('prob.cutoff',label='Probability cutoff:',value=0.5)
                                                            ),
@@ -186,7 +195,7 @@ TSIS.app <- function(data.size.max=100) {
                                                                   selectInput('sub.isoforms.ft','Subset of isoforms:',c('FALSE','TRUE'))
                                                            ),
                                                            column(3,
-                                                                  selectInput('max.ratio','Pairs of maximun isoform ratio:',c('FALSE','TRUE'))
+                                                                  selectInput('max.ratio','Maximun ratio isoforms',c('FALSE','TRUE'))
                                                            )
 
                                                          ),
@@ -194,16 +203,17 @@ TSIS.app <- function(data.size.max=100) {
                                                          actionButton('filtering','Filtering',icon("send outline icon"),class="btn btn-primary"),
                                                          br(),
                                                          br(),
-                                                         HTML('Press Filtering buttom to filter the scores. The details of parameters:
-                                                              <ul><li><b>Probability cutoff:</b> The switch isoform probability/frequency cut-off for the column "prob" in the output table. </li>
-                                                              <li><b>Distance cutoff:</b> The switch isoform distance cut-off for the column "dist" in the output table. </li>
-                                                              <li><b>P-value cutoff:</b> The p-value cut-off for both columns "left.pval" and "right.pval" in the output table. </li>
-                                                              <li><b>Min time points of interval:</b> The minimun time points for both columns "left.t.points" and "right.t.points" in the output table.</li>
-                                                              <li><b>Correlation cutoff:</b> The cut-off for Pearson correaltion of isoform pairs.</li>
-                                                              <li><b>Lower boundary of time, Upper boundary of time:</b> The lower and upper boundary of time duration region for investigation. </li>
+                                                         HTML('Press Filtering button to filter the scores. The details of parameters:
+                                                              <ul><li><b>Probability cutoff:</b> The isoform switch probability/frequency cut-off for the column "prob" in the output table. </li>
+                                                              <li><b>Distance cutoff:</b> The isoform switch distance cut-off for the column "dist" in the output table. </li>
+                                                              <li><b>P-value cutoff:</b> The p-value cut-off for both columns "before.pval" and "after.pval" in the output table. </li>
+                                                              <li><b>Min time points of interval:</b> The minimum time points for both columns "before.t.points" and "after.t.points" in the output table.</li>
+                                                              <li><b>Correlation cutoff:</b> The cut-off for Pearson correlation of isoform pairs.</li>
+                                                              <li><b>Lower boundary of time, Upper boundary of time:</b> The lower and upper boundary of time duration region for investigation. The isoform switch points out of the region are not analyzed. </li>
                                                               <li><b>Subset of isoforms:</b> Logical, to output only subset of the results or not? If TRUE, the subset of isoform list must be provided. </li>
-                                                              <li><b>Pairs of maximun isoform ratio:</b> Logical, to output subset of the results of isoforms with maximum ratio or not? </li>
-                                                              </ul>')
+                                                              <li><b>Maximum ratio isoforms:</b> Logical, to output subset of the results of isoforms with maximum ratio to genes or not? </li>
+                                                              </ul>'),
+                                                         HTML('Note: the before and after mean the intervals before and after switch points.')
                                                          )
                                                        )
                                                        ),
@@ -226,17 +236,31 @@ TSIS.app <- function(data.size.max=100) {
                                                 titlePanel('Output scores for isoform switch'),
                                                 column(12,
                                                        wellPanel(
+                                                         ##to removelater
+                                                         # HTML('The columns in the output table:
+                                                         #      <ul><li><b>iso1, iso2:</b> the isoform pairs. </li>
+                                                         #      <li><b>iso1.mean.ratio, iso2.mean.ratio:</b> The mean ratios of isoforms to their gene. </li>
+                                                         #      <li><b>before.interval, after.interval:</b>The breaks of the before and after intervals before and after swtich, respectively. </li>
+                                                         #      <li><b>x.value, y.value:</b> The x axis and y axis value of the swtich points in the plot coordinates.</li>
+                                                         #      <li><b>prob:</b> The probability of switch, which is defined as  <i>|probability(iso1>iso2|in before.interval)+probability(iso2>iso1|in after.interval)-1|</i>.</li>
+                                                         #      <li><b>dist:</b> The sum of average distance before and after switch, which is defined as  <i>|mean distance(iso1,iso2|in before.interval)|+|mean distance(iso1,iso2|in after.interval)|</i>.</li>
+                                                         #      <li><b>before.pval, after.pval:</b> The paired t-test p-values for the samples in the before and rigth intervals for the switch points.</li>
+                                                         #      <li><b>before.t.points, after.t.points:</b> The number of time points in the before and rigth intervals for the switch points.</li>
+                                                         #      <li><b>cor:</b> The Pearson correlation of isoforms iso1 and iso2.</li>
+                                                         #      </ul>'),
+
                                                          HTML('The columns in the output table:
                                                               <ul><li><b>iso1, iso2:</b> the isoform pairs. </li>
                                                               <li><b>iso1.mean.ratio, iso2.mean.ratio:</b> The mean ratios of isoforms to their gene. </li>
-                                                              <li><b>left.interval, right.interval:</b>The breaks of the left and right intervals before and after swtich, respectively. </li>
-                                                              <li><b>x.value, y.value:</b> The x axis and y axis value of the swtich points in the plot coordinates.</li>
-                                                              <li><b>prob:</b> The probability of switch, which is defined as  <i>|probability(iso1>iso2|in left.interval)+probability(iso2>iso1|in right.interval)-1|</i>.</li>
-                                                              <li><b>dist:</b> The sum of average distance before and after switch, which is defined as  <i>|mean distance(iso1,iso2|in left.interval)|+|mean distance(iso1,iso2|in right.interval)|</i>.</li>
-                                                              <li><b>left.pval, right.pval:</b> The paired t-test p-values for the samples in the left and rigth intervals for the switch points.</li>
-                                                              <li><b>left.t.points, right.t.points:</b> The number of time points in the left and rigth intervals for the switch points.</li>
+                                                              <li><b>before.interval, after.interval:</b> The breaks of the intervals before and after switch points, respectively. </li>
+                                                              <li><b>x.value, y.value:</b> The x axis and y axis value of the switch points in the plot coordinates.</li>
+                                                              <li><b>prob:</b> The probability/frequency of switch.</li>
+                                                              <li><b>dist:</b> The sum of average distances before and after switch.</li>
+                                                              <li><b>before.pval, after.pval:</b> The paired t-test p-values for the samples in the intervals before and after switch points.</li>
+                                                              <li><b>before.t.points, after.t.points:</b> The number of time points in intervals before and after the switch points.</li>
                                                               <li><b>cor:</b> The Pearson correlation of isoforms iso1 and iso2.</li>
                                                               </ul>'),
+                                                         HTML('Note: Please see the definitions of five features prob, dist, pval, t.points and cor in the user manual.'),
 
                                                          shiny::dataTableOutput('score.table')
                                                        ))
@@ -263,7 +287,7 @@ TSIS.app <- function(data.size.max=100) {
                                                textInput('iso2', label = 'Isoform 2: ', value = ''),
                                                numericInput('prob.cutoff.switch.points',label = 'Show switch poitns with prob >:',value = 0.5),
                                                selectInput('ribbon.plot','Plot types',c('Error bar','Ribbon')),
-                                               radioButtons("show.scores", label = h4("Show score labels:"),
+                                               radioButtons("show.scores", label = h4("Show feature labels:"),
                                                             choices = list("TRUE" = 'TRUE', "FALSE" = "FALSE"),
                                                             selected = 'TRUE',inline = T),
                                                actionButton('plot1iso','Plot',icon("send outline icon"),class="btn btn-primary"),
@@ -436,7 +460,7 @@ TSIS.app <- function(data.size.max=100) {
 
                rownames(x)<-NULL
                score.show$scores<-x[,c('iso1','iso2','iso1.mean.ratio','iso2.mean.ratio',
-                                       'left.interval','right.invertal','x.value','y.value','prob','dist','left.pval','right.pval','left.t.points','right.t.points','cor')]
+                                       'before.interval','after.invertal','x.value','y.value','prob','dist','before.pval','after.pval','before.t.points','after.t.points','cor')]
 
 
              })
@@ -452,7 +476,7 @@ TSIS.app <- function(data.size.max=100) {
 
                rownames(x)<-NULL
                score.show$scores<-x[,c('iso1','iso2','iso1.mean.ratio','iso2.mean.ratio',
-                                       'left.interval','right.invertal','x.value','y.value','prob','dist','left.pval','right.pval','left.t.points','right.t.points','cor')]
+                                       'before.interval','after.invertal','x.value','y.value','prob','dist','before.pval','after.pval','before.t.points','after.t.points','cor')]
 
 
              })
@@ -497,7 +521,8 @@ TSIS.app <- function(data.size.max=100) {
                if(is.null(score.show$scores))
                  return()
 
-               switch.density(x=score.show$scores$x.value,t.start = input$t.start,t.end=input$t.end,plot.type = input$densityplot.type,make.plotly = T,title = '')
+               switch.density(x=score.show$scores$x.value,t.start = input$t.start,t.end=input$t.end,plot.type = input$densityplot.type,make.plotly = T,
+                              show.line = input$show.density.line,title = '')
              })
 
 
@@ -509,10 +534,12 @@ TSIS.app <- function(data.size.max=100) {
                content = function(file,format=input$densityplot.format) {
                  if(format=='html')
                    suppressWarnings(htmlwidgets::saveWidget(as.widget(
-                     switch.density(x=score.show$scores$x.value,t.start = input$t.start,t.end=input$t.end,plot.type = input$densityplot.type,make.plotly = T,title = '')
+                     switch.density(x=score.show$scores$x.value,t.start = input$t.start,t.end=input$t.end,plot.type = input$densityplot.type,make.plotly = T,
+                                    show.line = input$show.density.line,title = '')
                      ), file=file,selfcontained=T))
                  else ggsave(file,
-                             switch.density(x=score.show$scores$x.value,t.start = input$t.start,t.end=input$t.end,plot.type = input$densityplot.type,make.plotly = F,title = ''),
+                             switch.density(x=score.show$scores$x.value,t.start = input$t.start,t.end=input$t.end,plot.type = input$densityplot.type,make.plotly = F,
+                                            show.line = input$show.density.line,title = ''),
                              width = 16,height = 12,units = "cm")
                })
 

@@ -9,11 +9,11 @@ iso.switch(data.exp, mapping, t.start = 1, t.end = 26, nrep = 9,
   spline.df = NULL, verbose = T)
 }
 \arguments{
-\item{data.exp}{isoform expression data frame with row names of isoforms and column names of samples.}
+\item{data.exp}{isoform expression data with row names of isoforms and column names of samples.}
 
-\item{mapping}{gene-isoform mapping data frame with first column of genes and second column of isoforms.}
+\item{mapping}{gene-isoform mapping data with first column of genes and second column of isoforms.}
 
-\item{t.start, t.end}{start and end time points of the time-series data. The time step is assumed to be 1.}
+\item{t.start, t.end}{start and end time points of the time-series data. 1Time points are assumed to be continuous integer, e.g. 1,2,3,...}
 
 \item{nrep}{number of replicates for each time point.}
 
@@ -21,7 +21,7 @@ iso.switch(data.exp, mapping, t.start = 1, t.end = 26, nrep = 9,
 
 \item{min.t.points}{pre-filtering, if the number of time points in all intervals < \code{min.t.points}, skip this pair of isoforms.}
 
-\item{min.distance}{pre-filtering, if the sample distances in the time courses (mean expression or splined value) for
+\item{min.distance}{pre-filtering, if the sample distances in the time-series (mean expression or splined value) for
 intersection search all < \code{min.distance}, skip this pair of isoforms.}
 
 \item{spline}{logical, to use spline method (TRUE) or mean expression (FALSE).}
@@ -35,15 +35,16 @@ a data frame of scores. The column names:
 \itemize{
 \item{iso1,iso2: }{the isoforms.}
 \item{iso1.mean.ratio, iso2.mean.ratio: }{the ratio of isoforms to their genes.}
-\item{left.interval, left.interval: }{the left (before switch) and right (after switch) intervals of a switch point.}
+\item{before.interval, before.interval: }{the intervals before and after a switch point.}
 \item{x.value, y.value: }{x and y coordinates of switch points.}
-\item{left.prob, right.prob: }{the frequencies/probabilities that the samples of a isoform is greater or less than the other in left and right intervals, respectively. }
-\item{left.dist, right.dist: }{the average sample distances in left and right intervals, respectively. }
-\item{left.pval, right.pval: }{p-values of paired t-test for samples in left and right intervals, respectively. }
-\item{left.t.points, right.t.points: }{number of time points in left and right intervals, respectively. }
-\item{prob: }{Score1.}
-\item{dist: }{Score2.}
-\item{cor: }{Pearson correlation of two isoforms.}
+\item{before.prob, after.prob: }{the frequencies/probabilities that the samples of a isoform is greater or less than the other in the intervals before and after
+switch, respectively. }
+\item{before.dist, after.dist: }{the average sample distances in the intervals before and after switch, respectively. }
+\item{before.pval, after.pval: }{p-values of paired t-test for samples in the intervals before and after switch, respectively. }
+\item{before.t.points, after.t.points: }{number of time points in the intervals before and after switch, respectively. }
+\item{prob: }{Feature 1, frequency/probability of switch}
+\item{dist: }{Feature 2, sum of average distances before and after switch.}
+\item{cor: }{Feature 5, Pearson correlation of two isoforms.}
 
 }
 }
@@ -90,7 +91,7 @@ Score 1 and Score 2 for each switch point, we defined other 3 parameters as metr
 \item{\bold{Score 4:}}{ Time point number within each interval.}
 \item{\bold{Score 5:}}{ Pearson correlation of two isoforms.}
 }
-Note: since each switch point has a left and right adjoined intervals before and after
+Note: since each switch point has a before and after adjoined intervals before and after
 switch, two p-values and two numbers of time points for the intervals are assigned to each
 switch point, respectively.
 }

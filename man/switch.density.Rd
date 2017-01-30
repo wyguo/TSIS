@@ -5,7 +5,8 @@
 \title{Density plot}
 \usage{
 switch.density(x, t.start = 1, t.end = 26, make.plotly = T,
-  plot.type = "Density_line", title = "Density of switch points", ...)
+  plot.type = "density", show.line = T,
+  title = "Density of switch points", ...)
 }
 \arguments{
 \item{x}{a numeric vector to plot th density.}
@@ -24,16 +25,5 @@ density plot in general format or \code{\link{plotly}} format if \code{make.plot
 }
 \description{
 Density plot
-}
-\examples{
-##random values
-set.seed(100)
-x<-rnorm(100,mean=0,sd=1)
-##geneal format
-switch.density(x,make.plotly =F)
-##plotly format
-switch.density(x,make.plotly =T)
-
-
 }
 
