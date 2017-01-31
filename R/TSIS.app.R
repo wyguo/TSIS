@@ -26,12 +26,14 @@ TSIS.app <- function(data.size.max=100) {
   ##download tutorial
   if(!file.exists('tutorial'))
     dir.create('tutorial')
-  if(!file.exists('tutorial/tutorial-shiny.html')){
-    download.file('https://github.com/wyguo/TSIS/raw/master/vignettes/tutorial-shiny.zip',
-                  destfile = 'tutorial/tutorial-shiny.zip',quiet = T)
-    unzip('tutorial/tutorial-shiny.zip',exdir = 'tutorial')
-    invisible(file.remove('tutorial/tutorial-shiny.zip'))
-  }
+  if(file.exists('tutorial/tutorial-shiny.html'))
+    file.remove('tutorial/tutorial-shiny.html')
+
+  download.file('https://github.com/wyguo/TSIS/raw/master/vignettes/tutorial-shiny.zip',
+                destfile = 'tutorial/tutorial-shiny.zip',quiet = T)
+  unzip('tutorial/tutorial-shiny.zip',exdir = 'tutorial')
+  invisible(file.remove('tutorial/tutorial-shiny.zip'))
+
 
   ##shiny app
 
