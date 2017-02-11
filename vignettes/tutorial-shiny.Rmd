@@ -20,7 +20,7 @@ output:
 subtitle: User manual
 ---
 
-```{r setup, include=T,eval=T,echo=F}
+```{r setup, include=F,eval=T,echo=F}
 knitr::opts_chunk$set(cache = TRUE,eval=F,echo = T)
 file.type='html'
 ```
