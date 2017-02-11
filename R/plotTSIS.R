@@ -139,7 +139,7 @@ plotTSIS<-function(data2plot,scores=NULL,iso1=NULL,iso2=NULL,gene.name=NULL,y.la
         scale_shape_manual(values=c(15,17,rep(16,length(idx))))
       if(show.scores)
         g<-g+annotate('text',x = 1.1*sub.scores$x.value, y =sub.scores$y.value+max(data2plot$mean)/20,
-                      label = paste0('prob=',round(sub.scores$prob,2),'; dist=',round(sub.scores$dist,2),'; cor=',round(sub.scores$cor,2)))
+                      label = paste0('prob=',round(sub.scores$prob,2),'; diff=',round(sub.scores$diff,2),'; cor=',round(sub.scores$cor,2)))
     }
 
   if(show.region){

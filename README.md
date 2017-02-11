@@ -249,7 +249,7 @@ scores.spline2int<-iso.switch(data.exp=data.exp,mapping =mapping,
 ```r
 ##intersection from mean expression
 scores.mean2int.filtered<-score.filter(
-  scores = scores.mean2int,prob.cutoff = 0.5,dist.cutoff = 1,
+  scores = scores.mean2int,prob.cutoff = 0.5,diff.cutoff = 1,
   t.points.cutoff = 2,pval.cutoff = 0.01, cor.cutoff = 0.5,
   data.exp = NULL,mapping = NULL,sub.isoform.list = NULL,
   sub.isoform = F,max.ratio = F,x.value.limit = c(9,17) 
@@ -263,7 +263,7 @@ scores.mean2int.filtered[1:5,]
 ##intersection from spline method
 scores.spline2int.filtered<-score.filter(
   scores = scores.spline2int,prob.cutoff = 0.5,
-  dist.cutoff = 1,t.points.cutoff = 2,pval.cutoff = 0.01,
+  diff.cutoff = 1,t.points.cutoff = 2,pval.cutoff = 0.01,
   cor.cutoff = 0.5,data.exp = NULL,mapping = NULL,
   sub.isoform.list = NULL,sub.isoform = F,max.ratio = F,
   x.value.limit = c(9,17) 
@@ -281,7 +281,7 @@ sub.isoform.list<-AtRTD2$sub.isoforms
 sub.isoform.list[1:10]
 ##assign the isoform name list to sub.isoform.list and set sub.isoform=TRUE
 scores.mean2int.filtered.subset<-score.filter(
-  scores = scores.mean2int,prob.cutoff = 0.5,dist.cutoff = 1,
+  scores = scores.mean2int,prob.cutoff = 0.5,diff.cutoff = 1,
   t.points.cutoff = 2,pval.cutoff = 0.01, cor.cutoff = 0.5,
   data.exp = NULL,mapping = NULL,sub.isoform.list = sub.isoform.list,
   sub.isoform = T,max.ratio = F,x.value.limit = c(9,17) 
@@ -294,7 +294,7 @@ scores.mean2int.filtered.subset<-score.filter(
 
 ```r
 scores.mean2int.filtered.maxratio<-score.filter(
-  scores = scores.mean2int,prob.cutoff = 0.5,dist.cutoff = 1,
+  scores = scores.mean2int,prob.cutoff = 0.5,diff.cutoff = 1,
   t.points.cutoff = 2,pval.cutoff = 0.01, cor.cutoff = 0,
   data.exp = data.exp,mapping = mapping,sub.isoform.list = NULL,
   sub.isoform = F,max.ratio = T,x.value.limit = c(9,17) 

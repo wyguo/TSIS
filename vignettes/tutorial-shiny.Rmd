@@ -22,7 +22,7 @@ subtitle: User manual
 
 ```{r setup, include=F,eval=T,echo=F}
 knitr::opts_chunk$set(cache = TRUE,eval=F,echo = T)
-file.type='html'
+file.type='readme'
 ```
 #Description
 [TSIS](https://github.com/wyguo/TSIS) is an R package for detecting transcript isoform switch for time-series data. Transcript isoform switch occurs when a pair of isoforms reverse the order of expression levels as shown in <a href="#fig1">Figure 1</a>. TSIS characterizes the transcript switch by 1) defining the isoform switch time points for any pair of transcript isoforms within a gene, 2) describing the switch using 5 different features, 3) filtering the results with user’s specifications and 4) visualizing the results using different plots for the user to examine further details of the switches. All the functions are available in the forms of a graphic interface implemented by [Shiny App](https://shiny.rstudio.com/) (a web application framework for R) ([Chang, et al., 2016](https://shiny.rstudio.com/)), in which users can implement the analysis as easy as mouse click. The tool can also be run just in command lines without graphic interface. This tutorial will cover both in the following sections. 
@@ -306,7 +306,7 @@ scores.mean2int<-iso.switch(data.exp=data.exp,mapping =mapping,
 scores.spline2int<-iso.switch(data.exp=data.exp,mapping =mapping,
                      t.start=1,t.end=26,nrep=9,rank=F,
                      min.t.points =2,min.difference=1,spline =T,
-                     spline.df = 9,verbose = F)
+                     spline.df = 10,verbose = F)
 
 ```
 
@@ -316,7 +316,7 @@ scores.spline2int<-iso.switch(data.exp=data.exp,mapping =mapping,
 ```{r,eval=F}
 ##intersection from mean expression
 scores.mean2int.filtered<-score.filter(
-  scores = scores.mean2int,prob.cutoff = 0.5,dist.cutoff = 1,
+  scores = scores.mean2int,prob.cutoff = 0.5,diff.cutoff = 1,
   t.points.cutoff = 2,pval.cutoff = 0.01, cor.cutoff = 0.5,
   data.exp = NULL,mapping = NULL,sub.isoform.list = NULL,
   sub.isoform = F,max.ratio = F,x.value.limit = c(9,17) 
@@ -329,7 +329,7 @@ scores.mean2int.filtered[1:5,]
 ##intersection from spline method
 scores.spline2int.filtered<-score.filter(
   scores = scores.spline2int,prob.cutoff = 0.5,
-  dist.cutoff = 1,t.points.cutoff = 2,pval.cutoff = 0.01,
+  diff.cutoff = 1,t.points.cutoff = 2,pval.cutoff = 0.01,
   cor.cutoff = 0.5,data.exp = NULL,mapping = NULL,
   sub.isoform.list = NULL,sub.isoform = F,max.ratio = F,
   x.value.limit = c(9,17) 
@@ -346,7 +346,7 @@ sub.isoform.list<-AtRTD2$sub.isoforms
 sub.isoform.list[1:10]
 ##assign the isoform name list to sub.isoform.list and set sub.isoform=TRUE
 scores.mean2int.filtered.subset<-score.filter(
-  scores = scores.mean2int,prob.cutoff = 0.5,dist.cutoff = 1,
+  scores = scores.mean2int,prob.cutoff = 0.5,diff.cutoff = 1,
   t.points.cutoff = 2,pval.cutoff = 0.01, cor.cutoff = 0.5,
   data.exp = NULL,mapping = NULL,sub.isoform.list = sub.isoform.list,
   sub.isoform = T,max.ratio = F,x.value.limit = c(9,17) 
@@ -358,7 +358,7 @@ scores.mean2int.filtered.subset<-score.filter(
 
 ```{r}
 scores.mean2int.filtered.maxratio<-score.filter(
-  scores = scores.mean2int,prob.cutoff = 0.5,dist.cutoff = 1,
+  scores = scores.mean2int,prob.cutoff = 0.5,diff.cutoff = 1,
   t.points.cutoff = 2,pval.cutoff = 0.01, cor.cutoff = 0,
   data.exp = data.exp,mapping = mapping,sub.isoform.list = NULL,
   sub.isoform = F,max.ratio = T,x.value.limit = c(9,17) 
