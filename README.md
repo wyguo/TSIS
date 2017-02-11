@@ -10,7 +10,7 @@ output:
     theme: cerulean
     toc: yes
     toc_depth: 3
-    toc_float: no
+    toc_float: yes
   pdf_document:
     toc: yes
     toc_depth: '3'
