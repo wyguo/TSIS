@@ -31,7 +31,7 @@ file.type='html'
 <h2 id="fig1"> </h2>
 ```{r,results='asis',echo=F,eval=TRUE}
 if(file.type=='html')
-  cat('<img src="fig/figures_001.png" width="900px" height="200px" />')
+  cat('<img src="fig/figures_001.png" width="900px />')
 
 if(file.type=='word')
   cat('![](fig/figures_001.png)')
@@ -134,7 +134,7 @@ There are four sections in this panel (see <a href="#fig2">Figure 2</a>).
 <h2 id="fig2"> </h2>
 ```{r,results='asis',echo=F,eval=TRUE}
 if(file.type=='html')
-  cat('<img src="fig/figures_002.png" width="900px" height="400px" />')
+  cat('<img src="fig/figures_002.png" width="900px"  />')
 
 if(file.type=='word')
   cat('![](fig/figures_002.png)')
@@ -159,7 +159,7 @@ Three *.csv format input files can be provided for [TSIS](https://github.com/wyg
 <h2 id="fig3"> </h2>
 ```{r,results='asis',echo=F,eval=TRUE}
 if(file.type=='html')
-  cat('<img src="fig/figures_003.png" width="900px" height="400px" />')
+  cat('<img src="fig/figures_003.png" width="900px"  />')
 
 if(file.type=='word')
   cat('![](fig/figures_003.png)')
@@ -176,7 +176,7 @@ if(file.type=='readme')
 <h2 id="fig4"> </h2>
 ```{r,results='asis',echo=F,eval=TRUE}
 if(file.type=='html')
-  cat('<img src="fig/figures_004.png" width="900px" height="400px" />')
+  cat('<img src="fig/figures_004.png" width="900px"  />')
 
 if(file.type=='word')
   cat('![](fig/figures_004.png)')
@@ -200,7 +200,7 @@ The section in <a href="#fig2">Figure 2(C)</a> and <a href="#fig5">Figure 5</a> 
 <h2 id="fig5"> </h2>
 ```{r,results='asis',echo=F,eval=TRUE}
 if(file.type=='html')
-  cat('<img src="fig/figures_005.png" width="900px" height="400px" />')
+  cat('<img src="fig/figures_005.png" width="900px"  />')
 
 if(file.type=='word')
   cat('![](fig/figures_005.png)')
@@ -220,7 +220,7 @@ Note: The plot is made by using [plotly]( https://plot.ly/r/) R package. Users c
 <h2 id="fig6"> </h2>
 ```{r,results='asis',echo=F,eval=TRUE}
 if(file.type=='html')
-  cat('<img src="fig/figures_006.png" width="900px" height="400px" />')
+  cat('<img src="fig/figures_006.png" width="900px"  />')
 
 if(file.type=='word')
   cat('![](fig/figures_006.png)')
@@ -239,7 +239,7 @@ The output table of TSIS analysisafter scoring or filtering. The columns include
 <h2 id="fig7"> </h2>
 ```{r,results='asis',echo=F,eval=TRUE}
 if(file.type=='html')
-  cat('<img src="fig/figures_007.png" width="900px" height="400px" />')
+  cat('<img src="fig/figures_007.png" width="900px"  />')
 
 if(file.type=='word')
   cat('![](fig/figures_007.png)')
@@ -257,7 +257,7 @@ if(file.type=='readme')
 <h2 id="fig8"> </h2>
 ```{r,results='asis',echo=F,eval=TRUE}
 if(file.type=='html')
-  cat('<img src="fig/figures_008.png" width="900px" height="400px" />')
+  cat('<img src="fig/figures_008.png" width="900px"  />')
 
 if(file.type=='word')
   cat('![](fig/figures_008.png)')
@@ -385,7 +385,7 @@ plotTSIS(data2plot = data.exp,scores = scores.mean2int.filtered,
 <h2 id="fig9"> </h2>
 ```{r,results='asis',echo=F,eval=TRUE}
 if(file.type=='html')
-  cat('<img src="fig/figures_009.png" width="900px" height="400px" />')
+  cat('<img src="fig/figures_009.png" width="900px"  />')
 
 if(file.type=='word')
   cat('![](fig/figures_009.png)')
@@ -413,9 +413,11 @@ plotTSIS(data2plot = data.exp,scores = scores.mean2int.filtered,
 <h2 id="fig10"> </h2>
 ```{r,results='asis',echo=F,eval=TRUE}
 if(file.type=='html')
-  cat('<img src="fig/figures_010.png" width="900px" height="400px" />')
+  cat('<img src="fig/figures_010.png" width="900px"  />')
+
 if(file.type=='word')
   cat('![](fig/figures_010.png)')
+
 if(file.type=='readme')
   cat('![](https://github.com/wyguo/TSIS/blob/master/vignettes/fig/figures_010.png)')
 ```

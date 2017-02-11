@@ -340,7 +340,8 @@ plotTSIS(data2plot = data.exp,scores = scores.mean2int.filtered,
 
 <br>
 <h2 id="fig10"> </h2>
-![](fig/figures_010.png)
+![](https://github.com/wyguo/TSIS/blob/master/vignettes/fig/figures_010.png)
+
 
 
 #References
