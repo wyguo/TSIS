@@ -341,7 +341,10 @@ plotTSIS(data2plot = data.exp,scores = scores.mean2int.filtered,
 <br>
 <h2 id="fig10"> </h2>
 ![](https://github.com/wyguo/TSIS/blob/master/vignettes/fig/figures_010.png)
+<<<<<<< HEAD
 
+=======
+>>>>>>> 57c43615beeab4282de49f2e4c5a934218668d9b
 
 
 #References

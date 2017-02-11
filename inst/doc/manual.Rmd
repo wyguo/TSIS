@@ -409,8 +409,10 @@ plotTSIS(data2plot = data.exp,scores = scores.mean2int.filtered,
 ```{r,results='asis',echo=F,eval=TRUE}
 if(file.type=='html')
   cat('<img src="fig/figures_010.png" width="900px"  />')
+
 if(file.type=='word')
   cat('![](fig/figures_010.png)')
+
 if(file.type=='readme')
   cat('![](https://github.com/wyguo/TSIS/blob/master/vignettes/fig/figures_010.png)')
 ```
