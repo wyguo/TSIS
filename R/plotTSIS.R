@@ -1,20 +1,18 @@
 #' Plot time-series switches of a pair of isoforms
 #'
-#' @param data2plot the expession data frame used to plot the isoforms. The row names of the data frame are the isoforms to plot and the column names are
-#' time points and the replicates of time points.The column ordering should be for example t1.replicate1, t1.replicate2, ..., t2.replicate1, t2.replicate2, ...
+#' @param data2plot the transcript isoform expression data for switch plots with rows of isoforms and columns of samples. See \code{AtRTD2$data.exp} for details.
 #' @param scores the output scores of functions \code{\link{iso.switch}} and \code{\link{score.filter}}. Default is NULL. To show score labels on the plot,
 #' the scores must be provided.
-#' @param iso1,iso2 character string names of the first and second isoforms to plot. If \code{iso1} and \code{iso2} are NULL,
+#' @param iso1,iso2 character string names of isoforms to plot.
 #' the input \code{data2plot} must be a data frame of two rows and the row names are used as isoforms to plot.
 #' @param gene.name a character string of gene name to show as the title of the plot. If \code{gene.name=NULL}, the plot title will be "iso1_vs_iso2".
-#' @param y.lab the y label of the plot, default is "Expression".
-#' @param make.plotly logical, to plot \code{\link{plotly}} format figures (TRUE) or plain ggplot2 format figures(FALSE)?. See details in \code{\link{ggplotly}} in \code{\link{plotly}} R pacakge.
-#' @param t.start,t.end start and end time points of the time-series data. The time step is assumed to be 1.
+#' @param y.lab the y axis label of the plot, default is "Expression".
+#' @param make.plotly logical, to plot \code{\link{plotly}} format figures (TRUE) or ggplot2 format figures(FALSE)?. See details in \code{\link{ggplotly}} in \code{\link{plotly}} R pacakge.
+#' @param t.start,t.end the start time point and end time point of the time-series. Time points have to be continuous integer, e.g. 1, 2,3, ....
 #' @param nrep number of replicates.
 #' @param prob.cutoff the cut-off of switch frequencies/probabilities to label the switch points.
-#' @param x.lower.boundary,x.upper.boundary the lower and upper boundary of x axis (time points) for the region under investigation. In the analysis, if the isoform pairs have no intersection points
-#' in this region, they are filtered.
-#' @param show.region logical, to highlight the region under investigation (TRUE) or not (FALSE)?
+#' @param x.lower.boundary,x.upper.boundary Specifies the time frame of interest to investigate the isoform switches.
+#' @param show.region logical, to highlight the time frame under investigation (TRUE) or not (FALSE)?
 #' @param show.scores logical, to show score labels on the plot (TRUE) or not (FALSE)? The \code{scores} object must be provided.
 #' @param error.type the error type used to show the error bar in the plots. Options are "stderr" for standard error and "sd" for standard deviation. See details in \code{\link{data.error}}.
 #' @param show.errorbar logical, to show error bar (TRUE) or not (FALSE) in the error bar plot.

@@ -1,88 +1,118 @@
 #' Isoform switch analysis for time-series data
 #'
-#' This function is used to search and score isoform switch points in time-series isoform expression data.
+#' This function is used to search and score transcript isoform switch in time-series expression.
 #'
 #' @details The detailed steps:
 #'
-#' \bold{Step 1: search for time course intersection points.}
+#' \if{html}{\figure{figures_001.png}{options: width="80\%" alt="Figure: figures_001.png"}}
+#' \if{latex}{\figure{figures_001.pdf}{options: width=7cm}}
 #'
-#' The expression for a pair of isoforms \eqn{iso_i} and \eqn{iso_j} may experience a number isoform switch in the whole
-#' time duration. Two methods have been included to search for these switch points where the isoforms reverse relative
-#' expression profiles.
-#' \itemize{
-#' \item{\bold{Method 1:}}{ use average expression values across time points. Taking average values of the replicates
-#' for time points in the input isoform expression data.}
-#' \item{\bold{Method 2:}}{ use nature spline curves to fit the time-series data and find intersection points of the
-#' fitted curves for each pair of isoforms. See details in \code{\link{ts.spline}}}
-#' }
+#' \bold{Figure 1:} Isoform switch analysis methods. Expression data with 3 replicates for each condition/time point is
+#' simulated for isoforms iso_i and iso_j. The points in the plots represent the samples and the black lines are the average of samples.
+#' (A) is the iso-kTSP algorithm for comparisons of two conditions \eqn{c_1} and \eqn{c_2}. The iso-kTSP is extended to time-series isoform switch (TSIS) in figure (B).
+#' The time-series with 6 time points is divided into 4 intervals by the intersection points of average expression.
+#' Five features for switch evaluation are determined based on the intervals before and after switch, e.g. the before and after intervals \eqn{I_1} and \eqn{I_2}
+#' adjoined to switch point \eqn{P_i}.
 #'
-#' \bold{Step 2: score the isoform switches}
+#' \bold{Step 1: search for isoform switch points.}
 #'
-#' We defined 5 parameters to score the quality of isoform switch. The first two are the frequency/probability of switch and the
-#' sum of average distance before and after switch, used as Score 1 and Score 2 in iso-kTSP \url{https://bitbucket.org/regulatorygenomicsupf/iso-ktsp}
-#' method for two condition comparisons (Sebestyen, et al., 2015).
-#' To investigate the switches of two isoforms \eqn{iso_i} and \eqn{iso_j} in two conditions \eqn{c_1} and \eqn{c_2}, \bold{Score 1} is defined as
-#' \deqn{S_1(iso_i,iso_j|c_1,c_2)=|p(iso_1>iso2|c_1)+p(iso_1<iso_2|c_2)-1|}
-#' where \eqn{p(iso_1>iso2|c_1)} and \eqn{p(iso_1<iso_2|c_2)} are the frequencies/probabilities that the samples of one isoform
-#' is greater or less than the other in corresponding conditions. \bold{Score 2} is defined as
-#' \deqn{S_2(iso_i,iso_j|c_1,c_2)=|mean.dist(iso_i,iso_2|c_1)|+|mean.dist(ios_1,iso_2|c_2)|}
-#' where \eqn{mean.dist(iso_i,iso_2|c_1)} and \eqn{mean.dist(ios_1,iso_2|c_2)} are the mean distances of samples in conditions \eqn{c_1} and \eqn{c_2}, respectively.
-#'
-#' However, the time-series for a pair of isoforms may undergo a number of switches in the time duration.
-#' The time duration is divided into intervals with the intersection points determined in Step 1.
-#' To extend the iso-kTSP to TSIS, the samples in each pair of consecutive intervals before and after
-#' switch are assimilated as samples in two conditions to implement the calculation of Score 1 and Score 2.
-#'
-#' The time-series isoform switches are more complex than the comparisons over two conditions. In addition to
-#' Score 1 and Score 2 for each switch point, we defined other 3 parameters as metrics of switch qualities.
+#' Given that a pair of isoforms \eqn{iso_i} and \eqn{iso_j} may have a number of switches in a time-series,
+#' two approaches have been offered to search for the switch time points in TSIS:
 #'
 #' \itemize{
-#' \item{\bold{Score 3:}}{ p-value of paired t-test for the two isoform sample differences within each interval.}
-#' \item{\bold{Score 4:}}{ Time point number within each interval.}
-#' \item{\bold{Score 5:}}{ Pearson correlation of two isoforms.}
+#' \item{The first approach takes the average values of the replicates for each time points for each transcript isoform.
+#' Then it searches for the cross points for the average value of two isoforms across the time points (as the example in Figure 1(B)).}
+#' \item{The second approach uses natural spline curves to fit the time-series data for each transcript isoform and find cross points
+#' of the fitted curves for each pair of isoforms.}
 #' }
-#' Note: since each switch point has a before and after adjoined intervals before and after
-#' switch, two p-values and two numbers of time points for the intervals are assigned to each
-#' switch point, respectively.
 #'
-#' @param data.exp isoform expression data with row names of isoforms and column names of samples.
-#' @param mapping gene-isoform mapping data with first column of genes and second column of isoforms.
-#' @param t.start,t.end start and end time points of the time-series data. 1Time points are assumed to be continuous integer, e.g. 1,2,3,...
+#'
+#' It is reasonable to assume the isoform expression and time-series show curvilinear relationship. However, explicit average values of
+#' expression loss precision without having information of backward and forward time points. The spline method fit time-series of
+#' expression with control points (depending on spline degree of freedom provided) and weights of several neighbours to obtained
+#' designed precision (Hastie and Tibshirani, 1990). The spline method is useful to find global trends of time-series when the
+#' data is very noisy. But it may sacrifice the local details of switch. For example, a rough spline fitting with very few control
+#' points may results in big shifts of switch points. Users can use both average and spline method to search for the switch points
+#' and determine optimal output by looking at the switch plots (see \code{\link{plotTSIS}}).
+#'
+#'
+#' \bold{Step 2: define switch scoring measures}
+#'
+#'We define each transcript isoform switch by 1) the switch point \eqn{P_i} , 2) time points between switch points \eqn{P_(i-1)} and \eqn{P_i} as
+#'interval before switch \eqn{P_i} and 3) time points between switch points \eqn{P_i} and \eqn{P_(i+1)} as interval after the switch \eqn{P_i} (see Figure 1(B)).
+#'We defined 5 measurements to score each isoform switch. The first two are the probability/frequency of switch and the sum of average
+#'sample differences before and after switch, which are similar to Score 1 and Score 2 in iso-kTSP method (Sebestyen, et al., 2015) (see Figure 1(A))).
+#'For Score 2, instead of rank differences as in iso-kTSP to avoid possible ties, we directly use the average sample differences.
+#'
+#' \itemize{
+#' \item{
+#'   Firstly, for a switch point \eqn{P_i} of two isoforms \eqn{iso_i} and \eqn{iso_j} with before interval \eqn{I_1} and after interval \eqn{I_2} (see example in Figure1 (B)), Score 1 is defined as
+#'   \deqn{S_1 (iso_i,iso_j |I_1,I_2)=|p(iso_i>iso_j |I_1)+p(iso_i<iso_j |I_2)1|,}
+#'   Where  \eqn{p(iso_i>iso_j |I_1 )} and \eqn{p(iso_i<iso_j |I_2 )} are the frequencies/probabilities that the samples of one isoform is greater or less than in the other in corresponding intervals.
+#' }
+#' \item{
+#'   Secondly, sum of mean differences of samples in intervals \eqn{I_1} and \eqn{I_2} are calculated as
+#'   \deqn{S_2=d(iso_i,iso_j |I_1 )+d(iso_i,iso_j |I_2)}
+#'   Where \eqn{d(iso_i,iso_j |I_k)} is the average expression difference in interval \eqn{I_k, k=1,2} defined as
+#'   \deqn{d(iso_i, iso_j |I_k)=\frac{1}{|I_k|}\sum_{m_{I_k}} |exp(iso_i |s_{m_{I_k}},I_k)exp(iso_j |s_{m_{I_k}},I_k) |}
+#'   \eqn{|I_k|} is the number of samples in interval \eqn{I_k} and \eqn{exp(iso_i |s_{m_{I_k}},I_k)} is the expression of \eqn{iso_i} of sample \eqn{s_{m_{I_k}}} in interval \eqn{I_k}.
+#' }
+#' \item{
+#'   Thirdly, a paired ttest is implemented for the two switched isoform sample differences within each interval. The dependency R function for testing is t.test(), i.e.
+#'   \deqn{S_3 (iso_i,iso_j |I_k )=pval⇐t.test(x=iso_i  \text{ samples in } I_k,y=iso_j  \text{ samples in } I_k,\text{paired=TRUE})}
+#'   Where \eqn{k=1,2} represent the indices of the intervals before and after switch.
+#' }
+#' \item{
+#'   Fourthly, the numbers of time points in intervals \eqn{I_1} and \eqn{I_2} were also provided, which indicate whether this switch is transient or long lived changes,
+#'   \deqn{S_4(iso_i,iso_j |I_k)= \text{time points in interval } I_k}
+#' }
+#' \item{
+#'   Finally, the coexpressed isoform pairs often show good isoform switch patterns of interest. For example highly negative correlated isoforms may present opposite growing patterns along the time frame. As an additional score, we calculated the Pearson correlation of two isoforms across the whole time series
+#'   \deqn{S_5 (iso_i,iso_j )=cor(\text{samples of } iso_1,\text{samples of  } iso_2 ,\text{method="pearson"})}
+#' }
+#' }
+#'
+#' @param data.exp isoform expression data with rows of isoforms and columns of samples.
+#' @param mapping gene-isoform mapping data  with first column of genes and second column of isoforms.
+#' @param t.start,t.end the start time point and end time point of the time-series. Time points have to be continuous integer, e.g. 1, 2,3, ....
 #' @param nrep number of replicates for each time point.
-#' @param rank logical, to use rank of isoform expression for each sample (TRUE) or not (FALSE).
-#' @param min.t.points pre-filtering, if the number of time points in all intervals < \code{min.t.points}, skip this pair of isoforms.
-#' @param min.distance pre-filtering, if the sample distances in the time-series (mean expression or splined value) for
-#' intersection search all < \code{min.distance}, skip this pair of isoforms.
-#' @param spline logical, to use spline method (TRUE) or mean expression (FALSE).
+#' @param rank logical (TRUE or FALSE). Should isoform expression be convert to rank of isoform expression in sample basis?
+#' @param min.t.points if the number of time points in all intervals < \code{min.t.points},
+#' this pair of isoformsare not switch candidates since they only have transient switches.
+#' @param min.difference If the mean of differences of average isoform expression or spline fitted expression < \code{min.difference},
+#' this pair of isoforms are supposed to tied together and they are not switch candidates.
+#' @param spline logical, whether to use spline method to fit isoform expression (TRUE) or mean expression of time points (FALSE).
 #' @param spline.df the degree of freedom used in spline method. See \code{\link{ns}} in \code{\link{splines}} for details.
-#' @param verbose logical, to track the progressing of runing (TRUE) or not (FALSE).
+#' @param verbose logical, to track the running progressing (TRUE) or not (FALSE).
 #'
 #' @references
 #' 1.	Sebestyen E, Zawisza M, Eyras E: Detection of recurrent alternative splicing switches in tumor samples reveals novel signatures of cancer.
 #' Nucleic Acids Res 2015, 43(3):1345-1356.
+#' 2. Hastie, T.J. and Tibshirani, R.J. Generalized additive models. Chapter 7 of Statistical Models in S eds. Wadsworth & Brooks/Cole 1990.
 #'
 #' @return  a data frame of scores. The column names:
 #' \itemize{
-#' \item{iso1,iso2: }{the isoforms.}
-#' \item{iso1.mean.ratio, iso2.mean.ratio: }{the ratio of isoforms to their genes.}
-#' \item{before.interval, before.interval: }{the intervals before and after a switch point.}
-#' \item{x.value, y.value: }{x and y coordinates of switch points.}
-#' \item{before.prob, after.prob: }{the frequencies/probabilities that the samples of a isoform is greater or less than the other in the intervals before and after
-#' switch, respectively. }
-#' \item{before.dist, after.dist: }{the average sample distances in the intervals before and after switch, respectively. }
-#' \item{before.pval, after.pval: }{p-values of paired t-test for samples in the intervals before and after switch, respectively. }
-#' \item{before.t.points, after.t.points: }{number of time points in the intervals before and after switch, respectively. }
-#' \item{prob: }{Feature 1, frequency/probability of switch}
-#' \item{dist: }{Feature 2, sum of average distances before and after switch.}
-#' \item{cor: }{Feature 5, Pearson correlation of two isoforms.}
-#'
+#' \item{ iso1,iso2: }{ the isoform pairs.}
+#' \item{ iso1.mean.ratio, iso2.mean.ratio: }{ the mean ratios of isoforms to their gene.}
+#' \item{ left.interval, left.interval: }{ The intervals before and after switch points.}
+#' \item{ x.value, y.value: }{ The values of x axis (time) and y axis (expression) coordinates of the switch points.}
+#' \item{ left.prob, right.prob: }{ the frequencies/probabilities that the samples of an isoform is greater or less than the other in left and right intervals, respectively.}
+#' \item{ left.dist, right.diff: }{ the average sample differences in intervals before and after switch, respectively.}
+#' \item{ left.pval, right.pval: }{ the paired t-test p-values of the samples in the intervals before and after switch points.}
+#' \item{ left.t.points, right.t.points: }{ the number of time points in intervals before and after the switch points.}
+#' \item{ prob: }{ Score1: the probability/frequency of switch. }
+#' \item{ diff: }{ Score2: the sum of average sample differences before and after switch.}
+#' \item{ cor: }{ Pearson correlation of two isoforms. }
 #' }
 #' @export
 #'
 
 iso.switch<-function(data.exp,mapping,t.start=1,t.end=26,nrep=9,rank=F,
-                     min.t.points=2,min.distance=1,spline=F,spline.df=NULL,verbose=T){
+                     min.t.points=2,min.difference=1,spline=F,spline.df=NULL,verbose=T){
 
+
+  if(nrow(data.exp)!=nrow(mapping))
+    stop("Gene-isoform mapping table does not match to isoform expression table")
 
   start.time <- Sys.time()
   ##Step 1: Checking data information
@@ -104,15 +134,15 @@ iso.switch<-function(data.exp,mapping,t.start=1,t.end=26,nrep=9,rank=F,
 
 
 
-
-  message('Input genes: ', length(unique(genes0)))
-  message('Genes with more than 2 isoforms: ', length(genes))
-  message('Average isoforms per gene for switch analysis: ', round(length(isoforms)/length(genes),3))
+  message('Summarising input information ... ')
+  message(' Input genes: ', length(unique(genes0)))
+  message(' Genes with more than 2 isoforms: ', length(genes))
+  message(' Average isoforms per gene for switch analysis: ', round(length(isoforms)/length(genes),3))
 
 
 
   ##step 2: Pickign isoform-pairs with intersection points...
-  message(paste0('Step 1: Search for intersection points with ',if(spline) 'Spline method...' else 'Mean expression..'))
+  message(paste0('Step 1: Search for intersection points with ',if(spline) 'Spline method...' else 'Mean expression...'))
   ##Average values of time points
   ##data for searching isoform swtich points
   if(spline){
@@ -130,6 +160,7 @@ iso.switch<-function(data.exp,mapping,t.start=1,t.end=26,nrep=9,rank=F,
     pb <- txtProgressBar(min = 0, max = length(genes), style = 3,width = 75)
   for(i in 1:length(genes)){
     Sys.sleep(0)
+    #i=which(genes=='AT1G58602')
     sub.gene<-genes[i]
     sub.isoform<-as.vector(isoforms[which(grepl(sub.gene,isoforms))])
 
@@ -143,7 +174,7 @@ iso.switch<-function(data.exp,mapping,t.start=1,t.end=26,nrep=9,rank=F,
       x1=onegene[iso1,]
       x2=onegene[iso2,]
 
-      if(max(abs(x1-x2))<min.distance)
+      if(max(abs(x1-x2))<min.difference)
         next
 
       ##intersection points
@@ -154,12 +185,18 @@ iso.switch<-function(data.exp,mapping,t.start=1,t.end=26,nrep=9,rank=F,
         next
 
       ##check if the switching lasting more than 2 consecutive time points
-      check.consecutive<-diff(c(0,iso.inter$cross.points$x.points,26))
+      check.consecutive<-c(t.start,iso.inter$x.points,t.end)
+      check.consecutive<-data.frame(low=check.consecutive[-length(check.consecutive)],up=check.consecutive[-1])
+      check.consecutive$low<-ceiling(check.consecutive$low)
+      check.consecutive$up<-floor(check.consecutive$up)
+      check.consecutive<-check.consecutive$up-check.consecutive$low+1
+
       if(max(check.consecutive)<min.t.points)
         next
 
       iso.inter<-data.frame(iso1=iso1,iso2=iso2,t(iso.inter))
       colnames(iso.inter)<-c('iso1','iso2',paste0('switch',1:(ncol(iso.inter)-2)))
+
       iso.intersections<-c(iso.intersections,setNames(object = list(iso.inter),nm = paste0(iso1,'_vs_',iso2)))
     }
     if(verbose)
@@ -174,9 +211,9 @@ iso.switch<-function(data.exp,mapping,t.start=1,t.end=26,nrep=9,rank=F,
 
 
 
-  message('Step 2: Calculate scores for isoform switch')
+  message('Step 2: Calculate scores for isoform switch ...')
   message(' Score 1: Switch frequencies/probabilities')
-  message(' Score 2: Sum of average sample distances before and after switch.')
+  message(' Score 2: Sum of average sample differences before and after switch.')
   message(' Score 3: P-values of sample differences before and after switch')
   message(' Score 4: Time points in each intervals')
   message(' Score 5: Pearson correlation of isoforms')
@@ -213,19 +250,38 @@ iso.switch<-function(data.exp,mapping,t.start=1,t.end=26,nrep=9,rank=F,
     x0<-diff.sign[diff.sign!=0][1]
     #Define scores
 
+
     s<-by(data = sub.data2swith,INDICES =sub.data2swith[,1],FUN = function(x){
       ##score1:
       prob<-length(x[,4][x[,4]==x0])/length(x[,4])
       prob[is.na(prob)]<-0
       ##score2:
       x.diff<-x[,2]-x[,3]
-      dist<-mean(x.diff)
-      ##score3:
+      diff.mean<-mean(x.diff)
+      # ##score3:
       pval<-t.test(x[,3],x[,2],paired = T)$p.value
       pval[is.na(pval)]<-1
-      ##score4:
+      #score4:
       inter.length<-nrow(x)/nrep
-      x<-data.frame(prob=prob,dist=dist,pval=pval,inter.length=inter.length)
+
+      # ##score3:
+      # if(inter.length==1){
+      #   pval<-t.test(x[,3],x[,2],paired = F)$p.value } else {
+      #     t.idx<-paste0('t',rep(1:inter.length,each=nrep))
+      #     data2test<-data.frame(
+      #       rbind(
+      #         data.frame(isoforms='iso1',time=t.idx,value=x[,2]),
+      #         data.frame(isoforms='iso2',time=t.idx,value=x[,3])
+      #       )
+      #     )
+      #     data2test$isoforms<-factor(data2test$isoforms,levels = unique(data2test$isoforms))
+      #     data2test$time<-factor(data2test$time,levels = unique(data2test$time))
+      #     fit<-aov(value~isoforms*time,data2test)
+      #     pval<-summary(fit)[[1]][["Pr(>F)"]][1]
+      #   }
+      # pval[is.na(pval)]<-1
+
+      x<-data.frame(prob=prob,diff=diff.mean,pval=pval,inter.length=inter.length)
       x
     },simplify = T)
     s<-t(do.call(rbind,s))
@@ -238,10 +294,10 @@ iso.switch<-function(data.exp,mapping,t.start=1,t.end=26,nrep=9,rank=F,
     colnames(score1.2side)<-c('before.prob','after.prob')
     score1<-zoo::rollapply(as.numeric(s[1,]), width = 2, FUN = function(x) abs(sum(x)-1))
 
-    ##score 2: distance
+    ##score 2: difference
     score2<-abs(diff(s[2,]))
     score2.2side<-matrix(s[2,lf.idx],ncol=2,byrow = T)
-    colnames(score2.2side)<-c('before.dist','after.dist')
+    colnames(score2.2side)<-c('before.diff','after.diff')
 
     ##score 3: p-value
     score3<-matrix(s[3,lf.idx],ncol=2,byrow = T)
@@ -257,12 +313,12 @@ iso.switch<-function(data.exp,mapping,t.start=1,t.end=26,nrep=9,rank=F,
 
     ###before and after intervals
     inter.lr<-matrix(unique(interval)[lf.idx],ncol=2,byrow = T)
-    colnames(inter.lr)<-c('before.interval','after.invertal')
+    colnames(inter.lr)<-c('before.interval','after.interval')
 
 
     score<-data.frame(iso1=iso1,iso2=iso2,iso.mean.ratio,inter.lr,x.value=as.numeric(n.inters[1,]),y.value=as.numeric(n.inters[2,]),
                       score1.2side,score2.2side,score3,score4,
-                      prob=score1,dist=score2,cor=cor(as.numeric(data.exp[iso1,]),as.numeric(data.exp[iso2,])),row.names = NULL)
+                      prob=score1,diff=score2,cor=cor(as.numeric(data.exp[iso1,]),as.numeric(data.exp[iso2,])),row.names = NULL)
 
     iso.scores<-rbind(score,iso.scores)
     if(verbose)
@@ -286,8 +342,10 @@ iso.switch<-function(data.exp,mapping,t.start=1,t.end=26,nrep=9,rank=F,
 #'
 
 iso.switch.shiny<-function(data.exp,data2intersect=NULL,mapping,t.start=1,t.end=26,nrep=9,rank=F,
-                           min.t.points=2,min.distance=1,spline=F,spline.df=5){
+                           min.t.points=2,min.difference=1,spline=F,spline.df=5){
 
+  if(nrow(data.exp)!=nrow(mapping))
+    stop("Gene-isoform mapping table does not match to isoform expression table")
 
   start.time <- Sys.time()
   ##Step 1: Checking data information
@@ -309,15 +367,14 @@ iso.switch.shiny<-function(data.exp,data2intersect=NULL,mapping,t.start=1,t.end=
 
 
 
-
-  message('Input genes: ', length(unique(genes0)))
-  message('Genes with more than 2 isoforms: ', length(genes))
-  message('Average isoforms per gene for switch analysis: ', round(length(isoforms)/length(genes),3))
-
+  message('Summarising input information ... ')
+  message(' Input genes: ', length(unique(genes0)))
+  message(' Genes with more than 2 isoforms: ', length(genes))
+  message(' Average isoforms per gene for switch analysis: ', round(length(isoforms)/length(genes),3))
 
 
   ##step 2: Pickign isoform-pairs with intersection points...
-  message(paste0('Step 1: Search for intersection points with ',if(spline) 'Spline method...' else 'Mean expression..'))
+  message(paste0('Step 1: Search for intersection points with ',if(spline) 'Spline method...' else 'Mean expression ...'))
 
   ##data for searching isoform swtich points
   if(spline){
@@ -348,7 +405,7 @@ iso.switch.shiny<-function(data.exp,data2intersect=NULL,mapping,t.start=1,t.end=
         x1=onegene[iso1,]
         x2=onegene[iso2,]
 
-        if(max(abs(x1-x2))<min.distance)
+        if(max(abs(x1-x2))<min.difference)
           next
 
         ##intersection points
@@ -360,7 +417,12 @@ iso.switch.shiny<-function(data.exp,data2intersect=NULL,mapping,t.start=1,t.end=
           next
 
         ##check if the switching lasting more than 2 consecutive time points
-        check.consecutive<-diff(c(0,iso.inter$cross.points$x.points,26))
+        check.consecutive<-c(t.start,iso.inter$x.points,t.end)
+        check.consecutive<-data.frame(low=check.consecutive[-length(check.consecutive)],up=check.consecutive[-1])
+        check.consecutive$low<-ceiling(check.consecutive$low)
+        check.consecutive$up<-floor(check.consecutive$up)
+        check.consecutive<-check.consecutive$up-check.consecutive$low+1
+
         if(max(check.consecutive)<min.t.points)
           next
 
@@ -380,9 +442,9 @@ iso.switch.shiny<-function(data.exp,data2intersect=NULL,mapping,t.start=1,t.end=
 
 
 
-  message('Step 2: Calculate scores for isoform switch')
+  message('Step 2: Calculate scores for isoform switch ...')
   message(' Score 1: Switch frequencies/probabilities')
-  message(' Score 2: Sum of average sample distances before and after switch.')
+  message(' Score 2: Sum of average sample differences before and after switch.')
   message(' Score 3: P-values of sample differences before and after switch')
   message(' Score 4: Time points in each intervals')
   message(' Score 5: Pearson correlation of isoforms')
@@ -424,13 +486,31 @@ iso.switch.shiny<-function(data.exp,data2intersect=NULL,mapping,t.start=1,t.end=
         prob[is.na(prob)]<-0
         ##score2:
         x.diff<-x[,2]-x[,3]
-        dist<-mean(x.diff)
-        ##score3:
+        diff.mean<-mean(x.diff)
+        # ##score3:
         pval<-t.test(x[,3],x[,2],paired = T)$p.value
         pval[is.na(pval)]<-1
-        ##score4:
+        #score4:
         inter.length<-nrow(x)/nrep
-        x<-data.frame(prob=prob,dist=dist,pval=pval,inter.length=inter.length)
+
+        # ##score3:
+        # if(inter.length==1){
+        #   pval<-t.test(x[,3],x[,2],paired = F)$p.value } else {
+        #     t.idx<-paste0('t',rep(1:inter.length,each=nrep))
+        #     data2test<-data.frame(
+        #       rbind(
+        #         data.frame(isoforms='iso1',time=t.idx,value=x[,2]),
+        #         data.frame(isoforms='iso2',time=t.idx,value=x[,3])
+        #       )
+        #     )
+        #     data2test$isoforms<-factor(data2test$isoforms,levels = unique(data2test$isoforms))
+        #     data2test$time<-factor(data2test$time,levels = unique(data2test$time))
+        #     fit<-aov(value~isoforms*time,data2test)
+        #     pval<-summary(fit)[[1]][["Pr(>F)"]][1]
+        #   }
+        # pval[is.na(pval)]<-1
+
+        x<-data.frame(prob=prob,diff=diff.mean,pval=pval,inter.length=inter.length)
         x
       },simplify = T)
       s<-t(do.call(rbind,s))
@@ -443,10 +523,10 @@ iso.switch.shiny<-function(data.exp,data2intersect=NULL,mapping,t.start=1,t.end=
       colnames(score1.2side)<-c('before.prob','after.prob')
       score1<-zoo::rollapply(as.numeric(s[1,]), width = 2, FUN = function(x) abs(sum(x)-1))
 
-      ##score 2: distance
+      ##score 2: difference
       score2<-abs(diff(s[2,]))
       score2.2side<-matrix(s[2,lf.idx],ncol=2,byrow = T)
-      colnames(score2.2side)<-c('before.dist','after.dist')
+      colnames(score2.2side)<-c('before.diff','after.diff')
 
       ##score 3: p-value
       score3<-matrix(s[3,lf.idx],ncol=2,byrow = T)
@@ -462,12 +542,12 @@ iso.switch.shiny<-function(data.exp,data2intersect=NULL,mapping,t.start=1,t.end=
 
       ###before and after intervals
       inter.lr<-matrix(unique(interval)[lf.idx],ncol=2,byrow = T)
-      colnames(inter.lr)<-c('before.interval','after.invertal')
+      colnames(inter.lr)<-c('before.interval','after.interval')
 
 
       score<-data.frame(iso1=iso1,iso2=iso2,iso.mean.ratio,inter.lr,x.value=as.numeric(n.inters[1,]),y.value=as.numeric(n.inters[2,]),
                         score1.2side,score2.2side,score3,score4,
-                        prob=score1,dist=score2,cor=cor(as.numeric(data.exp[iso1,]),as.numeric(data.exp[iso2,])),row.names = NULL)
+                        prob=score1,diff=score2,cor=cor(as.numeric(data.exp[iso1,]),as.numeric(data.exp[iso2,])),row.names = NULL)
 
       iso.scores<-rbind(score,iso.scores)
       incProgress(1/length(iso.names), detail = paste(i, ' of ', length(iso.names)))

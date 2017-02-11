@@ -1,8 +1,11 @@
 #' Example datasets of AtRTD2.
 #'
-#' The example datasets "AtRTD2" with 300 genes and 766 isoforms, analysed in 26 time points, each with 3 biological replicates and 3 technical replicates.
-#' The experiments were designed to investigate the Arabidopsis gene expression response to cold. The isoform expression is in TPM (transcript per million) format.
-#' For the experiments and data quantification details, please see the AtRTD2 paper (Zhang, et al.,2016).
+#'The TSIS package provides the example datasets "AtRTD2" with 2,666 genes and 6,307 isoforms,
+#'analysed in 26 time points, each with 3 biological replicates and 3 technical replicates.
+#'The experiments were designed to investigate the Arabidopsis gene expression response to cold.
+#'The isoform expression is in TPM (transcript per million) format. For the experiments and data
+#'quantification details, please see the AtRTD2 paper (Zhang, et al.,2016). Other type of
+#'transcript quantifications, such as read counts, Percentage Splicing Ins (PSIs) can also be used in TSIS.
 #'
 #'
 #' @docType data

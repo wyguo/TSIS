@@ -21,7 +21,7 @@ or general plot (FALSE)?. See details in \code{\link{ggplotly}} in \code{\link{p
 \item{...}{additional parameters pass to \code{\link{density}}}
 }
 \value{
-density plot in general format or \code{\link{plotly}} format if \code{make.plotly=T}
+density plot in ggplot2 format or \code{\link{plotly}} format if \code{make.plotly=T}
 }
 \description{
 Density plot

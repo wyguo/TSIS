@@ -4,51 +4,32 @@
 \alias{score.filter}
 \title{Filtering the scores for isoform switch}
 \usage{
-score.filter(scores, prob.cutoff = 0.5, dist.cutoff = 1,
+score.filter(scores, prob.cutoff = 0.5, diff.cutoff = 1,
   t.points.cutoff = 2, pval.cutoff = 0.01, cor.cutoff = 0.5,
   data.exp = NULL, mapping = NULL, sub.isoform.list = NULL,
   sub.isoform = F, max.ratio = F, x.value.limit = c(9, 17))
 }
 \arguments{
-\item{scores}{the scores output from \code{\link{iso.switch}}.}
+\item{scores}{the scores object output from \code{\link{iso.switch}}.}
 
-\item{prob.cutoff, dist.cutoff, t.points.cutoff, pval.cutoff, cor.cutoff}{the cut-offs corresponding to switch frequencies/probablities,
-sum of average distances, p-value and time points cut-offs for both intervals before and after switch and Pearson correlation.}
+\item{prob.cutoff, diff.cutoff, t.points.cutoff, pval.cutoff, cor.cutoff}{the cut-offs corresponding to switch frequencies/probablities,
+sum of average sample differences, p-value and time points cut-offs for both intervals before and after switch and Pearson correlation.}
 
 \item{data.exp, mapping}{the expression and gene-isoform mapping data.}
 
-\item{sub.isoform.list}{a vector of isoform names to output subset of the corresponding results.}
+\item{sub.isoform.list}{a vector of isoforms to output the corresponding results (see \code{AtRTD2$sub.isoforms}).}
 
 \item{sub.isoform}{logical, to output subset of the results(TRUE) or not (FALSE). If TRUE, \code{sub.isoform.list} must be provided.}
 
-\item{max.ratio}{logical, to show the subset of results with the isoforms of maximum ratios to the genes (TRUE) or not (FALSE).
-If TRUE, data.exp and
-mapping data must be provided to calculate the isoform ratios to the genes using \code{\link{rowratio}}.}
+\item{max.ratio}{logical, to show maximum abundant isoform results(TRUE) or not (FALSE). If TRUE, data.exp and mapping data must be
+provided to calculate the isoform ratios to the genes using  \code{\link{rowratio}}.}
 
-\item{x.value.limit}{the region of x axis (time) for investigation. If there is no intersection point in this region, the isoform
-pair is filtered.}
+\item{x.value.limit}{the region of x axis (time) for investigation.}
+}
+\value{
+a table of scores after filtering.
 }
 \description{
 Filtering the scores output from \code{\link{iso.switch}}.
-}
-\details{
-A prospective isoform switch should be:
-
-\itemize{
-\item{}{Have high Score 1 of swtich frequency/probability.}
-\item{}{With proper value of Score 2 the sum of average distances.}
-\item{}{The samples in the intervals before and after switch are statistically different.}
-\item{}{The switch event lasting a few time points in both intervals before and after switch, i.e. the intervals should contain a number of time points.}
-\item{}{For further details, users can investigate the co-expressed isoform pairs with high Pearson correlation. Note: the isoform pairs with high
-negative correlation may show better switch pattern if look at the time-series plots.}
-}
-
- Users may need to investigate subset of isoforms for specific purpose. Three options have been build-in the TSIS package.
-
-\itemize{
-\item{}{Users can set the lower and upper boundaries of a region in the time duration to study the switches only within this region.}
-\item{}{Users can provide a name list of isoforms to only show the results cantain the isoforms in the list.}
-\item{}{Users can output subset of results with highest ratios (the proportions of isoforms to the genes) isoforms.}
-}
 }
 

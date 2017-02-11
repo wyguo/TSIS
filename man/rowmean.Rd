@@ -11,7 +11,7 @@ rowmean(x, group, reorder = T, na.rm = T)
 
 \item{group}{a vector of factor giving grouping, with one element per row of x.}
 
-\item{reorder}{if TRUE, then the result will be in order of sort(unique(group)).}
+\item{reorder}{if TRUE, then the result will be in order of \code{sort(unique(group))}.}
 
 \item{na.rm}{logical (TRUE or FALSE). Should NA (including NaN) values be replaced by value 0?}
 }

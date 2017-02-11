@@ -7,7 +7,7 @@
 #' @param plot.type the plot types. Options are "Density_line" for density line plot, "Density_bar" for density bar plot and "Frequency_bar" for frequency bar plot.
 #' @param ... additional parameters pass to \code{\link{density}}
 #'
-#' @return density plot in general format or \code{\link{plotly}} format if \code{make.plotly=T}
+#' @return density plot in ggplot2 format or \code{\link{plotly}} format if \code{make.plotly=T}
 #'
 #' @export
 #'

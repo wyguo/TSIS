@@ -2,42 +2,21 @@
 #'
 #' Filtering the scores output from \code{\link{iso.switch}}.
 #'
-#' @details
-#' A prospective isoform switch should be:
-#'
-#' \itemize{
-#' \item{}{Have high Score 1 of swtich frequency/probability.}
-#' \item{}{With proper value of Score 2 the sum of average distances.}
-#' \item{}{The samples in the intervals before and after switch are statistically different.}
-#' \item{}{The switch event lasting a few time points in both intervals before and after switch, i.e. the intervals should contain a number of time points.}
-#' \item{}{For further details, users can investigate the co-expressed isoform pairs with high Pearson correlation. Note: the isoform pairs with high
-#' negative correlation may show better switch pattern if look at the time-series plots.}
-#' }
-#'
-#'  Users may need to investigate subset of isoforms for specific purpose. Three options have been build-in the TSIS package.
-#'
-#' \itemize{
-#' \item{}{Users can set the lower and upper boundaries of a region in the time duration to study the switches only within this region.}
-#' \item{}{Users can provide a name list of isoforms to only show the results cantain the isoforms in the list.}
-#' \item{}{Users can output subset of results with highest ratios (the proportions of isoforms to the genes) isoforms.}
-#' }
-#'
-#' @param scores the scores output from \code{\link{iso.switch}}.
-#' @param prob.cutoff,dist.cutoff,t.points.cutoff,pval.cutoff,cor.cutoff the cut-offs corresponding to switch frequencies/probablities,
-#' sum of average distances, p-value and time points cut-offs for both intervals before and after switch and Pearson correlation.
+#' @param scores the scores object output from \code{\link{iso.switch}}.
+#' @param prob.cutoff,diff.cutoff,t.points.cutoff,pval.cutoff,cor.cutoff the cut-offs corresponding to switch frequencies/probablities,
+#' sum of average sample differences, p-value and time points cut-offs for both intervals before and after switch and Pearson correlation.
 #' @param data.exp,mapping the expression and gene-isoform mapping data.
-#' @param sub.isoform.list a vector of isoform names to output subset of the corresponding results.
+#' @param sub.isoform.list a vector of isoforms to output the corresponding results (see \code{AtRTD2$sub.isoforms}).
 #' @param sub.isoform logical, to output subset of the results(TRUE) or not (FALSE). If TRUE, \code{sub.isoform.list} must be provided.
-#' @param max.ratio logical, to show the subset of results with the isoforms of maximum ratios to the genes (TRUE) or not (FALSE).
-#' If TRUE, data.exp and
-#' mapping data must be provided to calculate the isoform ratios to the genes using \code{\link{rowratio}}.
-#' @param x.value.limit the region of x axis (time) for investigation. If there is no intersection point in this region, the isoform
-#' pair is filtered.
-#'
+#' @param max.ratio logical, to show maximum abundant isoform results(TRUE) or not (FALSE). If TRUE, data.exp and mapping data must be
+#' provided to calculate the isoform ratios to the genes using  \code{\link{rowratio}}.
+#' @param x.value.limit the region of x axis (time) for investigation.
 #'
 #' @export
 #'
-score.filter<-function(scores,prob.cutoff=0.5,dist.cutoff=1,t.points.cutoff=2,pval.cutoff=0.01,cor.cutoff=0.5,
+#' @return a table of scores after filtering.
+#'
+score.filter<-function(scores,prob.cutoff=0.5,diff.cutoff=1,t.points.cutoff=2,pval.cutoff=0.01,cor.cutoff=0.5,
                        data.exp=NULL,mapping=NULL,sub.isoform.list=NULL,sub.isoform=F,max.ratio=F,
                        x.value.limit=c(9,17)){
 
@@ -53,7 +32,7 @@ score.filter<-function(scores,prob.cutoff=0.5,dist.cutoff=1,t.points.cutoff=2,pv
     scores=scores[which(scores$before.t.points>=t.points.cutoff
                         & scores$after.t.points >= t.points.cutoff
                         & scores$prob>prob.cutoff
-                        & scores$dist >dist.cutoff
+                        & scores$diff >diff.cutoff
                         & scores$before.pval <pval.cutoff
                         & scores$after.pval<pval.cutoff
                         & abs(scores$cor)>cor.cutoff
