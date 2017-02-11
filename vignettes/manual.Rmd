@@ -16,7 +16,7 @@ knitr::opts_chunk$set(cache = TRUE,eval=F,echo = T)
 file.type='html'
 ```
 
-```{r style, results = 'asis'}
+```{r'}
 BiocStyle::markdown()
 ```
 
