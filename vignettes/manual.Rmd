@@ -15,7 +15,7 @@ vignette: >
 BiocStyle::markdown()
 ```
 
-```{r setup, include=F,eval=T,echo=F}
+```{r setup, cache=T,eval=T,echo=F}
 knitr::opts_chunk$set(cache = TRUE,eval=F,echo = T)
 file.type='html'
 ```
