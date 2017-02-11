@@ -146,6 +146,7 @@ iso.switch<-function(data.exp,mapping,t.start=1,t.end=26,nrep=9,rank=F,
   ##Average values of time points
   ##data for searching isoform swtich points
   if(spline){
+    message(' Spline fitting expression ...')
     if(is.null(spline.df))
       spline.df<-floor(2*(t.end-t.start)/3)
     data2intersect<-t(apply(data.exp,1,function(x) ts.spline(x,t.start = t.start,t.end = t.end,nrep = nrep,df = spline.df)))
@@ -155,6 +156,7 @@ iso.switch<-function(data.exp,mapping,t.start=1,t.end=26,nrep=9,rank=F,
 
 
   ##Find intersection points
+  message(' Searching ...')
   iso.intersections<-list()
   if(verbose)
     pb <- txtProgressBar(min = 0, max = length(genes), style = 3,width = 75)
@@ -378,6 +380,7 @@ iso.switch.shiny<-function(data.exp,data2intersect=NULL,mapping,t.start=1,t.end=
 
   ##data for searching isoform swtich points
   if(spline){
+    message(' Spline fitting expression ...')
     if(is.null(spline.df))
       spline.df<-floor(2*(t.end-t.start)/3)
     data2intersect<-t(apply(data.exp,1,function(x) ts.spline(x,t.start = t.start,t.end = t.end,nrep = nrep,df = spline.df)))
@@ -388,6 +391,7 @@ iso.switch.shiny<-function(data.exp,data2intersect=NULL,mapping,t.start=1,t.end=
 
 
   ##Find intersection points
+  message(' Searching ...')
   iso.intersections<-list()
   withProgress(message = 'Searching intersections: ',value=0,{
     pb <- txtProgressBar(min = 0, max = length(genes), style = 3,width = 75)
