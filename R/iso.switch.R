@@ -4,6 +4,8 @@
 #'
 #' @details The detailed steps:
 #'
+#' \if{html}{\figure{figures_001.png}{options: width="80\%" alt="Figure: figures_001.png"}}
+#' \if{latex}{\figure{figures_001.pdf}{options: width=7cm}}
 #'
 #' \bold{Figure 1:} Isoform switch analysis methods. Expression data with 3 replicates for each condition/time point is
 #' simulated for isoforms iso_i and iso_j. The points in the plots represent the samples and the black lines are the average of samples.
