@@ -325,7 +325,7 @@ TSIS.app <- function(data.size.max=100) {
            server = function(input, output,session) {
 
              output$tutorial<-renderUI({
-               includeHTML("tutorial/tutorial-shiny.html")
+               withMathJax(includeHTML("tutorial/tutorial-shiny.html"))
              })
 
 
