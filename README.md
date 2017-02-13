@@ -123,7 +123,7 @@ in R console after loading TSIS package, the App is opened in the default web br
 The first tab panel includes this user manual.
 
 ##Tab panel 2: Isoform switch analysis
-There are four sections in this panel (see <a href="#fig2">Figure 2</a>).
+There are four sections in this panel (see <a href="#fig2">Figure 2</a>).), namely Input data files, Parameter settings, Density/Frequency of switch and Score table of isoform switch.
 
 <br>
 <h2 id="fig2"> </h2>

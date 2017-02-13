@@ -22,7 +22,7 @@ subtitle: User manual
 
 ```{r setup, include=F,eval=T,echo=F}
 knitr::opts_chunk$set(cache = TRUE,eval=F,echo = T)
-file.type='readme'
+file.type='html'
 ```
 #Description
 [TSIS](https://github.com/wyguo/TSIS) is an R package for detecting transcript isoform switch for time-series data. Transcript isoform switch occurs when a pair of isoforms reverse the order of expression levels as shown in <a href="#fig1">Figure 1</a>. TSIS characterizes the transcript switch by 1) defining the isoform switch time points for any pair of transcript isoforms within a gene, 2) describing the switch using 5 different features, 3) filtering the results with user’s specifications and 4) visualizing the results using different plots for the user to examine further details of the switches. All the functions are available in the forms of a graphic interface implemented by [Shiny App](https://shiny.rstudio.com/) (a web application framework for R) ([Chang, et al., 2016](https://shiny.rstudio.com/)), in which users can implement the analysis as easy as mouse click. The tool can also be run just in command lines without graphic interface. This tutorial will cover both in the following sections. 
@@ -130,7 +130,7 @@ in R console after loading TSIS package, the App is opened in the default web br
 The first tab panel includes this user manual.
 
 ##Tab panel 2: Isoform switch analysis
-There are four sections in this panel (see <a href="#fig2">Figure 2</a>).
+There are four sections in this panel (see <a href="#fig2">Figure 2</a>).), namely Input data files, Parameter settings, Density/Frequency of switch and Score table of isoform switch.
 
 <br>
 <h2 id="fig2"> </h2>
