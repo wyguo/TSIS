@@ -53,8 +53,6 @@ This function is used to search and score transcript isoform switch in time-seri
 \details{
 The detailed steps:
 
-\if{html}{\figure{figures_001.png}{options: width="80\%" alt="Figure: figures_001.png"}}
-\if{latex}{\figure{figures_001.pdf}{options: width=7cm}}
 
 \bold{Figure 1:} Isoform switch analysis methods. Expression data with 3 replicates for each condition/time point is
 simulated for isoforms iso_i and iso_j. The points in the plots represent the samples and the black lines are the average of samples.
@@ -95,29 +93,35 @@ For Score 2, instead of rank differences as in iso-kTSP to avoid possible ties, 
 
 \itemize{
 \item{
-  Firstly, for a switch point \eqn{P_i} of two isoforms \eqn{iso_i} and \eqn{iso_j} with before interval \eqn{I_1} and after interval \eqn{I_2} (see example in Figure1 (B)), Score 1 is defined as
-  \deqn{S_1 (iso_i,iso_j |I_1,I_2)=|p(iso_i>iso_j |I_1)+p(iso_i<iso_j |I_2)1|,}
-  Where  \eqn{p(iso_i>iso_j |I_1 )} and \eqn{p(iso_i<iso_j |I_2 )} are the frequencies/probabilities that the samples of one isoform is greater or less than in the other in corresponding intervals.
+Firstly, for a switch point \eqn{P_i} of two isoforms \eqn{iso_i} and \eqn{iso_j} with before interval \eqn{I_1} and after interval \eqn{I_2} (see example in Figure1 (B)), Score 1 is defined as
+\deqn{S_1 (iso_i,iso_j |I_1,I_2)=|p(iso_i>iso_j |I_1)+p(iso_i<iso_j |I_2)1|,}
+Where  \eqn{p(iso_i>iso_j |I_1 )} and \eqn{p(iso_i<iso_j |I_2 )} are the frequencies/probabilities that the samples of one isoform is greater or less than in the other in corresponding intervals.
 }
 \item{
-  Secondly, sum of mean differences of samples in intervals \eqn{I_1} and \eqn{I_2} are calculated as
-  \deqn{S_2=d(iso_i,iso_j |I_1 )+d(iso_i,iso_j |I_2)}
-  Where \eqn{d(iso_i,iso_j |I_k)} is the average expression difference in interval \eqn{I_k, k=1,2} defined as
-  \deqn{d(iso_i, iso_j |I_k)=\frac{1}{|I_k|}\sum_{m_{I_k}} |exp(iso_i |s_{m_{I_k}},I_k)exp(iso_j |s_{m_{I_k}},I_k) |}
-  \eqn{|I_k|} is the number of samples in interval \eqn{I_k} and \eqn{exp(iso_i |s_{m_{I_k}},I_k)} is the expression of \eqn{iso_i} of sample \eqn{s_{m_{I_k}}} in interval \eqn{I_k}.
+Secondly, sum of mean differences of samples in intervals \eqn{I_1} and \eqn{I_2} are calculated as
+\deqn{S_2=d(iso_i,iso_j |I_1 )+d(iso_i,iso_j |I_2)}
+Where \eqn{d(iso_i,iso_j |I_k)} is the average expression difference in interval \eqn{I_k, k=1,2} defined as
+\deqn{d(iso_i, iso_j |I_k)=\frac{1}{|I_k|}\sum_{m_{I_k}} |exp(iso_i |s_{m_{I_k}},I_k)-exp(iso_j |s_{m_{I_k}},I_k) |}
+\eqn{|I_k|} is the number of samples in interval \eqn{I_k} and \eqn{exp(iso_i |s_{m_{I_k}},I_k)} is the expression of \eqn{iso_i} of sample \eqn{s_{m_{I_k}}} in interval \eqn{I_k}.
 }
 \item{
-  Thirdly, a paired ttest is implemented for the two switched isoform sample differences within each interval. The dependency R function for testing is t.test(), i.e.
-  \deqn{S_3 (iso_i,iso_j |I_k )=pval⇐t.test(x=iso_i  \text{ samples in } I_k,y=iso_j  \text{ samples in } I_k,\text{paired=TRUE})}
-  Where \eqn{k=1,2} represent the indices of the intervals before and after switch.
+Thirdly, a paired ttest is implemented for the two switched isoform sample differences within each interval. The dependency R function for testing is t.test(), i.e.
+\deqn{t.test(x=iso_i\quad samples\quad in\quad I_k,y=iso_j  
+\quad samples\quad in\quad I_k, paired=TRUE)
+}
+\deqn{
+\Rightarrow S_3(iso_i,iso_j |I_k )=pval
+}
+
+Where \eqn{k=1,2} represent the indices of the intervals before and after switch.
 }
 \item{
-  Fourthly, the numbers of time points in intervals \eqn{I_1} and \eqn{I_2} were also provided, which indicate whether this switch is transient or long lived changes,
-  \deqn{S_4(iso_i,iso_j |I_k)= \text{time points in interval } I_k}
+Fourthly, the numbers of time points in intervals \eqn{I_1} and \eqn{I_2} were also provided, which indicate whether this switch is transient or long lived changes,
+\deqn{S_4(iso_i,iso_j |I_k)= time \quad points \quad in \quad interval \quad I_k}
 }
 \item{
-  Finally, the coexpressed isoform pairs often show good isoform switch patterns of interest. For example highly negative correlated isoforms may present opposite growing patterns along the time frame. As an additional score, we calculated the Pearson correlation of two isoforms across the whole time series
-  \deqn{S_5 (iso_i,iso_j )=cor(\text{samples of } iso_1,\text{samples of  } iso_2 ,\text{method="pearson"})}
+Finally, the coexpressed isoform pairs often show good isoform switch patterns of interest. For example highly negative correlated isoforms may present opposite growing patterns along the time frame. As an additional score, we calculated the Pearson correlation of two isoforms across the whole time series
+\deqn{S_5 (iso_i,iso_j )=cor(samples\quad of \quad iso_1,samples\quad of\quad iso_2 ,\quad method="pearson")}
 }
 }
 }

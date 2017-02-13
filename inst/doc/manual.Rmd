@@ -14,7 +14,6 @@ vignette: >
 ```{r style, echo = FALSE, results = 'asis'}
 BiocStyle::markdown()
 ```
-
 ```{r setup, include=F,eval=T,echo=F}
 knitr::opts_chunk$set(cache = TRUE,eval=F,echo = T)
 file.type='html'
@@ -59,7 +58,7 @@ $$S_1 (iso_i,iso_j |I_1,I_2)=|p(iso_i>iso_j |I_1)+p(iso_i<iso_j |I_2)-1|,$$
 Where  $p(iso_i>iso_j│I_1 )$ and $p(iso_i<iso_j│I_2 )$ are the frequencies/probabilities that the samples of one isoform is greater or less than in the other in corresponding intervals. 
 - Secondly, sum of mean differences of samples in intervals $I_1$ and $I_2$ are calculated as
 <br>
-$$S_2=d(iso_i,iso_j│I_1 )+d(iso_i,iso_j |I_2)$$
+$$S_2 (iso_i,iso_j |I_1,I_2)=d(iso_i,iso_j│I_1 )+d(iso_i,iso_j |I_2)$$
 <br>
 Where $d(iso_i,iso_j|I_k)$ is the average expression difference in interval $I_k, k=1,2$ defined as
 <br>
@@ -68,7 +67,9 @@ $$d(iso_i, iso_j|I_k)=\frac{1}{|I_k|}\sum_{m_{I_k}}\left|exp(iso_i|s_{m_{I_k}},I
 $|I_k|$ is the number of samples in interval $I_k$ and $exp(iso_i|s_{m_{I_k}},I_k)$ is the expression of $iso_i$ of sample $s_{m_{I_k}}$ in interval $I_k$.
 - Thirdly, a paired t-test is implemented for the two switched isoform sample differences within each interval. The dependency R function for testing is t.test(), i.e.
 <br>
-$$S_3 (iso_i,iso_j |I_k )=pval⇐t.test(x=iso_i  \text{ samples in } I_k,y=iso_j  \text{ samples in } I_k,\text{paired=TRUE})$$
+$$t.test(x=iso_i  \text{ samples in } I_k,y=iso_j  \text{ samples in } I_k,\text{paired=TRUE})$$
+<br>
+$$\Rightarrow S_3 (iso_i,iso_j |I_k )=pval$$
 <br>
 Where $k=1,2$ represent the indices of the intervals before and after switch.
 - Fourthly, the numbers of time points in intervals $I_1$ and $I_2$ were also provided, which indicate whether this switch is transient or long lived changes,

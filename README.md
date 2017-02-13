@@ -1,7 +1,7 @@
 ---
 title: 'TSIS: an R package to infer time-series isoform switch of alternative splicing'
 author: "Wenbin Guo"
-date: '2017-02-11'
+date: '2017-02-13'
 output:
   html_document:
     code_folding: show
@@ -10,7 +10,7 @@ output:
     theme: cerulean
     toc: yes
     toc_depth: 3
-    toc_float: yes
+    toc_float: no
   pdf_document:
     toc: yes
     toc_depth: '3'
@@ -52,7 +52,7 @@ $$S_1 (iso_i,iso_j |I_1,I_2)=|p(iso_i>iso_j |I_1)+p(iso_i<iso_j |I_2)-1|,$$
 Where  $p(iso_i>iso_j│I_1 )$ and $p(iso_i<iso_j│I_2 )$ are the frequencies/probabilities that the samples of one isoform is greater or less than in the other in corresponding intervals. 
 - Secondly, sum of mean differences of samples in intervals $I_1$ and $I_2$ are calculated as
 <br>
-$$S_2=d(iso_i,iso_j│I_1 )+d(iso_i,iso_j |I_2)$$
+$$S_2 (iso_i,iso_j |I_1,I_2)=d(iso_i,iso_j│I_1 )+d(iso_i,iso_j |I_2)$$
 <br>
 Where $d(iso_i,iso_j|I_k)$ is the average expression difference in interval $I_k, k=1,2$ defined as
 <br>
@@ -61,7 +61,9 @@ $$d(iso_i, iso_j|I_k)=\frac{1}{|I_k|}\sum_{m_{I_k}}\left|exp(iso_i|s_{m_{I_k}},I
 $|I_k|$ is the number of samples in interval $I_k$ and $exp(iso_i|s_{m_{I_k}},I_k)$ is the expression of $iso_i$ of sample $s_{m_{I_k}}$ in interval $I_k$.
 - Thirdly, a paired t-test is implemented for the two switched isoform sample differences within each interval. The dependency R function for testing is t.test(), i.e.
 <br>
-$$S_3 (iso_i,iso_j |I_k )=pval⇐t.test(x=iso_i  \text{ samples in } I_k,y=iso_j  \text{ samples in } I_k,\text{paired=TRUE})$$
+$$t.test(x=iso_i  \text{ samples in } I_k,y=iso_j  \text{ samples in } I_k,\text{paired=TRUE})$$
+<br>
+$$\Rightarrow S_3 (iso_i,iso_j |I_k )=pval$$
 <br>
 Where $k=1,2$ represent the indices of the intervals before and after switch.
 - Fourthly, the numbers of time points in intervals $I_1$ and $I_2$ were also provided, which indicate whether this switch is transient or long lived changes,
@@ -239,7 +241,7 @@ scores.mean2int<-iso.switch(data.exp=data.exp,mapping =mapping,
 scores.spline2int<-iso.switch(data.exp=data.exp,mapping =mapping,
                      t.start=1,t.end=26,nrep=9,rank=F,
                      min.t.points =2,min.difference=1,spline =T,
-                     spline.df = 9,verbose = F)
+                     spline.df = 10,verbose = F)
 ```
 
 ##Filtering
@@ -343,7 +345,6 @@ plotTSIS(data2plot = data.exp,scores = scores.mean2int.filtered,
 ![](https://github.com/wyguo/TSIS/blob/master/vignettes/fig/figures_010.png)
 
 
-
 #References
 Chang, W., et al. 2016. shiny: Web Application Framework for R. https://CRAN.R-project.org/package=shiny
 
@@ -354,30 +355,6 @@ Sebestyen, E., Zawisza, M. and Eyras, E. Detection of recurrent alternative spli
 Zhang, R., et al. AtRTD2: A Reference Transcript Dataset for accurate quantification of alternative splicing and expression changes in Arabidopsis thaliana RNA-seq data. bioRxiv 2016.
 
 
-#Session Information
 
 
-```
-## R version 3.3.1 (2016-06-21)
-## Platform: x86_64-w64-mingw32/x64 (64-bit)
-## Running under: Windows 7 x64 (build 7601) Service Pack 1
-## 
-## locale:
-## [1] LC_COLLATE=English_United Kingdom.1252 
-## [2] LC_CTYPE=English_United Kingdom.1252   
-## [3] LC_MONETARY=English_United Kingdom.1252
-## [4] LC_NUMERIC=C                           
-## [5] LC_TIME=English_United Kingdom.1252    
-## 
-## attached base packages:
-## [1] stats     graphics  grDevices utils     datasets  methods   base     
-## 
-## other attached packages:
-## [1] knitr_1.15.1    rmarkdown_1.3   latexreadme_0.1
-## 
-## loaded via a namespace (and not attached):
-##  [1] backports_1.0.5  magrittr_1.5     rsconnect_0.4.3  rprojroot_1.2   
-##  [5] htmltools_0.3.5  tools_3.3.1      animation_2.4    yaml_2.1.14     
-##  [9] Rcpp_0.12.9      codetools_0.2-14 stringi_1.1.1    digest_0.6.10   
-## [13] stringr_1.1.0    evaluate_0.10
-```
+
