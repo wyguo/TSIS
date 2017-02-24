@@ -17,4 +17,3 @@ a data frame of intersection points. The first and second columns are x and y co
 \description{
 Searching for intersection points of two time-series
 }
-

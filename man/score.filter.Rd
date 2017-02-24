@@ -32,4 +32,6 @@ a table of scores after filtering.
 \description{
 Filtering the scores output from \code{\link{iso.switch}}.
 }
-
+\details{
+Users can set cut-offs, such as for the probability/frequency of switch and sum of average differences, to further refine the switch results.
+}

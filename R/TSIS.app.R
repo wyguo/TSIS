@@ -210,7 +210,7 @@ TSIS.app <- function(data.size.max=100) {
                                                     <li><b>Most abundant isoforms only:</b> Logical, only output the results of most abundant isoforms if selected. </li>
                                                     </ul>')
                                                ),
-                                             titlePanel('Score table for isoform switch'),
+                                             titlePanel('Output results of isoform switch'),
                                              wellPanel(
 
                                                HTML('The following table shows the feature scores of isoform switches. The columns in the output table:
@@ -248,7 +248,7 @@ TSIS.app <- function(data.size.max=100) {
 
                                              ),
                            ##Page 3
-                           tabPanel("Switch visualization",
+                           tabPanel("Visualization",
                                     fluidRow(
                                       titlePanel('Switch plots'),
                                       column(2,
@@ -280,7 +280,7 @@ TSIS.app <- function(data.size.max=100) {
                                       )
                                     ),
                                     fluidRow(
-                                      titlePanel('Multiple plots for switch'),
+                                      titlePanel('Isoform switch plots in batch'),
 
                                       column(2,
                                              wellPanel(
@@ -344,6 +344,7 @@ TSIS.app <- function(data.size.max=100) {
                rownames(values)<-as.character(data.exp[-c(1:2),1])
                colnames(values)<-paste0(as.character(t(data.exp[1,-1])),'_',as.character((t(data.exp[2,-1]))))
                data.exp<-values
+               data.exp<-na.omit(data.exp)
 
 
              })
@@ -354,6 +355,7 @@ TSIS.app <- function(data.size.max=100) {
                  return(NULL)
 
                mapping<-read.csv(file=infile.target$datapath,header=T)
+               mapping<-na.omit(mapping)
              })
 
              sub.isoform.list<-reactive({

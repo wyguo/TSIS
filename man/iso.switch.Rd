@@ -9,21 +9,21 @@ iso.switch(data.exp, mapping, t.start = 1, t.end = 26, nrep = 9,
   spline.df = NULL, verbose = T)
 }
 \arguments{
-\item{data.exp}{isoform expression data with rows of isoforms and columns of samples.}
+\item{data.exp}{Time-series isoform expression data with first row indicating the replicate labels and second row indicating the time points. The remained lines are isoform names in the first column followed by the expression values. All the replicates for each time point should be grouped together and the time points follow the sequential order.}
 
-\item{mapping}{gene-isoform mapping data  with first column of genes and second column of isoforms.}
+\item{mapping}{gene and isoform mapping table with gene names in first column  and transcript isoform names in the second column}
 
 \item{t.start, t.end}{the start time point and end time point of the time-series. Time points have to be continuous integer, e.g. 1, 2,3, ....}
 
 \item{nrep}{number of replicates for each time point.}
 
-\item{rank}{logical (TRUE or FALSE). Should isoform expression be convert to rank of isoform expression in sample basis?}
+\item{rank}{logical (TRUE or FALSE). Should isoform expression be converted to rank of isoform expression in sample basis?}
 
 \item{min.t.points}{if the number of time points in all intervals < \code{min.t.points},
-this pair of isoformsare not switch candidates since they only have transient switches.}
+this pair of isoforms are not switch candidates since they only have transient switches.}
 
 \item{min.difference}{If the mean of differences of average isoform expression or spline fitted expression < \code{min.difference},
-this pair of isoforms are supposed to tied together and they are not switch candidates.}
+this pair of isoforms are supposed to tied together and they are not considered as switch candidates.}
 
 \item{spline}{logical, whether to use spline method to fit isoform expression (TRUE) or mean expression of time points (FALSE).}
 
@@ -33,19 +33,19 @@ this pair of isoforms are supposed to tied together and they are not switch cand
 }
 \value{
 a data frame of scores. The column names:
-\itemize{
-\item{ iso1,iso2: }{ the isoform pairs.}
-\item{ iso1.mean.ratio, iso2.mean.ratio: }{ the mean ratios of isoforms to their gene.}
-\item{ left.interval, left.interval: }{ The intervals before and after switch points.}
-\item{ x.value, y.value: }{ The values of x axis (time) and y axis (expression) coordinates of the switch points.}
-\item{ left.prob, right.prob: }{ the frequencies/probabilities that the samples of an isoform is greater or less than the other in left and right intervals, respectively.}
-\item{ left.dist, right.diff: }{ the average sample differences in intervals before and after switch, respectively.}
-\item{ left.pval, right.pval: }{ the paired t-test p-values of the samples in the intervals before and after switch points.}
-\item{ left.t.points, right.t.points: }{ the number of time points in intervals before and after the switch points.}
-\item{ prob: }{ Score1: the probability/frequency of switch. }
-\item{ diff: }{ Score2: the sum of average sample differences before and after switch.}
-\item{ cor: }{ Pearson correlation of two isoforms. }
-}
+    \itemize{
+      \item{ iso1,iso2: }{ the isoform pairs.}
+      \item{ iso1.mean.ratio, iso2.mean.ratio: }{ the mean ratios of isoforms to their gene.}
+      \item{ left.interval, left.interval: }{ The intervals before and after switch points.}
+      \item{ x.value, y.value: }{ The values of x axis (time) and y axis (expression) coordinates of the switch points.}
+      \item{ left.prob, right.prob: }{ the frequencies/probabilities that the samples of an isoform is greater or less than the other in left and right intervals, respectively.}
+      \item{ left.dist, right.diff: }{ the average sample differences in intervals before and after switch, respectively.}
+      \item{ left.pval, right.pval: }{ the paired t-test p-values of the samples in the intervals before and after switch points.}
+      \item{ left.t.points, right.t.points: }{ the number of time points in intervals before and after the switch points.}
+      \item{ prob: }{ Score1: the probability/frequency of switch. }
+      \item{ diff: }{ Score2: the sum of average sample differences before and after switch.}
+      \item{ cor: }{ Pearson correlation of two isoforms. }
+    }
 }
 \description{
 This function is used to search and score transcript isoform switch in time-series expression.
@@ -53,83 +53,77 @@ This function is used to search and score transcript isoform switch in time-seri
 \details{
 The detailed steps:
 
-\if{html}{\figure{figures_001.png}{options: width="80\%" alt="Figure: figures_001.png"}}
-\if{latex}{\figure{figures_001.pdf}{options: width=7cm}}
+\if{html}{\figure{figures001.png}{options: width="80\%" alt="Figure: figures_001.png"}}
+\if{latex}{\figure{figures001.pdf}{options: width=7cm}}
 
-\bold{Figure 1:} Isoform switch analysis methods. Expression data with 3 replicates for each condition/time point is
-simulated for isoforms iso_i and iso_j. The points in the plots represent the samples and the black lines are the average of samples.
-(A) is the iso-kTSP algorithm for comparisons of two conditions \eqn{c_1} and \eqn{c_2}. The iso-kTSP is extended to time-series isoform switch (TSIS) in figure (B).
-The time-series with 6 time points is divided into 4 intervals by the intersection points of average expression.
-Five features for switch evaluation are determined based on the intervals before and after switch, e.g. the before and after intervals \eqn{I_1} and \eqn{I_2}
-adjoined to switch point \eqn{P_i}.
+\bold{Figure 1:} Isoform switch analysis methods. Expression data with 3 replicates for 
+each condition/time point is simulated for isoforms \eqn{iso_i} and \eqn{iso_j}. 
+The points in the plots represent the samples and the black lines connect the average 
+of samples. (A) is the iso-kTSP algorithm for comparisons of two conditions \eqn{c_1} and \eqn{c_2}. 
+Time-Series Isoform Switch (TSIS) tool is designed for detecting and characterization of 
+isoform switches for time series data shown in figure (B). The time-series with 6 time 
+points is divided into 4 intervals by the intersection points of average expression.
 
-\bold{Step 1: search for isoform switch points.}
+\bold{Step 1: determine switch points.}
 
-Given that a pair of isoforms \eqn{iso_i} and \eqn{iso_j} may have a number of switches in a time-series,
-two approaches have been offered to search for the switch time points in TSIS:
+Given that a pair of isoforms \eqn{iso_i} and \eqn{iso_j} may have a number of switches 
+in a time-series, we have offered two approaches to search for the switch time points in TSIS:
 
 \itemize{
-\item{The first approach takes the average values of the replicates for each time points for each transcript isoform.
-Then it searches for the cross points for the average value of two isoforms across the time points (as the example in Figure 1(B)).}
-\item{The second approach uses natural spline curves to fit the time-series data for each transcript isoform and find cross points
-of the fitted curves for each pair of isoforms.}
+    \item{The first approach takes the average values of the replicates for each time points 
+    for each transcript isoform. Then it searches for the cross points of the average 
+    value of two isoforms across the time points (as the example in Figure 1(B)).
+    }
+    \item{The second approach uses natural spline curves to fit the time-series data 
+    for each transcript isoform and find cross points
+      of the fitted curves for each pair of isoforms.
+   }
 }
 
-
-It is reasonable to assume the isoform expression and time-series show curvilinear relationship. However, explicit average values of
-expression loss precision without having information of backward and forward time points. The spline method fit time-series of
-expression with control points (depending on spline degree of freedom provided) and weights of several neighbours to obtained
-designed precision (Hastie and Tibshirani, 1990). The spline method is useful to find global trends of time-series when the
-data is very noisy. But it may sacrifice the local details of switch. For example, a rough spline fitting with very few control
-points may results in big shifts of switch points. Users can use both average and spline method to search for the switch points
-and determine optimal output by looking at the switch plots (see \code{\link{plotTSIS}}).
+In most cases, these two methods produce very similar results. However, average values 
+of expression loss precision without having information of backward and forward time points. 
+The spline method fit time-series of expression with control points (depending on spline 
+degree of freedom provided) and weights of several neighbours to obtained designed precision 
+(Hastie and Tibshirani, 1990). The spline method is useful to find global trends of time-series 
+when the data is very noisy. But it may lack details of isoform switch in the local region. 
+It is recommended that users use both average and spline method to search for the switch 
+points and examine manually when inconsistent results were produced by the above two methods.
 
 
 \bold{Step 2: define switch scoring measures}
 
-We define each transcript isoform switch by 1) the switch point \eqn{P_i} , 2) time points between switch points \eqn{P_(i-1)} and \eqn{P_i} as
-interval before switch \eqn{P_i} and 3) time points between switch points \eqn{P_i} and \eqn{P_(i+1)} as interval after the switch \eqn{P_i} (see Figure 1(B)).
-We defined 5 measurements to score each isoform switch. The first two are the probability/frequency of switch and the sum of average
-sample differences before and after switch, which are similar to Score 1 and Score 2 in iso-kTSP method (Sebestyen, et al., 2015) (see Figure 1(A))).
-For Score 2, instead of rank differences as in iso-kTSP to avoid possible ties, we directly use the average sample differences.
+We define each transcript isoform switch by 1) the switch point \eqn{P_i}, 
+2) time points between switch points \eqn{P_(i-1)}  and \eqn{P_i}  as interval  \eqn{I_1}  
+before switch \eqn{P_i}  and 3) time points between switch points \eqn{P_i}  and \eqn{P_(i+1)}  
+as interval \eqn{I_2}  after the switch \eqn{P_i}  (see Figure 1(B)). We defined 5 measurements 
+to characterize each isoform switch. The first two are the probability/frequency of switch and 
+the sum of average sample differences before and after switch, which are similar to Score 1 and 
+Score 2 in iso-kTSP method (Sebestyen, et al., 2015) (see Figure 1(A))).
 
 \itemize{
-\item{
-Firstly, for a switch point \eqn{P_i} of two isoforms \eqn{iso_i} and \eqn{iso_j} with before interval \eqn{I_1} and after interval \eqn{I_2} (see example in Figure1 (B)), Score 1 is defined as
-\deqn{S_1 (iso_i,iso_j |I_1,I_2)=|p(iso_i>iso_j |I_1)+p(iso_i<iso_j |I_2)1|,}
-Where  \eqn{p(iso_i>iso_j |I_1 )} and \eqn{p(iso_i<iso_j |I_2 )} are the frequencies/probabilities that the samples of one isoform is greater or less than in the other in corresponding intervals.
-}
-\item{
-Secondly, sum of mean differences of samples in intervals \eqn{I_1} and \eqn{I_2} are calculated as
-\deqn{S_2=d(iso_i,iso_j |I_1 )+d(iso_i,iso_j |I_2)}
-Where \eqn{d(iso_i,iso_j |I_k)} is the average expression difference in interval \eqn{I_k, k=1,2} defined as
-\deqn{d(iso_i, iso_j |I_k)=\frac{1}{|I_k|}\sum_{m_{I_k}} |exp(iso_i |s_{m_{I_k}},I_k)-exp(iso_j |s_{m_{I_k}},I_k) |}
-\eqn{|I_k|} is the number of samples in interval \eqn{I_k} and \eqn{exp(iso_i |s_{m_{I_k}},I_k)} is the expression of \eqn{iso_i} of sample \eqn{s_{m_{I_k}}} in interval \eqn{I_k}.
-}
-\item{
-Thirdly, a paired ttest is implemented for the two switched isoform sample differences within each interval. The dependency R function for testing is t.test(), i.e.
-\deqn{t.test(x=iso_i\quad samples\quad in\quad I_k,y=iso_j  
-\quad samples\quad in\quad I_k, paired=TRUE)
-}
-\deqn{
-\Rightarrow S_3(iso_i,iso_j |I_k )=pval
-}
-
-Where \eqn{k=1,2} represent the indices of the intervals before and after switch.
-}
-\item{
-Fourthly, the numbers of time points in intervals \eqn{I_1} and \eqn{I_2} were also provided, which indicate whether this switch is transient or long lived changes,
-\deqn{S_4(iso_i,iso_j |I_k)= time \quad points \quad in \quad interval \quad I_k}
-}
-\item{
-Finally, the coexpressed isoform pairs often show good isoform switch patterns of interest. For example highly negative correlated isoforms may present opposite growing patterns along the time frame. As an additional score, we calculated the Pearson correlation of two isoforms across the whole time series
-\deqn{S_5 (iso_i,iso_j )=cor(samples\quad of \quad iso_1,samples\quad of\quad iso_2 ,\quad method="pearson")}
-}
+  \item{
+    Firstly, for a switch point \eqn{P_i}  of two isoforms \eqn{iso_i}  and \eqn{iso_j}  with interval \eqn{I_1}  before the switch and  interval \eqn{I_2}  after the switch ( Figure1 (B)), Score 1 is defined as
+    \deqn{S_1 (iso_i,iso_j |I_1,I_2)=|p(iso_i>iso_j |I_1)+p(iso_i<iso_j |I_2)-1|,}
+    Where \eqn{p(iso_i>iso_j |I_1)} and \eqn{p(iso_i<iso_j |I_2)} are the frequencies/probabilities that the samples of one isoform is greater or less than in the other in corresponding intervals.
+  }
+  \item{
+    Secondly, instead of rank differences as in iso-kTSP to avoid possible ties, we directly use the average abundance differences. Sum of mean differences of samples in intervals \eqn{I_1} and \eqn{I_2} are calculated as
+    \deqn{S_2 (iso_i,iso_j |I_1,I_2)=d(iso_i,iso_j |I_1)+d(iso_i,iso_j |I_2)}
+    Where \eqn{d(iso_i,iso_j |I_k)} is the average expression difference in interval \eqn{I_k,k=1,2} defined as
+    \deqn{d(iso_i, iso_j |I_k)=\frac{1}{|I_k|}\sum_{m_{I_k}} |exp(iso_i |s_{m_{I_k}},I_k)-exp(iso_j |s_{m_{I_k}},I_k) |}
+    \eqn{|I_k |} is the number of samples in interval \eqn{I_k} and \eqn{exp(iso_i |s_(m_(I_k ) ),I_k)} is the expression of \eqn{iso_i} of sample \eqn{s_(m_(I_k ) )} in interval \eqn{I_k}. }
+  \item{
+    Thirdly, paired t-tests were carried out to test if there are significant differences for the two switched isoforms within the intervals before and after the switch.  }
+  \item{
+    Fourthly, the numbers of time points in intervals \eqn{I_1} and \eqn{I_2} were also provided, which indicate whether this switch is transient or long lived changes.
+  }
+  \item{
+    Finally, Isoforms with high negative correlations across the time points may point to the splicing regulations have antagonistic effects on the switched isoforms. Thus they are of great interest for investigation of alternative splicing regulations. As an additional score, we calculated the Pearson correlation of two isoforms across the whole time series.
+  }
 }
 }
 \references{
-1.	Sebestyen E, Zawisza M, Eyras E: Detection of recurrent alternative splicing switches in tumor samples reveals novel signatures of cancer.
-Nucleic Acids Res 2015, 43(3):1345-1356.
-2. Hastie, T.J. and Tibshirani, R.J. Generalized additive models. Chapter 7 of Statistical Models in S eds. Wadsworth & Brooks/Cole 1990.
+1. Sebestyen E, Zawisza M, Eyras E: Detection of recurrent alternative splicing switches in tumor samples reveals novel signatures of cancer.
+  Nucleic Acids Res 2015, 43(3):1345-1356.
+  2. Hastie, T.J. and Tibshirani, R.J. Generalized additive models. Chapter 7 of Statistical Models in S eds. Wadsworth & Brooks/Cole 1990.
 }
-

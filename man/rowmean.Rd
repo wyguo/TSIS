@@ -32,4 +32,3 @@ xmean <- rowmean(x, group)
 \seealso{
 \code{\link{rowsum}}, \code{\link{rowratio}}
 }
-

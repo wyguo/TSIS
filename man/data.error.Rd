@@ -30,4 +30,3 @@ data.error(x,error.type = 'sd')
 \seealso{
 \code{\link{sd}}
 }
-

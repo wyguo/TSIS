@@ -26,4 +26,3 @@ density plot in ggplot2 format or \code{\link{plotly}} format if \code{make.plot
 \description{
 Density plot
 }
-

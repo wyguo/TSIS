@@ -22,4 +22,3 @@ TSIS.app()
 \seealso{
 \code{\link{shiny}}
 }
-

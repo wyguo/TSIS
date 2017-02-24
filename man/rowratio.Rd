@@ -33,4 +33,3 @@ xratio <- rowratio(x, group)
 \seealso{
 \code{\link{rowsum}}, \code{\link{rowmean}}
 }
-

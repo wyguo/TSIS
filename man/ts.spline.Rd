@@ -26,4 +26,3 @@ Fit a time-series with spline curve
 \seealso{
 \code{\link{lm}}, \code{\link{ns}}, \code{\link{predict}}
 }
-

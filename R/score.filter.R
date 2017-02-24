@@ -2,6 +2,8 @@
 #'
 #' Filtering the scores output from \code{\link{iso.switch}}.
 #'
+#' Users can set cut-offs, such as for the probability/frequency of switch and sum of average differences, to further refine the switch results.
+#'
 #' @param scores the scores object output from \code{\link{iso.switch}}.
 #' @param prob.cutoff,diff.cutoff,t.points.cutoff,pval.cutoff,cor.cutoff the cut-offs corresponding to switch frequencies/probablities,
 #' sum of average sample differences, p-value and time points cut-offs for both intervals before and after switch and Pearson correlation.

@@ -79,4 +79,3 @@ plotTSIS(data2plot=data2plot,scores=NULL,iso1=NULL,iso2=NULL,gene.name=NULL,
 \seealso{
 \code{\link{ggplotly}}, \code{\link{iso.switch}}, \code{\link{score.filter}}, \code{\link{data.error}}, \code{\link{geom_smooth}}, \code{\link{ns}}
 }
-

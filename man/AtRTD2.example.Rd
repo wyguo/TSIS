@@ -17,6 +17,4 @@ Save AtRTD2 data into csv files
 }
 \examples{
 AtRTD2.example(dir='data')
-
 }
-

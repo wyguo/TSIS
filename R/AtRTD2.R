@@ -1,11 +1,6 @@
 #' Example datasets of AtRTD2.
 #'
-#'The TSIS package provides the example datasets "AtRTD2" with 2,666 genes and 6,307 isoforms,
-#'analysed in 26 time points, each with 3 biological replicates and 3 technical replicates.
-#'The experiments were designed to investigate the Arabidopsis gene expression response to cold.
-#'The isoform expression is in TPM (transcript per million) format. For the experiments and data
-#'quantification details, please see the AtRTD2 paper (Zhang, et al.,2016). Other type of
-#'transcript quantifications, such as read counts, Percentage Splicing Ins (PSIs) can also be used in TSIS.
+#' The TSIS package provides the example datasets "AtRTD2" with 2,666 genes and 6,307 isoforms, analyzed in 26 time points, each with 3 biological replicates and 3 technical replicates. The experiments were designed to investigate the Arabidopsis gene expression response to cold. The isoform expression is in TPM (transcript per million) format. For the experiments and data quantification details, please see the AtRTD2 paper (Zhang, et al.,2016). Other type of transcript quantifications, such as read counts, Percentage Splicing Ins (PSIs) can also be used in TSIS.
 #'
 #'
 #' @docType data
@@ -29,10 +24,10 @@
 #' AtRTD2$mapping[1:10,]
 #' ##subset of isoform names
 #' AtRTD2$sub.isoforms[1:10]
-
-
+#'
 "AtRTD2"
-
+#'
+#'
 #' Save AtRTD2 data into csv files
 #'
 #' @param dir directory to save data. If the directory does not exist, a new folder will be created with the provided name.
@@ -41,7 +36,8 @@
 #' @export
 #' @examples
 #' AtRTD2.example(dir='data')
-#'
+
+
 AtRTD2.example<-function(dir='.'){
   # if(!file.exists(dir))
   #   dir.create(dir)
