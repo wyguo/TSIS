@@ -60,7 +60,7 @@ The detailed steps:
 each condition/time point is simulated for isoforms \eqn{iso_i} and \eqn{iso_j}. 
 The points in the plots represent the samples and the black lines connect the average 
 of samples. (A) is the iso-kTSP algorithm for comparisons of two conditions \eqn{c_1} and \eqn{c_2}. 
-Time-Series Isoform Switch (TSIS) tool is designed for detecting and characterization of 
+Time-Series Isoform Switch (TSIS) tool is designed for detection and characterization of 
 isoform switches for time series data shown in figure (B). The time-series with 6 time 
 points is divided into 4 intervals by the intersection points of average expression.
 
@@ -70,9 +70,9 @@ Given that a pair of isoforms \eqn{iso_i} and \eqn{iso_j} may have a number of s
 in a time-series, we have offered two approaches to search for the switch time points in TSIS:
 
 \itemize{
-    \item{The first approach takes the average values of the replicates for each time points 
+    \item{The first approach takes the average values of the replicates for each time point 
     for each transcript isoform. Then it searches for the cross points of the average 
-    value of two isoforms across the time points (as the example in Figure 1(B)).
+    value of two isoforms across the time points (seen in Figure 1(B)).
     }
     \item{The second approach uses natural spline curves to fit the time-series data 
     for each transcript isoform and find cross points
@@ -81,10 +81,10 @@ in a time-series, we have offered two approaches to search for the switch time p
 }
 
 In most cases, these two methods produce very similar results. However, average values 
-of expression loss precision without having information of backward and forward time points. 
+of expression may lose precision without having information of backward and forward time points. 
 The spline method fit time-series of expression with control points (depending on spline 
-degree of freedom provided) and weights of several neighbours to obtained designed precision 
-(Hastie and Tibshirani, 1990). The spline method is useful to find global trends of time-series 
+degree of freedom provided) and weights of several neighbours to obtain designed precision 
+(Hastie and Tibshirani, 1990). The spline method is useful to find global trends in the time-series data 
 when the data is very noisy. But it may lack details of isoform switch in the local region. 
 It is recommended that users use both average and spline method to search for the switch 
 points and examine manually when inconsistent results were produced by the above two methods.
@@ -95,7 +95,7 @@ points and examine manually when inconsistent results were produced by the above
 We define each transcript isoform switch by 1) the switch point \eqn{P_i}, 
 2) time points between switch points \eqn{P_(i-1)}  and \eqn{P_i}  as interval  \eqn{I_1}  
 before switch \eqn{P_i}  and 3) time points between switch points \eqn{P_i}  and \eqn{P_(i+1)}  
-as interval \eqn{I_2}  after the switch \eqn{P_i}  (see Figure 1(B)). We defined 5 measurements 
+as interval \eqn{I_2}  after the switch \eqn{P_i}  (see Figure 1(B)). We defined five measurements 
 to characterize each isoform switch. The first two are the probability/frequency of switch and 
 the sum of average sample differences before and after switch, which are similar to Score 1 and 
 Score 2 in iso-kTSP method (Sebestyen, et al., 2015) (see Figure 1(A))).
@@ -107,7 +107,7 @@ Score 2 in iso-kTSP method (Sebestyen, et al., 2015) (see Figure 1(A))).
     Where \eqn{p(iso_i>iso_j |I_1)} and \eqn{p(iso_i<iso_j |I_2)} are the frequencies/probabilities that the samples of one isoform is greater or less than in the other in corresponding intervals.
   }
   \item{
-    Secondly, instead of rank differences as in iso-kTSP to avoid possible ties, we directly use the average abundance differences. Sum of mean differences of samples in intervals \eqn{I_1} and \eqn{I_2} are calculated as
+    Secondly, instead of rank differences as in iso-kTSP to avoid possible ties, we directly use the average abundance differences. The sum of mean differences of samples in intervals \eqn{I_1} and \eqn{I_2} are calculated as
     \deqn{S_2 (iso_i,iso_j |I_1,I_2)=d(iso_i,iso_j |I_1)+d(iso_i,iso_j |I_2)}
     Where \eqn{d(iso_i,iso_j |I_k)} is the average expression difference in interval \eqn{I_k,k=1,2} defined as
     \deqn{d(iso_i, iso_j |I_k)=\frac{1}{|I_k|}\sum_{m_{I_k}} |exp(iso_i |s_{m_{I_k}},I_k)-exp(iso_j |s_{m_{I_k}},I_k) |}
@@ -115,10 +115,10 @@ Score 2 in iso-kTSP method (Sebestyen, et al., 2015) (see Figure 1(A))).
   \item{
     Thirdly, paired t-tests were carried out to test if there are significant differences for the two switched isoforms within the intervals before and after the switch.  }
   \item{
-    Fourthly, the numbers of time points in intervals \eqn{I_1} and \eqn{I_2} were also provided, which indicate whether this switch is transient or long lived changes.
+    Fourthly, the numbers of time points in intervals \eqn{I_1} and \eqn{I_2} were also provided, which indicate whether this switch is transient or a long lived change.
   }
   \item{
-    Finally, Isoforms with high negative correlations across the time points may point to the splicing regulations have antagonistic effects on the switched isoforms. Thus they are of great interest for investigation of alternative splicing regulations. As an additional score, we calculated the Pearson correlation of two isoforms across the whole time series.
+    Finally, Isoforms with high negative correlations across the time points may point to the splicing regulation have antagonistic effects on the switched isoforms. Thus they are of great interest for investigation of alternative splicing regulations. As an additional score, we calculated the Pearson correlation of two isoforms across the whole time series.
   }
 }
 }

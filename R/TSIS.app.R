@@ -173,19 +173,19 @@ TSIS.app <- function(data.size.max=100) {
                                                         numericInput('diff.cutoff',label='Difference cutoff:',value=1)
                                                  ),
                                                  column(3,
-                                                        numericInput('pval.cutoff',label='P-value cutoff:',value=0.01)
+                                                        numericInput('pval.cutoff',label='p-value cutoff:',value=0.001)
                                                  ),
                                                  column(3,
                                                         numericInput('t.points.cutoff',label='Min time in interval:',value=2)
                                                  ),
                                                  column(3,
-                                                        numericInput('cor.cutoff',label='Correlation cutoff:',value=0.5)
+                                                        numericInput('cor.cutoff',label='Correlation cutoff:',value=0)
                                                  ),
                                                  column(3,
-                                                        numericInput('x.lower.boundary',label='Lower time:',value=9)
+                                                        numericInput('x.lower.boundary',label='Lower time:',value=1)
                                                  ),
                                                  column(3,
-                                                        numericInput('x.upper.boundary',label='Upper time:',value=17)
+                                                        numericInput('x.upper.boundary',label='Upper time:',value=26)
                                                  ),
                                                  column(3,
                                                         selectInput('sub.isoforms.ft','Subset of isoforms:',c('FALSE','TRUE'))

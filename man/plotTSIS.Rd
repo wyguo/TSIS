@@ -9,11 +9,11 @@ plotTSIS(data2plot, scores = NULL, iso1 = NULL, iso2 = NULL,
   t.end = 26, nrep = 9, prob.cutoff = 0.5, x.lower.boundary = 9,
   x.upper.boundary = 17, show.region = T, show.scores = T,
   error.type = "stderr", show.errorbar = T, errorbar.width = 0.2,
-  errorbar.size = 0.5, line.width = 1, point.size = 3, spline = F,
-  spline.df = NULL, ribbon.plot = F)
+  errorbar.size = 0.5, line.width = 1, point.size = 3, marker.size = 1,
+  spline = F, spline.df = NULL, ribbon.plot = F)
 }
 \arguments{
-\item{data2plot}{the transcript isoform expression data for switch plots with rows of isoforms and columns of samples. See \code{AtRTD2$data.exp} for details.}
+\item{data2plot}{the transcript isoform expression data for switch plots with rows of isoforms and columns of samples. See \code{TSIS.data$data.exp} for details.}
 
 \item{scores}{the output scores of functions \code{\link{iso.switch}} and \code{\link{score.filter}}. Default is NULL. To show score labels on the plot,
 the scores must be provided.}

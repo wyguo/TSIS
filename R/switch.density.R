@@ -36,7 +36,7 @@ switch.density<-function(x,t.start=1,t.end=26,make.plotly=T,plot.type='density',
       g<-g+geom_freqpoly(binwidth=1,color='red',size=1)
   }
 
-  g<-g+coord_cartesian(xlim=c(t.start,t.end))+labs(x='Switch time points')
+  g<-g+coord_cartesian(xlim=c(t.start,t.end))+labs(x='Switch time points',title=title)
 
   if(make.plotly)
     plotly::ggplotly(g) else g

@@ -8,7 +8,7 @@
 #' @param prob.cutoff,diff.cutoff,t.points.cutoff,pval.cutoff,cor.cutoff the cut-offs corresponding to switch frequencies/probablities,
 #' sum of average sample differences, p-value and time points cut-offs for both intervals before and after switch and Pearson correlation.
 #' @param data.exp,mapping the expression and gene-isoform mapping data.
-#' @param sub.isoform.list a vector of isoforms to output the corresponding results (see \code{AtRTD2$sub.isoforms}).
+#' @param sub.isoform.list a vector of isoforms to output the corresponding results (see \code{TSIS.data$sub.isoforms}).
 #' @param sub.isoform logical, to output subset of the results(TRUE) or not (FALSE). If TRUE, \code{sub.isoform.list} must be provided.
 #' @param max.ratio logical, to show maximum abundant isoform results(TRUE) or not (FALSE). If TRUE, data.exp and mapping data must be
 #' provided to calculate the isoform ratios to the genes using  \code{\link{rowratio}}.

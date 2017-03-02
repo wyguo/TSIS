@@ -1,6 +1,6 @@
 #' Plot time-series switches of a pair of isoforms
 #'
-#' @param data2plot the transcript isoform expression data for switch plots with rows of isoforms and columns of samples. See \code{AtRTD2$data.exp} for details.
+#' @param data2plot the transcript isoform expression data for switch plots with rows of isoforms and columns of samples. See \code{TSIS.data$data.exp} for details.
 #' @param scores the output scores of functions \code{\link{iso.switch}} and \code{\link{score.filter}}. Default is NULL. To show score labels on the plot,
 #' the scores must be provided.
 #' @param iso1,iso2 character string names of isoforms to plot.
@@ -47,7 +47,9 @@
 #'
 plotTSIS<-function(data2plot,scores=NULL,iso1=NULL,iso2=NULL,gene.name=NULL,y.lab='Expression',make.plotly=F,
                   t.start=1,t.end=26,nrep=9,prob.cutoff=0.5,x.lower.boundary=9,x.upper.boundary=17,show.region=T,show.scores=T,
-                  error.type='stderr',show.errorbar=T,errorbar.width=0.2,errorbar.size=0.5,line.width=1,point.size=3,spline=F,spline.df=NULL,ribbon.plot=F){
+                  error.type='stderr',show.errorbar=T,errorbar.width=0.2,errorbar.size=0.5,line.width=1,
+                  point.size=3,marker.size=1,
+                  spline=F,spline.df=NULL,ribbon.plot=F){
 
   require(ggplot2)
 
@@ -84,13 +86,13 @@ plotTSIS<-function(data2plot,scores=NULL,iso1=NULL,iso2=NULL,gene.name=NULL,y.la
       data2plot<-data.frame(data2plot[,1:2],mean=data2plot$value,error=0)
       data2plot$times<-factor(data2plot$times,levels = unique(data2plot$times))
       g<-ggplot(data2plot, aes(x=times, y=mean,group=isoforms,color=isoforms,fill=isoforms,shape=isoforms)) +
-        geom_point() +theme_bw()+
+        geom_point(size=marker.size) +theme_bw()+
         geom_smooth(method = "lm",formula = y ~ splines::ns(x, spline.df),size=line.width)
     } else {
       data2plot<-data.frame(data2plot[,1:2],mean=data2plot$value,error=0)
       data2plot$times<-factor(data2plot$times,levels = unique(data2plot$times))
       g=ggplot(data2plot, aes(x=times, y=mean,group=isoforms,color=isoforms,fill=isoforms,shape=isoforms)) +
-        geom_point() +theme_bw()+
+        geom_point(size=marker.size) +theme_bw()+
         stat_summary(fun.y=mean,geom='line',size=line.width)+
         stat_summary(fun.y=mean,geom = 'ribbon',fun.ymax = y.upper,fun.ymin = y.lower,alpha=0.3,colour=NA)
     }

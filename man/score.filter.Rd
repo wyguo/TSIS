@@ -17,7 +17,7 @@ sum of average sample differences, p-value and time points cut-offs for both int
 
 \item{data.exp, mapping}{the expression and gene-isoform mapping data.}
 
-\item{sub.isoform.list}{a vector of isoforms to output the corresponding results (see \code{AtRTD2$sub.isoforms}).}
+\item{sub.isoform.list}{a vector of isoforms to output the corresponding results (see \code{TSIS.data$sub.isoforms}).}
 
 \item{sub.isoform}{logical, to output subset of the results(TRUE) or not (FALSE). If TRUE, \code{sub.isoform.list} must be provided.}
 
