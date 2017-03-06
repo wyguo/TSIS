@@ -22,16 +22,16 @@ switch.density<-function(x,t.start=1,t.end=26,make.plotly=T,plot.type='density',
   ##plot type
   plot.type<-match.arg(plot.type,c('density','frequency'))
 
-  data2plot<-data.frame(x=x)
+  data2plot<-data.frame(x=x+0.001)
 
   if(plot.type=='density'){
     ##density plot
-    g<-ggplot(data2plot,aes(x,fill=1))+geom_histogram(aes(y=..density..),binwidth=1)+theme_bw()+theme(legend.position='none')
+    g<-ggplot(data2plot,aes(x,fill=1))+geom_histogram(aes(y=..density..),breaks=t.start:t.end)+theme_bw()+theme(legend.position='none')
     if(show.line)
       g<-g+stat_density(geom='line',size=1,color='red')
   } else {
     ##frequency plot
-    g<-ggplot(data2plot,aes(x,fill=1))+geom_histogram(aes(y=..count..),binwidth=1)+theme_bw()+theme(legend.position='none')
+    g<-ggplot(data2plot,aes(x,fill=1))+geom_histogram(aes(y=..count..),breaks=t.start:t.end)+theme_bw()+theme(legend.position='none')
     if(show.line)
       g<-g+geom_freqpoly(binwidth=1,color='red',size=1)
   }
