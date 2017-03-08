@@ -118,6 +118,8 @@ Score 2 in iso-kTSP method (Sebestyen, et al., 2015) (see Figure 1(A))).
     Finally, Isoforms with high negative correlations across the time points may point to the splicing regulation have antagonistic effects on the switched isoforms. Thus they are of great interest for investigation of alternative splicing regulations. As an additional score, we calculated the Pearson correlation of two isoforms across the whole time series.
   }
 }
+
+For TSIS analysis details and examples, please go the the user manual on Github: \url{https://github.com/wyguo/TSIS}.
 }
 \references{
 1. Sebestyen E, Zawisza M, Eyras E: Detection of recurrent alternative splicing switches in tumor samples reveals novel signatures of cancer.

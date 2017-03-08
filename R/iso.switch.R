@@ -72,6 +72,8 @@
 #'     Finally, Isoforms with high negative correlations across the time points may point to the splicing regulation have antagonistic effects on the switched isoforms. Thus they are of great interest for investigation of alternative splicing regulations. As an additional score, we calculated the Pearson correlation of two isoforms across the whole time series.
 #'   }
 #' }
+#' 
+#' For TSIS analysis details and examples, please go the the user manual on Github: \url{https://github.com/wyguo/TSIS}. 
 #'
 #' @param data.exp  Time-series isoform expression data with first row indicating the replicate labels and second row indicating the time points. The remained lines are isoform names in the first column followed by the expression values. All the replicates for each time point should be grouped together and the time points follow the sequential order.
 #' @param mapping gene and isoform mapping table with gene names in first column  and transcript isoform names in the second column
