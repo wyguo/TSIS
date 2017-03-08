@@ -133,15 +133,15 @@ TSIS.app <- function(data.size.max=100) {
                                              wellPanel(
                                                fluidRow(
                                                  h4('Scoring parameters'),
-                                                 column(3,
-                                                        numericInput('t.start',label='Start time:',value=1)
-                                                 ),
-                                                 column(3,
-                                                        numericInput('t.end',label='End time:',value=26)
-                                                 ),
-                                                 column(3,
-                                                        numericInput('nrep',label='Replicates:',value=9)
-                                                 ),
+                                                 # column(3,
+                                                 #        numericInput('t.start',label='Start time:',value=1)
+                                                 # ),
+                                                 # column(3,
+                                                 #        numericInput('t.end',label='End time:',value=26)
+                                                 # ),
+                                                 # column(3,
+                                                 #        numericInput('nrep',label='Replicates:',value=9)
+                                                 # ),
                                                  column(3,
                                                         selectInput('method.intersection','Search intersections',c('Mean','Spline'))
                                                  ),
@@ -156,9 +156,7 @@ TSIS.app <- function(data.size.max=100) {
                                                br(),
                                                br(),
                                                HTML('Press Scoring button to implement the scoring of isoform switches. The details of parameters:
-                                                    <ul><li><b>Start time point and end time point:</b> The start time point and end time point of the time-series. Time points have to be continuous integer, e.g. 1, 2,3, .... </li>
-                                                    <li><b>Number of replicates:</b> The number of replicates for each time point. </li>
-                                                    <li><b>Method for intersections:</b> Using either mean values or natural spline fitted smooth curves (see detail in ns() function in splines R package) of time-series expression
+                                                    <ul><li><b>Method for intersections:</b> Using either mean values or natural spline fitted smooth curves (see detail in ns() function in splines R package) of time-series expression
                                                     to determine the intersection points of isoforms.</li>
                                                     <li><b>Degree of spline:</b> The degree of spline in splines::ns() function.</li>
                                                     </ul>')
@@ -332,20 +330,46 @@ TSIS.app <- function(data.size.max=100) {
              options(shiny.maxRequestSize = data.size.max*1024^2)
 
 
-
-             data.exp<-reactive({
+             data.exp0<-reactive({
                infile.data<-input$filedata
                if (is.null(infile.data))
                  return(NULL)
 
-               data.exp<-read.csv(file=infile.data$datapath,header=F)
+               data.exp0<-read.csv(file=infile.data$datapath,header=F)
+               return(data.exp0)
+               # values<-data.exp[-c(1:2),-1]
+               # values<-data.frame(apply(values,2,as.numeric))
+               # rownames(values)<-as.character(data.exp[-c(1:2),1])
+               # colnames(values)<-paste0(as.character(t(data.exp[1,-1])),'_',as.character((t(data.exp[2,-1]))))
+               # data.exp<-values
+               # data.exp<-na.omit(data.exp)
+
+
+             })
+
+
+             times<-reactive({
+               if (is.null(data.exp0))
+                 return(NULL)
+
+               times<-as.numeric(as.vector(t(data.exp0()[2,-1])))
+               return(times)
+
+             })
+
+
+             data.exp<-reactive({
+               if (is.null(data.exp0))
+                 return(NULL)
+
+               data.exp<-data.exp0()
                values<-data.exp[-c(1:2),-1]
                values<-data.frame(apply(values,2,as.numeric))
                rownames(values)<-as.character(data.exp[-c(1:2),1])
                colnames(values)<-paste0(as.character(t(data.exp[1,-1])),'_',as.character((t(data.exp[2,-1]))))
                data.exp<-values
                data.exp<-na.omit(data.exp)
-
+               return(data.exp)
 
              })
 
@@ -374,14 +398,14 @@ TSIS.app <- function(data.size.max=100) {
                  return()
 
                ##parameter for itch()
-               t.start<-input$t.start
-               t.end<-input$t.end
-               nrep<-input$nrep
+               # t.start<-input$t.start
+               # t.end<-input$t.end
+               # nrep<-input$nrep
                min.t.points<-input$t.points.cutoff
                min.difference<-input$diff.cutoff
                ##parameters for
-               scores<-iso.switch.shiny(data.exp=data.exp(),mapping=mapping(),
-                                        t.start=t.start,t.end = t.end,min.t.points = min.t.points,min.difference = min.difference,rank = F,
+               scores<-iso.switch.shiny(data.exp=data.exp(),mapping=mapping(),times = times(),
+                                        min.t.points = min.t.points,min.difference = min.difference,rank = F,
                                         spline = input$method.intersection=='Spline',spline.df = input$spline.df)
 
              })
@@ -483,7 +507,7 @@ TSIS.app <- function(data.size.max=100) {
                if(is.null(score.show$scores))
                  return()
 
-               switch.density(x=score.show$scores$x.value,t.start = input$t.start,t.end=input$t.end,plot.type = input$densityplot.type,make.plotly = T,
+               switch.density(x=score.show$scores$x.value,time.points = unique(times()),plot.type = input$densityplot.type,make.plotly = T,
                               show.line = input$show.density.line,title = '')
              })
 
@@ -496,11 +520,11 @@ TSIS.app <- function(data.size.max=100) {
                content = function(file,format=input$densityplot.format) {
                  if(format=='html')
                    suppressWarnings(htmlwidgets::saveWidget(as.widget(
-                     switch.density(x=score.show$scores$x.value,t.start = input$t.start,t.end=input$t.end,plot.type = input$densityplot.type,make.plotly = T,
+                     switch.density(x=score.show$scores$x.value,time.points = unique(times()),plot.type = input$densityplot.type,make.plotly = T,
                                     show.line = input$show.density.line,title = '')
                    ), file=file,selfcontained=T))
                  else ggsave(file,
-                             switch.density(x=score.show$scores$x.value,t.start = input$t.start,t.end=input$t.end,plot.type = input$densityplot.type,make.plotly = F,
+                             switch.density(x=score.show$scores$x.value,time.points = unique(times()),plot.type = input$densityplot.type,make.plotly = F,
                                             show.line = input$show.density.line,title = ''),
                              width = 16,height = 12,units = "cm")
                })
@@ -518,10 +542,7 @@ TSIS.app <- function(data.size.max=100) {
                g<-plotTSIS(data2plot = data.exp()[c(iso1,iso2),],
                            iso1 = iso1,
                            iso2 = iso2,
-                           scores = scores.filtered(),show.scores = input$show.scores,
-                           t.start=input$t.start,
-                           t.end=input$t.end,
-                           nrep=input$nrep,
+                           scores = scores.filtered(),show.scores = input$show.scores,times = times(),
                            x.lower.boundary=input$x.lower.boundary,
                            x.upper.boundary=input$x.upper.boundary,
                            prob.cutoff=input$prob.cutoff.switch.points,
@@ -614,10 +635,7 @@ TSIS.app <- function(data.size.max=100) {
                    gs<-plotTSIS(data2plot = data.exp()[c(iso1s[i],iso2s[i]),],line.width= 1,
                                 iso1 = NULL,
                                 iso2 = NULL,
-                                scores = data2plot(),
-                                t.end=input$t.end,
-                                t.start = input$t.start,
-                                nrep=input$nrep,
+                                scores = data2plot(),times=times(),
                                 x.lower.boundary=input$x.lower.boundary,
                                 x.upper.boundary=input$x.upper.boundary,
                                 prob.cutoff=input$prob.cutoff.switch.points,

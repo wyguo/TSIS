@@ -1,6 +1,3 @@
-## ----style, echo = FALSE, results = 'asis'-------------------------------
-BiocStyle::markdown()
-
 ## ----setup, include=F,eval=T,echo=F--------------------------------------
 knitr::opts_chunk$set(cache = TRUE,eval=F,echo = T)
 file.type='html'
@@ -26,10 +23,10 @@ if(file.type=='readme')
 #  library(TSIS)
 
 ## ------------------------------------------------------------------------
-#  AtRTD2.example()
+#  TSIS.data.example()
 
 ## ------------------------------------------------------------------------
-#  TSIS.app()
+#  TSIS.app(data.size.max = 100)
 
 ## ----results='asis',echo=F,eval=TRUE-------------------------------------
 if(file.type=='html')
@@ -104,34 +101,32 @@ if(file.type=='readme')
 ## ----eval=F,echo=T-------------------------------------------------------
 #  ##load the data
 #  library(TSIS)
-#  data.exp<-AtRTD2$data.exp
-#  mapping<-AtRTD2$mapping
+#  data.exp<-TSIS.data$data.exp
+#  mapping<-TSIS.data$mapping
 #  dim(data.exp);dim(mapping)
 
 ## ----echo=T,eval=F-------------------------------------------------------
 #  ##Scores
 #  scores.mean2int<-iso.switch(data.exp=data.exp,mapping =mapping,
-#                       t.start=1,t.end=26,nrep=9,rank=F,
+#                       times=rep(1:26,each=9),rank=F,
 #                       min.t.points =2,min.difference=1,spline =F,
 #                       spline.df = 9,verbose = F)
 
 ## ------------------------------------------------------------------------
 #  ##Scores, set spline=T and define spline degree of freedom to spline.df=9
 #  scores.spline2int<-iso.switch(data.exp=data.exp,mapping =mapping,
-#                       t.start=1,t.end=26,nrep=9,rank=F,
+#                       times=rep(1:26,each=9),rank=F,
 #                       min.t.points =2,min.difference=1,spline =T,
 #                       spline.df = 10,verbose = F)
-#  
 
 ## ----eval=F--------------------------------------------------------------
 #  ##intersection from mean expression
 #  scores.mean2int.filtered<-score.filter(
 #    scores = scores.mean2int,prob.cutoff = 0.5,diff.cutoff = 1,
-#    t.points.cutoff = 2,pval.cutoff = 0.01, cor.cutoff = 0.5,
+#    t.points.cutoff = 2,pval.cutoff = 0.001, cor.cutoff = 0,
 #    data.exp = NULL,mapping = NULL,sub.isoform.list = NULL,
-#    sub.isoform = F,max.ratio = F,x.value.limit = c(9,17)
+#    sub.isoform = F,max.ratio = F,x.value.limit = c(1,26)
 #  )
-#  
 #  scores.mean2int.filtered[1:5,]
 
 ## ------------------------------------------------------------------------
@@ -142,12 +137,12 @@ if(file.type=='readme')
 #    cor.cutoff = 0.5,data.exp = NULL,mapping = NULL,
 #    sub.isoform.list = NULL,sub.isoform = F,max.ratio = F,
 #    x.value.limit = c(9,17)
-#  )
+#  ))
 
 ## ------------------------------------------------------------------------
 #  ##intersection from mean expression
 #  ##input a list of isoform names for investigation.
-#  sub.isoform.list<-AtRTD2$sub.isoforms
+#  sub.isoform.list<-TSIS.data$sub.isoforms
 #  sub.isoform.list[1:10]
 #  ##assign the isoform name list to sub.isoform.list and set sub.isoform=TRUE
 #  scores.mean2int.filtered.subset<-score.filter(
@@ -166,15 +161,14 @@ if(file.type=='readme')
 #  )
 
 ## ------------------------------------------------------------------------
-#  plotTSIS(data2plot = data.exp,scores = scores.mean2int.filtered,
-#           iso1 = 'AT5G60930_P2',iso2 = ' AT5G60930_P3',gene.name = NULL,
-#           y.lab = 'Expression',make.plotly = F,
-#           t.start = 1,t.end = 26,nrep = 9,prob.cutoff = 0.5,
-#           x.lower.boundary = 9,x.upper.boundary = 17,
-#           show.region = T,show.scores = T,
-#           line.width =0.5,point.size = 3,
-#           error.type = 'stderr',show.errorbar = T,errorbar.size = 0.5,
-#           errorbar.width = 0.2,spline = F,spline.df = NULL,ribbon.plot = F)
+#  library(gridExtra)
+#  g1<-switch.density(scores.mean2int.filtered$x.value,make.plotly = F,
+#                     show.line = F,plot.type = 'frequency',
+#                     title = 'Frequency of switch time' ,time.points = 1:26)
+#  g2<-switch.density(scores.mean2int.filtered$x.value,make.plotly = F,
+#                     show.line = T,plot.type = 'density',
+#                     title = 'Density of switch time' ,time.points = 1:26)
+#  gridExtra::grid.arrange(g1,g2,ncol=2)
 
 ## ----results='asis',echo=F,eval=TRUE-------------------------------------
 if(file.type=='html')
@@ -188,9 +182,30 @@ if(file.type=='readme')
 
 ## ------------------------------------------------------------------------
 #  plotTSIS(data2plot = data.exp,scores = scores.mean2int.filtered,
-#           iso1 = 'AT5G60930_P2',iso2 = ' AT5G60930_P3',gene.name = NULL,
+#           iso1 = 'G30.iso2',iso2 = 'G30.iso3',gene.name = NULL,
 #           y.lab = 'Expression',make.plotly = F,
-#           t.start = 1,t.end = 26,nrep = 9,prob.cutoff = 0.5,
+#           times=rep(1:26,each=9),prob.cutoff = 0.5,
+#           x.lower.boundary = 9,x.upper.boundary = 17,
+#           show.region = T,show.scores = T,
+#           line.width =0.5,point.size = 3,
+#           error.type = 'stderr',show.errorbar = T,errorbar.size = 0.5,
+#           errorbar.width = 0.2,spline = F,spline.df = NULL,ribbon.plot = F)
+
+## ----results='asis',echo=F,eval=TRUE-------------------------------------
+if(file.type=='html')
+  cat('<img src="fig/figures_010.png" width="900px"  />')
+
+if(file.type=='word')
+  cat('![](fig/figures_010.png)')
+
+if(file.type=='readme')
+  cat('![](https://github.com/wyguo/TSIS/blob/master/vignettes/fig/figures_010.png)')
+
+## ------------------------------------------------------------------------
+#  plotTSIS(data2plot = data.exp,scores = scores.mean2int.filtered,
+#           iso1 = 'G30.iso2',iso2 = 'G30.iso3',gene.name = NULL,
+#           y.lab = 'Expression',make.plotly = F,
+#           times=rep(1:26,each=9),prob.cutoff = 0.5,
 #           x.lower.boundary = 9,x.upper.boundary = 17,
 #           show.region = T,show.scores = T,
 #           line.width =0.5,point.size = 3,
@@ -199,10 +214,10 @@ if(file.type=='readme')
 
 ## ----results='asis',echo=F,eval=TRUE-------------------------------------
 if(file.type=='html')
-  cat('<img src="fig/figures_010.png" width="900px"  />')
+  cat('<img src="fig/figures_011.png" width="900px"  />')
 
 if(file.type=='word')
-  cat('![](fig/figures_010.png)')
+  cat('![](fig/figures_011.png)')
 
 if(file.type=='readme')
   cat('![](https://github.com/wyguo/TSIS/blob/master/vignettes/fig/figures_010.png)')

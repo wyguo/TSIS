@@ -7,48 +7,48 @@
 #' \if{html}{\figure{figures001.png}{options: width="80\%" alt="Figure: figures_001.png"}}
 #' \if{latex}{\figure{figures001.pdf}{options: width=7cm}}
 #'
-#' \bold{Figure 1:} Isoform switch analysis methods. Expression data with 3 replicates for 
-#' each condition/time point is simulated for isoforms \eqn{iso_i} and \eqn{iso_j}. 
-#' The points in the plots represent the samples and the black lines connect the average 
-#' of samples. (A) is the iso-kTSP algorithm for comparisons of two conditions \eqn{c_1} and \eqn{c_2}. 
-#' Time-Series Isoform Switch (TSIS) tool is designed for detection and characterization of 
-#' isoform switches for time series data shown in figure (B). The time-series with 6 time 
+#' \bold{Figure 1:} Isoform switch analysis methods. Expression data with 3 replicates for
+#' each condition/time point is simulated for isoforms \eqn{iso_i} and \eqn{iso_j}.
+#' The points in the plots represent the samples and the black lines connect the average
+#' of samples. (A) is the iso-kTSP algorithm for comparisons of two conditions \eqn{c_1} and \eqn{c_2}.
+#' Time-Series Isoform Switch (TSIS) tool is designed for detection and characterization of
+#' isoform switches for time series data shown in figure (B). The time-series with 6 time
 #' points is divided into 4 intervals by the intersection points of average expression.
 #'
 #' \bold{Step 1: determine switch points.}
 #'
-#' Given that a pair of isoforms \eqn{iso_i} and \eqn{iso_j} may have a number of switches 
+#' Given that a pair of isoforms \eqn{iso_i} and \eqn{iso_j} may have a number of switches
 #' in a time-series, we have offered two approaches to search for the switch time points in TSIS:
 #'
 #' \itemize{
-#'     \item{The first approach takes the average values of the replicates for each time point 
-#'     for each transcript isoform. Then it searches for the cross points of the average 
+#'     \item{The first approach takes the average values of the replicates for each time point
+#'     for each transcript isoform. Then it searches for the cross points of the average
 #'     value of two isoforms across the time points (seen in Figure 1(B)).
 #'     }
-#'     \item{The second approach uses natural spline curves to fit the time-series data 
+#'     \item{The second approach uses natural spline curves to fit the time-series data
 #'     for each transcript isoform and find cross points
 #'       of the fitted curves for each pair of isoforms.
 #'    }
 #' }
 #'
-#' In most cases, these two methods produce very similar results. However, average values 
-#' of expression may lose precision without having information of backward and forward time points. 
-#' The spline method fit time-series of expression with control points (depending on spline 
-#' degree of freedom provided) and weights of several neighbours to obtain designed precision 
-#' (Hastie and Tibshirani, 1990). The spline method is useful to find global trends in the time-series data 
-#' when the data is very noisy. But it may lack details of isoform switch in the local region. 
-#' It is recommended that users use both average and spline method to search for the switch 
+#' In most cases, these two methods produce very similar results. However, average values
+#' of expression may lose precision without having information of backward and forward time points.
+#' The spline method fit time-series of expression with control points (depending on spline
+#' degree of freedom provided) and weights of several neighbours to obtain designed precision
+#' (Hastie and Tibshirani, 1990). The spline method is useful to find global trends in the time-series data
+#' when the data is very noisy. But it may lack details of isoform switch in the local region.
+#' It is recommended that users use both average and spline method to search for the switch
 #' points and examine manually when inconsistent results were produced by the above two methods.
 #'
 #'
 #' \bold{Step 2: define switch scoring measures}
 #'
-#' We define each transcript isoform switch by 1) the switch point \eqn{P_i}, 
-#' 2) time points between switch points \eqn{P_(i-1)}  and \eqn{P_i}  as interval  \eqn{I_1}  
-#' before switch \eqn{P_i}  and 3) time points between switch points \eqn{P_i}  and \eqn{P_(i+1)}  
-#' as interval \eqn{I_2}  after the switch \eqn{P_i}  (see Figure 1(B)). We defined five measurements 
-#' to characterize each isoform switch. The first two are the probability/frequency of switch and 
-#' the sum of average sample differences before and after switch, which are similar to Score 1 and 
+#' We define each transcript isoform switch by 1) the switch point \eqn{P_i},
+#' 2) time points between switch points \eqn{P_(i-1)}  and \eqn{P_i}  as interval  \eqn{I_1}
+#' before switch \eqn{P_i}  and 3) time points between switch points \eqn{P_i}  and \eqn{P_(i+1)}
+#' as interval \eqn{I_2}  after the switch \eqn{P_i}  (see Figure 1(B)). We defined five measurements
+#' to characterize each isoform switch. The first two are the probability/frequency of switch and
+#' the sum of average sample differences before and after switch, which are similar to Score 1 and
 #' Score 2 in iso-kTSP method (Sebestyen, et al., 2015) (see Figure 1(A))).
 #'
 #' \itemize{
@@ -75,8 +75,7 @@
 #'
 #' @param data.exp  Time-series isoform expression data with first row indicating the replicate labels and second row indicating the time points. The remained lines are isoform names in the first column followed by the expression values. All the replicates for each time point should be grouped together and the time points follow the sequential order.
 #' @param mapping gene and isoform mapping table with gene names in first column  and transcript isoform names in the second column
-#' @param t.start,t.end the start time point and end time point of the time-series. Time points have to be continuous integer, e.g. 1, 2,3, ....
-#' @param nrep number of replicates for each time point.
+#' @param times a numeric vector of time labellings of all the relicated samples, e.g. 1,1,1,2,2,2,3,3,3,...
 #' @param rank logical (TRUE or FALSE). Should isoform expression be converted to rank of isoform expression in sample basis?
 #' @param min.t.points if the number of time points in all intervals < \code{min.t.points},
 #'   this pair of isoforms are not switch candidates since they only have transient switches.
@@ -108,9 +107,9 @@
 #' @export
 #'
 
-iso.switch<-function(data.exp,mapping,t.start=1,t.end=26,nrep=9,rank=F,
-                     min.t.points=2,min.difference=1,spline=F,spline.df=NULL,verbose=T){
 
+iso.switch<-function(data.exp,mapping,times,rank=F,
+                     min.t.points=2,min.difference=1,spline=F,spline.df=NULL,verbose=T){
 
   if(nrow(data.exp)!=nrow(mapping))
     stop("Gene-isoform mapping table does not match to isoform expression table")
@@ -126,7 +125,7 @@ iso.switch<-function(data.exp,mapping,t.start=1,t.end=26,nrep=9,rank=F,
   data2intersect.ratio<-rowratio(x = data2intersect.ratio,group = genes0)
 
   #choose genes with more than 2 transcripts
-  idx<-table(genes0)
+  idx<-table(genes0)[unique(genes0)]
   genes<-names(idx)[idx>1]
   isoforms<-isoforms0[which(genes0 %in% genes)]
   data.exp<-data.exp[isoforms,]
@@ -149,21 +148,24 @@ iso.switch<-function(data.exp,mapping,t.start=1,t.end=26,nrep=9,rank=F,
   if(spline){
     message(' Spline fitting expression ...')
     if(is.null(spline.df))
-      spline.df<-floor(2*(t.end-t.start)/3)
-    data2intersect<-t(apply(data.exp,1,function(x) ts.spline(x,t.start = t.start,t.end = t.end,nrep = nrep,df = spline.df)))
+      spline.df<-floor(2*(length(unique(times)-1))/3)
+    data2intersect<-t(apply(data.exp,1,function(x) ts.spline(x,times  = times,df = spline.df)))
   } else {
-    data2intersect<-t(rowmean(t(data.exp),group = rep(t.start:t.end,each=nrep)))
+    data2intersect<-t(rowmean(t(data.exp),group = times))
   }
 
 
   ##Find intersection points
   message(' Searching ...')
   iso.intersections<-list()
+  t.start<-min(times)
+  t.end<-max(times)
+
   if(verbose)
     pb <- txtProgressBar(min = 0, max = length(genes), style = 3,width = 75)
   for(i in 1:length(genes)){
     Sys.sleep(0)
-    #i=which(genes=='AT1G58602')
+
     sub.gene<-genes[i]
     sub.isoform<-as.vector(isoforms0[which(genes0==sub.gene)])
 
@@ -223,7 +225,7 @@ iso.switch<-function(data.exp,mapping,t.start=1,t.end=26,nrep=9,rank=F,
   ##step 2: calculate probablities
 
   iso.names<-names(iso.intersections)
-  time.points<-rep(t.start:t.end,each=nrep)
+
   iso.scores<-data.frame()
 
   if(verbose)
@@ -240,7 +242,7 @@ iso.switch<-function(data.exp,mapping,t.start=1,t.end=26,nrep=9,rank=F,
     colnames(n.inters)<-colnames(iso.intersections[[iso.names[i]]])[-c(1:2)]
     inters=as.numeric(n.inters[1,])
 
-    interval=cut(time.points,unique(c(t.start,as.numeric(inters),t.end)),include.lowest = T,dig.lab = 3)
+    interval=cut(times,unique(c(t.start,as.numeric(inters),t.end)),include.lowest = T,dig.lab = 3)
     # sub.data2swith=data.frame(interval=interval,t(data.exp.rank[c(iso1,iso2),]),iso.idx=c(-1,1)[as.numeric(interval)%%2+1])
     sub.data2swith=data.frame(interval=interval,t(data2switch[c(iso1,iso2),]))
     ##add a column of sign of differences
@@ -265,25 +267,10 @@ iso.switch<-function(data.exp,mapping,t.start=1,t.end=26,nrep=9,rank=F,
       pval<-t.test(x[,3],x[,2],paired = T)$p.value
       pval[is.na(pval)]<-1
       #score4:
-      inter.length<-nrow(x)/nrep
-
-      # ##score3:
-      # if(inter.length==1){
-      #   pval<-t.test(x[,3],x[,2],paired = F)$p.value } else {
-      #     t.idx<-paste0('t',rep(1:inter.length,each=nrep))
-      #     data2test<-data.frame(
-      #       rbind(
-      #         data.frame(isoforms='iso1',time=t.idx,value=x[,2]),
-      #         data.frame(isoforms='iso2',time=t.idx,value=x[,3])
-      #       )
-      #     )
-      #     data2test$isoforms<-factor(data2test$isoforms,levels = unique(data2test$isoforms))
-      #     data2test$time<-factor(data2test$time,levels = unique(data2test$time))
-      #     fit<-aov(value~isoforms*time,data2test)
-      #     pval<-summary(fit)[[1]][["Pr(>F)"]][1]
-      #   }
-      # pval[is.na(pval)]<-1
-
+      # inter.length<-nrow(x)/nrep
+      y<-as.character(x$interval[1])
+      y<-as.numeric(unlist(strsplit(substr(x = y,start = 2,stop = nchar(y)-1),',',fixed = T)))
+      inter.length<-length(seq(ceiling(y[1]),floor(y[2])))
       x<-data.frame(prob=prob,diff=diff.mean,pval=pval,inter.length=inter.length)
       x
     },simplify = T)
@@ -337,15 +324,15 @@ iso.switch<-function(data.exp,mapping,t.start=1,t.end=26,nrep=9,rank=F,
   message(paste0('Time for analysis: ',round(time.taken,3),' ',attributes(time.taken)$units))
 
   message('Done!!! ')
-  return(data.frame(iso.scores))
+  return(data.frame(iso.scores,row.names = NULL))
 }
 
 
 #' @export
 #'
 
-iso.switch.shiny<-function(data.exp,data2intersect=NULL,mapping,t.start=1,t.end=26,nrep=9,rank=F,
-                           min.t.points=2,min.difference=1,spline=F,spline.df=5){
+iso.switch.shiny<-function(data.exp,mapping,times,rank=F,
+                           min.t.points=2,min.difference=1,spline=F,spline.df=NULL,verbose=T){
 
   if(nrow(data.exp)!=nrow(mapping))
     stop("Gene-isoform mapping table does not match to isoform expression table")
@@ -360,8 +347,8 @@ iso.switch.shiny<-function(data.exp,data2intersect=NULL,mapping,t.start=1,t.end=
   data2intersect.ratio<-apply(data.exp,1,mean)
   data2intersect.ratio<-rowratio(x = data2intersect.ratio,group = genes0)
 
-  #pick genes with more than 2 transcrits
-  idx<-table(genes0)
+  #choose genes with more than 2 transcripts
+  idx<-table(genes0)[unique(genes0)]
   genes<-names(idx)[idx>1]
   isoforms<-isoforms0[which(genes0 %in% genes)]
   data.exp<-data.exp[isoforms,]
@@ -376,27 +363,32 @@ iso.switch.shiny<-function(data.exp,data2intersect=NULL,mapping,t.start=1,t.end=
   message(' Average isoforms per gene for switch analysis: ', round(length(isoforms)/length(genes),3))
 
 
-  ##step 2: Pickign isoform-pairs with intersection points...
-  message(paste0('Step 1: Search for intersection points with ',if(spline) 'Spline method...' else 'Mean expression ...'))
 
+  ##step 2: Pickign isoform-pairs with intersection points...
+  message(paste0('Step 1: Search for intersection points with ',if(spline) 'Spline method...' else 'Mean expression...'))
+  ##Average values of time points
   ##data for searching isoform swtich points
   if(spline){
     message(' Spline fitting expression ...')
     if(is.null(spline.df))
-      spline.df<-floor(2*(t.end-t.start)/3)
-    data2intersect<-t(apply(data.exp,1,function(x) ts.spline(x,t.start = t.start,t.end = t.end,nrep = nrep,df = spline.df)))
+      spline.df<-floor(2*(length(unique(times)-1))/3)
+    data2intersect<-t(apply(data.exp,1,function(x) ts.spline(x,times  = times,df = spline.df)))
   } else {
-    data2intersect<-t(rowmean(t(data.exp),group = rep(t.start:t.end,each=nrep)))
+    data2intersect<-t(rowmean(t(data.exp),group = times))
   }
-
 
 
   ##Find intersection points
   message(' Searching ...')
   iso.intersections<-list()
+  t.start<-min(times)
+  t.end<-max(times)
+
   withProgress(message = 'Searching intersections: ',value=0,{
-    pb <- txtProgressBar(min = 0, max = length(genes), style = 3,width = 75)
+    if(verbose)
+      pb <- txtProgressBar(min = 0, max = length(genes), style = 3,width = 75)
     for(i in 1:length(genes)){
+      
       sub.gene<-genes[i]
       sub.isoform<-as.vector(isoforms0[which(genes0==sub.gene)])
 
@@ -416,7 +408,6 @@ iso.switch.shiny<-function(data.exp,data2intersect=NULL,mapping,t.start=1,t.end=
         ##intersection points
         iso.inter<-ts.intersection(x1=x1,x2=x2)
         iso.inter<-iso.inter[iso.inter$x.points<t.end & iso.inter$x.points>t.start,]
-
         ##check if have intersection points
         if(is.null(iso.inter))
           next
@@ -433,14 +424,17 @@ iso.switch.shiny<-function(data.exp,data2intersect=NULL,mapping,t.start=1,t.end=
 
         iso.inter<-data.frame(iso1=iso1,iso2=iso2,t(iso.inter))
         colnames(iso.inter)<-c('iso1','iso2',paste0('switch',1:(ncol(iso.inter)-2)))
+
         iso.intersections<-c(iso.intersections,setNames(object = list(iso.inter),nm = paste0(iso1,'_vs_',iso2)))
       }
-
+      
       incProgress(1/length(genes), detail = paste(i, ' of ', length(genes)))
       Sys.sleep(0)
-      setTxtProgressBar(pb, i)
+      if(verbose)
+        setTxtProgressBar(pb, i)
     }
-    close(pb)
+    if(verbose)
+      close(pb)
   })
 
   message(' ',paste0(length(iso.intersections),' pairs of isoforms have intersection points.'))
@@ -456,12 +450,14 @@ iso.switch.shiny<-function(data.exp,data2intersect=NULL,mapping,t.start=1,t.end=
   ##step 2: calculate probablities
 
   iso.names<-names(iso.intersections)
-  time.points<-rep(t.start:t.end,each=nrep)
-  iso.scores<-data.frame()
-  withProgress(message = 'Scoring isoforms: ',value=0,{
-    pb <- txtProgressBar(min = 0, max = length(iso.names), style = 3,width = 75)
-    for(i in 1:length(iso.names)){
 
+  iso.scores<-data.frame()
+
+  withProgress(message = 'Scoring isoforms: ',value=0,{
+    if(verbose)
+      pb <- txtProgressBar(min = 0, max = length(iso.names), style = 3,width = 75)
+    for(i in 1:length(iso.names)){
+      
       #  i=1
       # i=which(grepl('AT1G01060.2_vs_AT1G01060.3',x = iso.names))
       iso<-unlist(strsplit(iso.names[i],'_vs_'))
@@ -472,7 +468,7 @@ iso.switch.shiny<-function(data.exp,data2intersect=NULL,mapping,t.start=1,t.end=
       colnames(n.inters)<-colnames(iso.intersections[[iso.names[i]]])[-c(1:2)]
       inters=as.numeric(n.inters[1,])
 
-      interval=cut(time.points,unique(c(t.start,as.numeric(inters),t.end)),include.lowest = T,dig.lab = 3)
+      interval=cut(times,unique(c(t.start,as.numeric(inters),t.end)),include.lowest = T,dig.lab = 3)
       # sub.data2swith=data.frame(interval=interval,t(data.exp.rank[c(iso1,iso2),]),iso.idx=c(-1,1)[as.numeric(interval)%%2+1])
       sub.data2swith=data.frame(interval=interval,t(data2switch[c(iso1,iso2),]))
       ##add a column of sign of differences
@@ -485,6 +481,7 @@ iso.switch.shiny<-function(data.exp,data2intersect=NULL,mapping,t.start=1,t.end=
       x0<-diff.sign[diff.sign!=0][1]
       #Define scores
 
+
       s<-by(data = sub.data2swith,INDICES =sub.data2swith[,1],FUN = function(x){
         ##score1:
         prob<-length(x[,4][x[,4]==x0])/length(x[,4])
@@ -496,24 +493,12 @@ iso.switch.shiny<-function(data.exp,data2intersect=NULL,mapping,t.start=1,t.end=
         pval<-t.test(x[,3],x[,2],paired = T)$p.value
         pval[is.na(pval)]<-1
         #score4:
-        inter.length<-nrow(x)/nrep
+        # inter.length<-nrow(x)/nrep
 
-        # ##score3:
-        # if(inter.length==1){
-        #   pval<-t.test(x[,3],x[,2],paired = F)$p.value } else {
-        #     t.idx<-paste0('t',rep(1:inter.length,each=nrep))
-        #     data2test<-data.frame(
-        #       rbind(
-        #         data.frame(isoforms='iso1',time=t.idx,value=x[,2]),
-        #         data.frame(isoforms='iso2',time=t.idx,value=x[,3])
-        #       )
-        #     )
-        #     data2test$isoforms<-factor(data2test$isoforms,levels = unique(data2test$isoforms))
-        #     data2test$time<-factor(data2test$time,levels = unique(data2test$time))
-        #     fit<-aov(value~isoforms*time,data2test)
-        #     pval<-summary(fit)[[1]][["Pr(>F)"]][1]
-        #   }
-        # pval[is.na(pval)]<-1
+        y<-as.character(x$interval[1])
+        y<-as.numeric(unlist(strsplit(substr(x = y,start = 2,stop = nchar(y)-1),',',fixed = T)))
+        inter.length<-length(seq(ceiling(y[1]),floor(y[2])))
+
 
         x<-data.frame(prob=prob,diff=diff.mean,pval=pval,inter.length=inter.length)
         x
@@ -555,12 +540,16 @@ iso.switch.shiny<-function(data.exp,data2intersect=NULL,mapping,t.start=1,t.end=
                         prob=score1,diff=score2,cor=cor(as.numeric(data.exp[iso1,]),as.numeric(data.exp[iso2,])),row.names = NULL)
 
       iso.scores<-rbind(score,iso.scores)
+      
       incProgress(1/length(iso.names), detail = paste(i, ' of ', length(iso.names)))
       Sys.sleep(0)
-      setTxtProgressBar(pb, i)
+      if(verbose)
+        setTxtProgressBar(pb, i)
     }
-    close(pb)
+    if(verbose)
+      close(pb)
   })
+  ##sort
   ##sort
   iso.scores<-iso.scores[order(iso.scores$prob,decreasing = T),]
 
@@ -569,5 +558,5 @@ iso.switch.shiny<-function(data.exp,data2intersect=NULL,mapping,t.start=1,t.end=
   message(paste0('Time for analysis: ',round(time.taken,3),' ',attributes(time.taken)$units))
 
   message('Done!!! ')
-  return(data.frame(iso.scores))
+  return(data.frame(iso.scores,row.names = NULL))
 }

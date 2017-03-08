@@ -1,7 +1,7 @@
 #' Fit a time-series with spline curve
 #'
 #' @param x a vector of time-series expression
-#' @param t.start,t.end start and end time points of the time-series data. The time step is assumed to be 1.
+#' @param times a numeric vector of time labellings of all the relicated samples, e.g. 1,1,1,2,2,2,3,3,3,...
 #' @param nrep number of replicates.
 #' @param df degree of freedom used in \code{\link{ns}} in \code{\link{splines}} package.
 #' @param ... additional arguments passed to \code{\link{predict}}.
@@ -13,9 +13,9 @@
 #' @export
 #'
 
-ts.spline<-function(x,t.start,t.end,nrep,df=5,...){
-  df<-min(df,t.end-t.start-1)
-  times<-rep(t.start:t.end,each=nrep)
+ts.spline<-function(x,times,df=5,...){
+  df<-min(df,length(times)-2)
+  times<-as.numeric(times)
   x<-data.frame(times=times,value=as.numeric(x))
   fit<-lm(value~splines::ns(times,df=df),data=x)
   predict(fit,data.frame(times=t.start:t.end),...)

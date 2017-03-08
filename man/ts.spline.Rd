@@ -4,18 +4,18 @@
 \alias{ts.spline}
 \title{Fit a time-series with spline curve}
 \usage{
-ts.spline(x, t.start, t.end, nrep, df = 5, ...)
+ts.spline(x, times, df = 5, ...)
 }
 \arguments{
 \item{x}{a vector of time-series expression}
 
-\item{t.start, t.end}{start and end time points of the time-series data. The time step is assumed to be 1.}
-
-\item{nrep}{number of replicates.}
+\item{times}{a numeric vector of time labellings of all the relicated samples, e.g. 1,1,1,2,2,2,3,3,3,...}
 
 \item{df}{degree of freedom used in \code{\link{ns}} in \code{\link{splines}} package.}
 
 \item{...}{additional arguments passed to \code{\link{predict}}.}
+
+\item{nrep}{number of replicates.}
 }
 \value{
 predictions results returned from \code{\link{predict}}.

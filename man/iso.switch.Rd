@@ -4,18 +4,15 @@
 \alias{iso.switch}
 \title{Isoform switch analysis for time-series data}
 \usage{
-iso.switch(data.exp, mapping, t.start = 1, t.end = 26, nrep = 9,
-  rank = F, min.t.points = 2, min.difference = 1, spline = F,
-  spline.df = NULL, verbose = T)
+iso.switch(data.exp, mapping, times, rank = F, min.t.points = 2,
+  min.difference = 1, spline = F, spline.df = NULL, verbose = T)
 }
 \arguments{
 \item{data.exp}{Time-series isoform expression data with first row indicating the replicate labels and second row indicating the time points. The remained lines are isoform names in the first column followed by the expression values. All the replicates for each time point should be grouped together and the time points follow the sequential order.}
 
 \item{mapping}{gene and isoform mapping table with gene names in first column  and transcript isoform names in the second column}
 
-\item{t.start, t.end}{the start time point and end time point of the time-series. Time points have to be continuous integer, e.g. 1, 2,3, ....}
-
-\item{nrep}{number of replicates for each time point.}
+\item{times}{a numeric vector of time labellings of all the relicated samples, e.g. 1,1,1,2,2,2,3,3,3,...}
 
 \item{rank}{logical (TRUE or FALSE). Should isoform expression be converted to rank of isoform expression in sample basis?}
 
@@ -56,48 +53,48 @@ The detailed steps:
 \if{html}{\figure{figures001.png}{options: width="80\%" alt="Figure: figures_001.png"}}
 \if{latex}{\figure{figures001.pdf}{options: width=7cm}}
 
-\bold{Figure 1:} Isoform switch analysis methods. Expression data with 3 replicates for 
-each condition/time point is simulated for isoforms \eqn{iso_i} and \eqn{iso_j}. 
-The points in the plots represent the samples and the black lines connect the average 
-of samples. (A) is the iso-kTSP algorithm for comparisons of two conditions \eqn{c_1} and \eqn{c_2}. 
-Time-Series Isoform Switch (TSIS) tool is designed for detection and characterization of 
-isoform switches for time series data shown in figure (B). The time-series with 6 time 
+\bold{Figure 1:} Isoform switch analysis methods. Expression data with 3 replicates for
+each condition/time point is simulated for isoforms \eqn{iso_i} and \eqn{iso_j}.
+The points in the plots represent the samples and the black lines connect the average
+of samples. (A) is the iso-kTSP algorithm for comparisons of two conditions \eqn{c_1} and \eqn{c_2}.
+Time-Series Isoform Switch (TSIS) tool is designed for detection and characterization of
+isoform switches for time series data shown in figure (B). The time-series with 6 time
 points is divided into 4 intervals by the intersection points of average expression.
 
 \bold{Step 1: determine switch points.}
 
-Given that a pair of isoforms \eqn{iso_i} and \eqn{iso_j} may have a number of switches 
+Given that a pair of isoforms \eqn{iso_i} and \eqn{iso_j} may have a number of switches
 in a time-series, we have offered two approaches to search for the switch time points in TSIS:
 
 \itemize{
-    \item{The first approach takes the average values of the replicates for each time point 
-    for each transcript isoform. Then it searches for the cross points of the average 
+    \item{The first approach takes the average values of the replicates for each time point
+    for each transcript isoform. Then it searches for the cross points of the average
     value of two isoforms across the time points (seen in Figure 1(B)).
     }
-    \item{The second approach uses natural spline curves to fit the time-series data 
+    \item{The second approach uses natural spline curves to fit the time-series data
     for each transcript isoform and find cross points
       of the fitted curves for each pair of isoforms.
    }
 }
 
-In most cases, these two methods produce very similar results. However, average values 
-of expression may lose precision without having information of backward and forward time points. 
-The spline method fit time-series of expression with control points (depending on spline 
-degree of freedom provided) and weights of several neighbours to obtain designed precision 
-(Hastie and Tibshirani, 1990). The spline method is useful to find global trends in the time-series data 
-when the data is very noisy. But it may lack details of isoform switch in the local region. 
-It is recommended that users use both average and spline method to search for the switch 
+In most cases, these two methods produce very similar results. However, average values
+of expression may lose precision without having information of backward and forward time points.
+The spline method fit time-series of expression with control points (depending on spline
+degree of freedom provided) and weights of several neighbours to obtain designed precision
+(Hastie and Tibshirani, 1990). The spline method is useful to find global trends in the time-series data
+when the data is very noisy. But it may lack details of isoform switch in the local region.
+It is recommended that users use both average and spline method to search for the switch
 points and examine manually when inconsistent results were produced by the above two methods.
 
 
 \bold{Step 2: define switch scoring measures}
 
-We define each transcript isoform switch by 1) the switch point \eqn{P_i}, 
-2) time points between switch points \eqn{P_(i-1)}  and \eqn{P_i}  as interval  \eqn{I_1}  
-before switch \eqn{P_i}  and 3) time points between switch points \eqn{P_i}  and \eqn{P_(i+1)}  
-as interval \eqn{I_2}  after the switch \eqn{P_i}  (see Figure 1(B)). We defined five measurements 
-to characterize each isoform switch. The first two are the probability/frequency of switch and 
-the sum of average sample differences before and after switch, which are similar to Score 1 and 
+We define each transcript isoform switch by 1) the switch point \eqn{P_i},
+2) time points between switch points \eqn{P_(i-1)}  and \eqn{P_i}  as interval  \eqn{I_1}
+before switch \eqn{P_i}  and 3) time points between switch points \eqn{P_i}  and \eqn{P_(i+1)}
+as interval \eqn{I_2}  after the switch \eqn{P_i}  (see Figure 1(B)). We defined five measurements
+to characterize each isoform switch. The first two are the probability/frequency of switch and
+the sum of average sample differences before and after switch, which are similar to Score 1 and
 Score 2 in iso-kTSP method (Sebestyen, et al., 2015) (see Figure 1(A))).
 
 \itemize{

@@ -5,12 +5,12 @@
 \title{Plot time-series switches of a pair of isoforms}
 \usage{
 plotTSIS(data2plot, scores = NULL, iso1 = NULL, iso2 = NULL,
-  gene.name = NULL, y.lab = "Expression", make.plotly = F, t.start = 1,
-  t.end = 26, nrep = 9, prob.cutoff = 0.5, x.lower.boundary = 9,
-  x.upper.boundary = 17, show.region = T, show.scores = T,
-  error.type = "stderr", show.errorbar = T, errorbar.width = 0.2,
-  errorbar.size = 0.5, line.width = 1, point.size = 3, marker.size = 1,
-  spline = F, spline.df = NULL, ribbon.plot = F)
+  gene.name = NULL, y.lab = "Expression", make.plotly = F, times,
+  prob.cutoff = 0.5, x.lower.boundary = 9, x.upper.boundary = 17,
+  show.region = T, show.scores = T, error.type = "stderr",
+  show.errorbar = T, errorbar.width = 0.2, errorbar.size = 0.5,
+  line.width = 1, point.size = 3, marker.size = 1, spline = F,
+  spline.df = NULL, ribbon.plot = F)
 }
 \arguments{
 \item{data2plot}{the transcript isoform expression data for switch plots with rows of isoforms and columns of samples. See \code{TSIS.data$data.exp} for details.}
@@ -27,9 +27,7 @@ the input \code{data2plot} must be a data frame of two rows and the row names ar
 
 \item{make.plotly}{logical, to plot \code{\link{plotly}} format figures (TRUE) or ggplot2 format figures(FALSE)?. See details in \code{\link{ggplotly}} in \code{\link{plotly}} R pacakge.}
 
-\item{t.start, t.end}{the start time point and end time point of the time-series. Time points have to be continuous integer, e.g. 1, 2,3, ....}
-
-\item{nrep}{number of replicates.}
+\item{times}{a numeric vector of time labellings of all the relicated samples, e.g. 1,1,1,2,2,2,3,3,3,...}
 
 \item{prob.cutoff}{the cut-off of switch frequencies/probabilities to label the switch points.}
 
@@ -67,12 +65,12 @@ set.seed(100)
 data2plot<-data.frame(matrix(abs(rnorm(60)),nrow=2),row.names = c('iso1','iso2'))
 #error bar plot
 plotTSIS(data2plot=data2plot,scores=NULL,iso1=NULL,iso2=NULL,gene.name=NULL,
-        y.lab='Expression',make.plotly=F,t.start=1,t.end=10,nrep=3,prob.cutoff=0.5,x.lower.boundary=3,
+        y.lab='Expression',make.plotly=F,times=rep(1:10,each=3),prob.cutoff=0.5,x.lower.boundary=3,
         x.upper.boundary=8,show.region=T,error.type='stderr',ribbon.plot = F)
 
 #ribbon plot
 plotTSIS(data2plot=data2plot,scores=NULL,iso1=NULL,iso2=NULL,gene.name=NULL,
-         y.lab='Expression',make.plotly=F,t.start=1,t.end=10,nrep=3,prob.cutoff=0.5,x.lower.boundary=3,
+         y.lab='Expression',make.plotly=F,times=rep(1:10,each=3),prob.cutoff=0.5,x.lower.boundary=3,
          x.upper.boundary=8,show.region=T,error.type='stderr',ribbon.plot = T)
 
 }

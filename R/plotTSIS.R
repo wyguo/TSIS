@@ -8,8 +8,7 @@
 #' @param gene.name a character string of gene name to show as the title of the plot. If \code{gene.name=NULL}, the plot title will be "iso1_vs_iso2".
 #' @param y.lab the y axis label of the plot, default is "Expression".
 #' @param make.plotly logical, to plot \code{\link{plotly}} format figures (TRUE) or ggplot2 format figures(FALSE)?. See details in \code{\link{ggplotly}} in \code{\link{plotly}} R pacakge.
-#' @param t.start,t.end the start time point and end time point of the time-series. Time points have to be continuous integer, e.g. 1, 2,3, ....
-#' @param nrep number of replicates.
+#' @param times a numeric vector of time labellings of all the relicated samples, e.g. 1,1,1,2,2,2,3,3,3,...
 #' @param prob.cutoff the cut-off of switch frequencies/probabilities to label the switch points.
 #' @param x.lower.boundary,x.upper.boundary Specifies the time frame of interest to investigate the isoform switches.
 #' @param show.region logical, to highlight the time frame under investigation (TRUE) or not (FALSE)?
@@ -32,12 +31,12 @@
 #' data2plot<-data.frame(matrix(abs(rnorm(60)),nrow=2),row.names = c('iso1','iso2'))
 #' #error bar plot
 #' plotTSIS(data2plot=data2plot,scores=NULL,iso1=NULL,iso2=NULL,gene.name=NULL,
-#'         y.lab='Expression',make.plotly=F,t.start=1,t.end=10,nrep=3,prob.cutoff=0.5,x.lower.boundary=3,
+#'         y.lab='Expression',make.plotly=F,times=rep(1:10,each=3),prob.cutoff=0.5,x.lower.boundary=3,
 #'         x.upper.boundary=8,show.region=T,error.type='stderr',ribbon.plot = F)
 #'
 #' #ribbon plot
 #' plotTSIS(data2plot=data2plot,scores=NULL,iso1=NULL,iso2=NULL,gene.name=NULL,
-#'          y.lab='Expression',make.plotly=F,t.start=1,t.end=10,nrep=3,prob.cutoff=0.5,x.lower.boundary=3,
+#'          y.lab='Expression',make.plotly=F,times=rep(1:10,each=3),prob.cutoff=0.5,x.lower.boundary=3,
 #'          x.upper.boundary=8,show.region=T,error.type='stderr',ribbon.plot = T)
 #'
 #' @return a ggplot2 or \code{\link{ggplotly}} (if \code{plotly=TRUE}) plot.
@@ -46,7 +45,7 @@
 #' @seealso \code{\link{ggplotly}}, \code{\link{iso.switch}}, \code{\link{score.filter}}, \code{\link{data.error}}, \code{\link{geom_smooth}}, \code{\link{ns}}
 #'
 plotTSIS<-function(data2plot,scores=NULL,iso1=NULL,iso2=NULL,gene.name=NULL,y.lab='Expression',make.plotly=F,
-                  t.start=1,t.end=26,nrep=9,prob.cutoff=0.5,x.lower.boundary=9,x.upper.boundary=17,show.region=T,show.scores=T,
+                  times,prob.cutoff=0.5,x.lower.boundary=9,x.upper.boundary=17,show.region=T,show.scores=T,
                   error.type='stderr',show.errorbar=T,errorbar.width=0.2,errorbar.size=0.5,line.width=1,
                   point.size=3,marker.size=1,
                   spline=F,spline.df=NULL,ribbon.plot=F){
@@ -54,7 +53,7 @@ plotTSIS<-function(data2plot,scores=NULL,iso1=NULL,iso2=NULL,gene.name=NULL,y.la
   require(ggplot2)
 
   if(is.null(spline.df))
-    spline.df<-floor((t.end-t.start)*2/3)
+    spline.df<-floor((unique(times)-2)*2/3)
 
   gg_color_hue <- function(n) {
     hues = seq(15, 375, length = n + 1)
@@ -74,12 +73,9 @@ plotTSIS<-function(data2plot,scores=NULL,iso1=NULL,iso2=NULL,gene.name=NULL,y.la
 
   if(is.null(gene.name))
     gene.name<-paste0(iso1,'_vs_',iso2)
-  ##arange the input data to plot data
-  colnames(data2plot)<-paste0(rep(t.start:t.end,each=nrep),'_',rep(1:nrep,(t.end-t.start+1)))
-  data2plot<-reshape2::melt(as.matrix(data2plot))
-  idx<-do.call(rbind,strsplit(as.vector(data2plot[,2]),split = '_'))
-  data2plot<-data.frame(isoforms=data2plot[,1],times=as.numeric(idx[,1]),reps=as.numeric(idx[,2]),value=data2plot[,3])
 
+  data2plot<-data.frame(rbind(data.frame(isoforms=iso1,times=times,value=as.numeric(data2plot[iso1,])),
+                              data.frame(isoforms=iso2,times=times,value=as.numeric(data2plot[iso2,]))))
   ##ribbon plot
   if(ribbon.plot){
     if(spline){
@@ -100,9 +96,9 @@ plotTSIS<-function(data2plot,scores=NULL,iso1=NULL,iso2=NULL,gene.name=NULL,y.la
   } else{
     if(spline){
       values<-by(data2plot$value,INDICES = data2plot$isoforms,simplify = T,
-                 FUN = function(x) ts.spline(x,t.start = t.start,t.end = t.end,nrep = nrep,df=spline.df,se.fit=T))
-      x1=data.frame(mean.Group.1=paste0(iso1,'_at_',t.start:t.end),mean.x=values[[iso1]]$fit,error=values[[iso1]]$se.fit)
-      x2=data.frame(mean.Group.1=paste0(iso2,'_at_',t.start:t.end),mean.x=values[[iso2]]$fit,error=values[[iso2]]$se.fit)
+                 FUN = function(x) ts.spline(x,times = times,df=spline.df,se.fit=T))
+      x1=data.frame(mean.Group.1=paste0(iso1,'_at_',unique(times)),mean.x=values[[iso1]]$fit,error=values[[iso1]]$se.fit)
+      x2=data.frame(mean.Group.1=paste0(iso2,'_at_',unique(times)),mean.x=values[[iso2]]$fit,error=values[[iso2]]$se.fit)
       data2plot<-rbind(x1,x2)
     } else {
       data2plot<-with(data2plot,{

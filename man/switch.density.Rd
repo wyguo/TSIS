@@ -4,14 +4,13 @@
 \alias{switch.density}
 \title{Density plot}
 \usage{
-switch.density(x, t.start = 1, t.end = 26, make.plotly = T,
-  plot.type = "density", show.line = T,
-  title = "Density of switch points", ...)
+switch.density(x, time.points, make.plotly = T, plot.type = "density",
+  show.line = T, title = "Density of switch points", ...)
 }
 \arguments{
 \item{x}{a numeric vector to plot th density.}
 
-\item{t.start, t.end}{start and end time points. Time step is assumed to be 1.}
+\item{time.points}{a numeric vector of the time points of time-series, e.g. 1,2,3,...}
 
 \item{make.plotly}{logical, to plot \code{\link{plotly}} format figures (TRUE)
 or general plot (FALSE)?. See details in \code{\link{ggplotly}} in \code{\link{plotly}} R pacakge.}
