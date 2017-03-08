@@ -88,6 +88,7 @@
 #' @references
 #'   1. Sebestyen E, Zawisza M, Eyras E: Detection of recurrent alternative splicing switches in tumor samples reveals novel signatures of cancer.
 #'   Nucleic Acids Res 2015, 43(3):1345-1356.
+#'   
 #'   2. Hastie, T.J. and Tibshirani, R.J. Generalized additive models. Chapter 7 of Statistical Models in S eds. Wadsworth & Brooks/Cole 1990.
 #'
 #' @return  a data frame of scores. The column names:
