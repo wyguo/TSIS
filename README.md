@@ -59,7 +59,7 @@ $|I_k|$ is the number of samples in interval $I_k$ and $exp(iso_i|s_{m_{I_k}},I_
 - Metric 4 is a measure of whether the effect of the switch is transient or long lived. It indicates the number of time-points in the flanking intervals $I_1$ and $I_2$. 
 - Metric 5: Isoforms with high negative correlations across the time-points may identify important regulation in alternative splicing. Thus we also calculated the Pearson correlation of two isoforms across the whole time-series.  .  
  
-#Installation and loading
+# Installation and loading
 
 ## Check before installation 
 Due to an issue with [devtools](https://cran.r-project.org/web/packages/devtools/index.html), if R software is installed in a directory whose name has a space character in it, e.g. in "C:\\Program Files", users may get error message "'C:\\Program' is not recognized as an internal or external command". This issue has to be solved by making sure that R is installed in a directory whose name has no space characters. Users can check the R installation location by typing
@@ -95,7 +95,7 @@ TSIS.data.example()
 ```
 The data will be saved in a folder "example data" in the working directory. <a href="#fig3">Figure 3</a> shows the examples of input data in csv format. 
 
-#TSIS Shiny App 
+# TSIS Shiny App 
 To make the implementation more user friendly, TSIS analysis is integrated into a [Shiny App](https://shiny.rstudio.com/) ([Chang, et al., 2016](https://shiny.rstudio.com/)). By typing 
 
 ```r
@@ -106,7 +106,7 @@ in R console after loading TSIS package, where “data.size.max” is the maximu
 ## Tab panel 1: Manual
 The first tab panel includes this user manual.
 
-##Tab panel 2: Isoform switch analysis
+## Tab panel 2: Isoform switch analysis
 There are four sections in this panel (see <a href="#fig2">Figure 2</a>).), namely Input data files, Parameter settings, Density/Frequency of switch and output metrics table of isoform switch.
 
 <br>
@@ -116,7 +116,7 @@ There are four sections in this panel (see <a href="#fig2">Figure 2</a>).), name
 
 **Figure 2:** Second tab panel in TSIS Shiny App. (A) is the three tab panels of the app; (B) is the data input interface; (C) is the interface for TSIS parameter setting; (D) provides the density/frequency plots of isoform switch time and (E) shows the output of TSIS analysis.
 
-###Input data files
+### Input data files
 Three *.csv format input files can be provided for [TSIS](https://github.com/wyguo/TSIS) analysis. 
 
 - Time-series isoform expression data with first row indicating the replicate labels and second row indicating the time-points. The remaining lines are isoform names in the first column followed by the expression values (see <a href="#fig3">Figure 3(A)</a>).
@@ -128,7 +128,7 @@ Three *.csv format input files can be provided for [TSIS](https://github.com/wyg
 
 ![](https://github.com/wyguo/TSIS/blob/master/vignettes/fig/figures_003.png)
 
-**Figure 3: ** The format of input csv files for (A) transcript isoform expression, (B) two column table of gene-isoform mapping and (C) A list of isoform names of interest.
+**Figure 3:** The format of input csv files for (A) transcript isoform expression, (B) two column table of gene-isoform mapping and (C) A list of isoform names of interest.
 
 <a href="#fig2">Figure 2(B)</a>  and <a href="#fig4">Figure 4(A)</a> shows the data input interface for time-series isoform expression and gene-isoform mapping. By clicking the "Browse…" button, a window is open for data loading (see <a href="#fig4">Figure 4(B)</a>). Users can use the interface shown in <a href="#fig4">Figure 4(C)</a>  to load the names of subset of isoforms. 
 
@@ -137,9 +137,9 @@ Three *.csv format input files can be provided for [TSIS](https://github.com/wyg
 
 ![](https://github.com/wyguo/TSIS/blob/master/vignettes/fig/figures_004.png)
 
-**Figure 4: ** Interface for input information. (A) Input transcript isoform expression and gene-isoform mapping data, (B) is an opened window to select files after clicking “Browser” and (C) is the interface to load isoform names of interest.
+**Figure 4:** Interface for input information. (A) Input transcript isoform expression and gene-isoform mapping data, (B) is an opened window to select files after clicking “Browser” and (C) is the interface to load isoform names of interest.
 
-###Parameter settings
+### Parameter settings
 
 #### Scoring parameters
 
@@ -220,6 +220,7 @@ scores.mean2int<-iso.switch(data.exp=data.exp,mapping =mapping,
 ```
 
 <br>
+
 **Example 2: search intersection points with spline method**
 
 ```r
@@ -230,7 +231,7 @@ scores.spline2int<-iso.switch(data.exp=data.exp,mapping =mapping,
                      spline.df = 10,verbose = F)
 ```
 
-##Filtering
+## Filtering
 **Example 1: general filtering with cut-offs**
 
 
@@ -258,6 +259,7 @@ scores.spline2int.filtered<-score.filter(
 ```
 
 <br>
+
 **Example 2: only show subset of results according to an isoform list**
 
 
@@ -276,6 +278,7 @@ scores.mean2int.filtered.subset<-score.filter(
 ```
 
 <br>
+
 **Example 3: only show results of the most abundant transcript within a gene**
 
 
@@ -288,9 +291,9 @@ scores.mean2int.filtered.maxratio<-score.filter(
 )
 ```
 
-##Make plots
+## Make plots
 
-###Switch time points density/frequency
+### Switch time points density/frequency
 
 
 ```r
@@ -304,7 +307,7 @@ g2<-switch.density(scores.mean2int.filtered$x.value,make.plotly = F,
 gridExtra::grid.arrange(g1,g2,ncol=2)
 ```
 
-###Error bar plot
+### Error bar plot
 
 <br>
 <h2 id="fig9"> </h2>
@@ -331,7 +334,7 @@ plotTSIS(data2plot = data.exp,scores = scores.mean2int.filtered,
 ![](https://github.com/wyguo/TSIS/blob/master/vignettes/fig/figures_010.png)
 
 
-###Ribbon plot
+### Ribbon plot
 
 
 ```r
