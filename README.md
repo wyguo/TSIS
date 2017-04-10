@@ -352,7 +352,8 @@ plotTSIS(data2plot = data.exp,scores = scores.mean2int.filtered,
 ![](https://github.com/wyguo/TSIS/blob/master/vignettes/fig/figures_010.png)
 
 
-#References
+# References
+
 Chang, W., et al. 2016. shiny: Web Application Framework for R. https://CRAN.R-project.org/package=shiny
 
 Hastie, T.J. and Tibshirani, R.J. Generalized additive models. Chapter 7 of Statistical Models in S eds. Wadsworth & Brooks/Cole 1992.
