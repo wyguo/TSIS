@@ -307,7 +307,6 @@ g2<-switch.density(scores.mean2int.filtered$x.value,make.plotly = F,
 gridExtra::grid.arrange(g1,g2,ncol=2)
 ```
 
-### Error bar plot
 
 <br>
 <h2 id="fig9"> </h2>
@@ -315,6 +314,7 @@ gridExtra::grid.arrange(g1,g2,ncol=2)
 ![](https://github.com/wyguo/TSIS/blob/master/vignettes/fig/figures_009.png)
 
 
+### Error bar plot
 
 ```r
 plotTSIS(data2plot = data.exp,scores = scores.mean2int.filtered,
