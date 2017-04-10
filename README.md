@@ -31,7 +31,6 @@ subtitle: User manual
 </p>
 
 
-![](https://github.com/wyguo/TSIS/blob/master/vignettes/fig/figures_001.png)
 
 **Figure 1:**  Isoform switch analysis methods. Expression data with 3 replicates for each condition/time-point is simulated for isoforms $iso_i$  and $iso_j$ (blue and red circles). The points in the plots represent the samples and the black lines connect the average of samples. (A) is the iso-kTSP algorithm for comparisons of two conditions $c_1$  and $c_2$. The Time-Series Isoform Switch (TSIS) tool is designed for detection and characterization of isoform switches for time series data shown in (B). The time-series with 6 time-points is divided into 4 intervals by the intersection points of average expression.
 
@@ -116,6 +115,7 @@ There are four sections in this panel (see <a href="#fig2">Figure 2</a>).), name
 
 <br>
 <h2 id="fig2"> </h2>
+
 ![](https://github.com/wyguo/TSIS/blob/master/vignettes/fig/figures_002.png)
 
 **Figure 2:** Second tab panel in TSIS Shiny App. (A) is the three tab panels of the app; (B) is the data input interface; (C) is the interface for TSIS parameter setting; (D) provides the density/frequency plots of isoform switch time and (E) shows the output of TSIS analysis.
