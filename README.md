@@ -22,11 +22,11 @@ subtitle: User manual
 
 
 #Description
-
 [TSIS](https://github.com/wyguo/TSIS) is an R package for detecting transcript isoform switches in time-series data. Transcript isoform switches occur when a pair of alternatively spliced isoforms reverse the order of their relative expression levels as shown in <a href="#fig1">Figure 1</a>. TSIS characterizes the transcript switch by 1) defining the isoform switch time-points for any pair of transcript isoforms within a gene, 2) describing the switch using five different features or metrics, 3) filtering the results with user’s specifications and 4) visualizing the results using different plots for the user to examine further details of the switches. All the functions are available in the forms of a graphic interface implemented by [Shiny App](https://shiny.rstudio.com/)  (a web application framework for R) ([Chang, et al., 2016](https://shiny.rstudio.com/)), in which users can implement the analysis easily. The tool can also be run using command lines without graphic interface. This tutorial will cover both in the following sections.
 
 <h2 id="fig1"> </h2>
-<p><a href="/bartongroup/RATS/blob/master/vignettes/fig/rats.png" target="_blank"><img src="/bartongroup/RATS/raw/master/vignettes/fig/rats.png" alt="" style="max-width:100%;"></a></p>
+
+![](https://github.com/wyguo/TSIS/blob/master/vignettes/fig/figures_001.png)
 
 **Figure 1:**  Isoform switch analysis methods. Expression data with 3 replicates for each condition/time-point is simulated for isoforms $iso_i$  and $iso_j$ (blue and red circles). The points in the plots represent the samples and the black lines connect the average of samples. (A) is the iso-kTSP algorithm for comparisons of two conditions $c_1$  and $c_2$. The Time-Series Isoform Switch (TSIS) tool is designed for detection and characterization of isoform switches for time series data shown in (B). The time-series with 6 time-points is divided into 4 intervals by the intersection points of average expression.
 
@@ -111,6 +111,7 @@ There are four sections in this panel (see <a href="#fig2">Figure 2</a>).), name
 
 <br>
 <h2 id="fig2"> </h2>
+
 ![](https://github.com/wyguo/TSIS/blob/master/vignettes/fig/figures_002.png)
 
 **Figure 2:** Second tab panel in TSIS Shiny App. (A) is the three tab panels of the app; (B) is the data input interface; (C) is the interface for TSIS parameter setting; (D) provides the density/frequency plots of isoform switch time and (E) shows the output of TSIS analysis.
@@ -124,6 +125,7 @@ Three *.csv format input files can be provided for [TSIS](https://github.com/wyg
 
 <br>
 <h2 id="fig3"> </h2>
+
 ![](https://github.com/wyguo/TSIS/blob/master/vignettes/fig/figures_003.png)
 
 **Figure 3: ** The format of input csv files for (A) transcript isoform expression, (B) two column table of gene-isoform mapping and (C) A list of isoform names of interest.
@@ -132,6 +134,7 @@ Three *.csv format input files can be provided for [TSIS](https://github.com/wyg
 
 <br>
 <h2 id="fig4"> </h2>
+
 ![](https://github.com/wyguo/TSIS/blob/master/vignettes/fig/figures_004.png)
 
 **Figure 4: ** Interface for input information. (A) Input transcript isoform expression and gene-isoform mapping data, (B) is an opened window to select files after clicking “Browser” and (C) is the interface to load isoform names of interest.
@@ -147,6 +150,7 @@ The section in <a href="#fig2">Figure 2(C)</a> and <a href="#fig5">Figure 5</a> 
 
 <br>
 <h2 id="fig5"> </h2>
+
 ![](https://github.com/wyguo/TSIS/blob/master/vignettes/fig/figures_005.png)
 
 **Figure 5:** TSIS parameter setting section. (A) is the input interface for setting parameters for scoring ; (B) is the process tracking bars and (C) is the interface for setting parameters for filtering.
@@ -158,6 +162,7 @@ Note: The plot is made by using [plotly]( https://plot.ly/r/) R package. Users c
 
 <br>
 <h2 id="fig6"> </h2>
+
 ![](https://github.com/wyguo/TSIS/blob/master/vignettes/fig/figures_006.png)
 
 **Figure 6:** Switch time (A) frequency and (B) density plot interface.
@@ -167,6 +172,7 @@ The output of TSIS analysis can be displayed and exported after scoring or filte
 
 <br>
 <h2 id="fig7"> </h2>
+
 ![](https://github.com/wyguo/TSIS/blob/master/vignettes/fig/figures_007.png)
 
 
@@ -176,6 +182,7 @@ The output of TSIS analysis can be displayed and exported after scoring or filte
 
 <br>
 <h2 id="fig8"> </h2>
+
 ![](https://github.com/wyguo/TSIS/blob/master/vignettes/fig/figures_008.png)
 
 **Figure 8:** The third tab panel of TSIS Shiny App. (A) is the switch plot section by providing a pair of isoform names. (B) is used to save top n plot into a local folder.
@@ -301,6 +308,7 @@ gridExtra::grid.arrange(g1,g2,ncol=2)
 
 <br>
 <h2 id="fig9"> </h2>
+
 ![](https://github.com/wyguo/TSIS/blob/master/vignettes/fig/figures_009.png)
 
 
@@ -319,6 +327,7 @@ plotTSIS(data2plot = data.exp,scores = scores.mean2int.filtered,
 
 <br>
 <h2 id="fig9"> </h2>
+
 ![](https://github.com/wyguo/TSIS/blob/master/vignettes/fig/figures_010.png)
 
 
@@ -339,6 +348,7 @@ plotTSIS(data2plot = data.exp,scores = scores.mean2int.filtered,
 
 <br>
 <h2 id="fig10"> </h2>
+
 ![](https://github.com/wyguo/TSIS/blob/master/vignettes/fig/figures_010.png)
 
 
