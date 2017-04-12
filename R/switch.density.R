@@ -4,7 +4,9 @@
 #' @param time.points a numeric vector of the time points of time-series, e.g. 1,2,3,...
 #' @param make.plotly logical, to plot \code{\link{plotly}} format figures (TRUE)
 #' or general plot (FALSE)?. See details in \code{\link{ggplotly}} in \code{\link{plotly}} R pacakge.
-#' @param plot.type the plot types. Options are "Density_line" for density line plot, "Density_bar" for density bar plot and "Frequency_bar" for frequency bar plot.
+#' @param plot.type the plot types. Options are "density" for density bar plot and "frequency" for frequency bar plot.
+#' @param show.line logical, to show density or frequency line or not?
+#' @param titile the title of the plot.
 #' @param ... additional parameters pass to \code{\link{density}}
 #'
 #' @return density plot in ggplot2 format or \code{\link{plotly}} format if \code{make.plotly=T}
@@ -15,10 +17,6 @@
 
 
 switch.density<-function(x,time.points,make.plotly=T,plot.type='density',show.line=T,title="Density of switch points",...){
-
-   ##create density/frequency lines
-  if(show.line)
-    y.line<-hist(x,breaks = 1000*(length(time.points)-1),plot = F)
 
   ##plot type
   plot.type<-match.arg(plot.type,c('density','frequency'))

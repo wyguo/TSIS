@@ -15,9 +15,13 @@ switch.density(x, time.points, make.plotly = T, plot.type = "density",
 \item{make.plotly}{logical, to plot \code{\link{plotly}} format figures (TRUE)
 or general plot (FALSE)?. See details in \code{\link{ggplotly}} in \code{\link{plotly}} R pacakge.}
 
-\item{plot.type}{the plot types. Options are "Density_line" for density line plot, "Density_bar" for density bar plot and "Frequency_bar" for frequency bar plot.}
+\item{plot.type}{the plot types. Options are "density" for density bar plot and "frequency" for frequency bar plot.}
+
+\item{show.line}{logical, to show density or frequency line or not?}
 
 \item{...}{additional parameters pass to \code{\link{density}}}
+
+\item{titile}{the title of the plot.}
 }
 \value{
 density plot in ggplot2 format or \code{\link{plotly}} format if \code{make.plotly=T}
