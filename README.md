@@ -46,7 +46,7 @@ $$S_1 (iso_i,iso_j |I_1,I_2)=|p(iso_i > iso_j |I_1)+p(iso_i < iso_j |I_2)-1|$$
 
 ![](http://latex.codecogs.com/gif.latex?S_1%20%28iso_i%2Ciso_j%20%7CI_1%2CI_2%29%3D%7Cp%28iso_i%20%3E%20iso_j%20%7CI_1%29&plus;p%28iso_i%20%3C%20iso_j%20%7CI_2%29-1%7C)
 
-Where $p(iso_i>iso_j │I_1)$ and $p(iso_i<iso_j │I_2)$ are the frequencies/probabilities that the samples of one isoform is greater or less than in the other in corresponding intervals.
+   Where $p(iso_i>iso_j │I_1)$ and $p(iso_i<iso_j │I_2)$ are the frequencies/probabilities that the samples of one isoform is greater or    less than in the other in corresponding intervals.
 
 - Metric 2: Instead of rank differences as in [iso-kTSP](https://bitbucket.org/regulatorygenomicsupf/iso-ktsp) to avoid possible ties, we directly use the average abundance differences. The sum of mean differences of samples in intervals $I_1$ and $I_2$ are calculated as 
 $$S_2 (iso_i,iso_j |I_1,I_2)=d(iso_i,iso_j│I_1 )+d(iso_i,iso_j |I_2)$$
