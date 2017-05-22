@@ -4,6 +4,7 @@ author: "Wenbin Guo"
 date: '2017-03-08'
 output:
   html_document:
+    mathjax: local
     code_folding: show
     fig_caption: yes
     highlight: textmate
