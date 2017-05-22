@@ -42,22 +42,19 @@ In most cases, these two methods produce very similar results. However, average 
 We define each transcript isoform switch by 1) the switch point $P_i$  , 2) time-points between switch points $P_{i-1}$  and $P_i$  as interval  $I_1$  before switch $P_i$  and 3) time-points between switch points $P_i$  and $P_{i+1}$  as interval $I_2$  after the switch $P_i$  (see <a href="#fig1">Figure 1(B)</a>). We defined five measurements or metrics to characterize each isoform switch. Metric 1: $S_1$  represents the probability of the abundance switch and is calculated as the sum of the frequencies of two possible scenarios that one isoform is more or less abundant than the other in the two intervals adjacent to a switch point, as used in [iso-kTSP](https://bitbucket.org/regulatorygenomicsupf/iso-ktsp). Metric 2 indicates the effect of the switch and is the sum of the average sample differences before and after the switch. Higher values mean larger changes in abundances before and after the switch. These metrics are similar to Score 1 and Score 2 in [iso-kTSP](https://bitbucket.org/regulatorygenomicsupf/iso-ktsp) method [(Sebestyen, et al., 2015)]( http://nar.oxfordjournals.org/content/early/2015/01/10/nar.gku1392.full.pdf) (see <a href="#fig1">Figure 1(A)</a>)).
 
 - Metric 1: For a switch point $P_i$  of two isoforms $iso_i$  and $iso_j$  with interval $I_1$  before the switch and  interval $I_2$  after the switch (<a href="#fig1">Figure1 (B)</a>), Score 1 is defined as 
-<br>
 $$S_1 (iso_i,iso_j |I_1,I_2)=|p(iso_i > iso_j |I_1)+p(iso_i < iso_j |I_2)-1|$$
-
 Where $p(iso_i>iso_j │I_1)$ and $p(iso_i<iso_j │I_2)$ are the frequencies/probabilities that the samples of one isoform is greater or less than in the other in corresponding intervals.
 
 - Metric 2: Instead of rank differences as in [iso-kTSP](https://bitbucket.org/regulatorygenomicsupf/iso-ktsp) to avoid possible ties, we directly use the average abundance differences. The sum of mean differences of samples in intervals $I_1$ and $I_2$ are calculated as 
-<br>
 $$S_2 (iso_i,iso_j |I_1,I_2)=d(iso_i,iso_j│I_1 )+d(iso_i,iso_j |I_2)$$
-<br>
 Where $d(iso_i,iso_j|I_k)$ is the average expression difference in interval $I_k, k=1,2$ defined as
-<br>
 $$d(iso_i, iso_j|I_k)=\frac{1}{|I_k|}\sum_{m_{I_k}}\left|exp(iso_i|s_{m_{I_k}},I_k)-exp(iso_j|s_{m_{I_k}},I_k)\right|$$
-<br>
 $|I_k|$ is the number of samples in interval $I_k$ and $exp(iso_i|s_{m_{I_k}},I_k)$ is the expression of $iso_i$ of sample $s_{m_{I_k}}$ in interval $I_k$.
+
 - Metric 3 measures the significance of the differences between the isoform abundances in the intervals before and after the switch using paired t-tests to generate p-values for each interval.
+
 - Metric 4 is a measure of whether the effect of the switch is transient or long lived. It indicates the number of time-points in the flanking intervals $I_1$ and $I_2$. 
+
 - Metric 5: Isoforms with high negative correlations across the time-points may identify important regulation in alternative splicing. Thus we also calculated the Pearson correlation of two isoforms across the whole time-series.  .  
  
 # Installation and loading
