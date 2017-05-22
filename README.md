@@ -43,7 +43,7 @@ We define each transcript isoform switch by 1) the switch point $P_i$  , 2) time
 
 - Metric 1: For a switch point $P_i$  of two isoforms $iso_i$  and $iso_j$  with interval $I_1$  before the switch and  interval $I_2$  after the switch (<a href="#fig1">Figure1 (B)</a>), Score 1 is defined as 
 <br>
-$$S_1 (iso_i,iso_j |I_1,I_2)=|p(iso_i>iso_j |I_1)+p(iso_i<iso_j |I_2)-1|,$$
+$$S_1 (iso_i,iso_j |I_1,I_2)=|p(iso_i > iso_j |I_1)+p(iso_i < iso_j |I_2)-1|$$
 <br>
 Where $p(iso_i>iso_j │I_1)$ and $p(iso_i<iso_j │I_2)$ are the frequencies/probabilities that the samples of one isoform is greater or less than in the other in corresponding intervals.
 - Metric 2: Instead of rank differences as in [iso-kTSP](https://bitbucket.org/regulatorygenomicsupf/iso-ktsp) to avoid possible ties, we directly use the average abundance differences. The sum of mean differences of samples in intervals $I_1$ and $I_2$ are calculated as 
