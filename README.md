@@ -84,7 +84,7 @@ The first tab panel includes this user manual.
 ## Tab panel 2: Isoform switch analysis
 There are four sections in this panel (see <a href="#fig2">Figure 2</a>).), namely Input data files, Parameter settings, Density/Frequency of switch and output metrics table of isoform switch.
 
-<br>
+
 <h2 id="fig2"> </h2>
 
 ![](https://github.com/wyguo/TSIS/blob/master/vignettes/fig/figures_002.png)
@@ -98,7 +98,7 @@ Three *.csv format input files can be provided for [TSIS](https://github.com/wyg
 - Gene and isoform mapping table with gene names in first column  and transcript isoform names in the second column (see <a href="#fig3">Figure 3(B)</a>).
 - Optional. A list of isoform names of interest. Users can output subsets of results by limiting the output to a list of isoforms of interest, for example, protein coding transcripts (see <a href="#fig3">Figure 3(C)</a>).
 
-<br>
+
 <h2 id="fig3"> </h2>
 
 ![](https://github.com/wyguo/TSIS/blob/master/vignettes/fig/figures_003.png)
@@ -107,7 +107,7 @@ Three *.csv format input files can be provided for [TSIS](https://github.com/wyg
 
 <a href="#fig2">Figure 2(B)</a>  and <a href="#fig4">Figure 4(A)</a> shows the data input interface for time-series isoform expression and gene-isoform mapping. By clicking the "Browse…" button, a window is open for data loading (see <a href="#fig4">Figure 4(B)</a>). Users can use the interface shown in <a href="#fig4">Figure 4(C)</a>  to load the names of subset of isoforms. 
 
-<br>
+
 <h2 id="fig4"> </h2>
 
 ![](https://github.com/wyguo/TSIS/blob/master/vignettes/fig/figures_004.png)
@@ -123,7 +123,7 @@ The section in <a href="#fig2">Figure 2(C)</a> and <a href="#fig5">Figure 5</a> 
 #### Filtering parameters
 <a href="#fig5">Figure 5(C)</a> is the interface for output filtering. Users can set cut-offs, such as for the probability/frequency of switch and sum of average differences, to further refine the switch results. The parameter setting details are in the text under the "Filtering" button.
 
-<br>
+
 <h2 id="fig5"> </h2>
 
 ![](https://github.com/wyguo/TSIS/blob/master/vignettes/fig/figures_005.png)
@@ -135,7 +135,7 @@ The isoform switches may occur at different time-points in the time-series. To v
 
 Note: The plot is made by using [plotly]( https://plot.ly/r/) R package. Users can move the mouse around the plot to show plot values and select part of the plot to zoom in. More actions are available by using the tool bar in the top right corner of the plot.
 
-<br>
+
 <h2 id="fig6"> </h2>
 
 ![](https://github.com/wyguo/TSIS/blob/master/vignettes/fig/figures_006.png)
@@ -145,7 +145,7 @@ Note: The plot is made by using [plotly]( https://plot.ly/r/) R package. Users c
 ### Output results of isoform switch
 The output of TSIS analysis can be displayed and exported after scoring or filtering. The columns include the information of isoform names, isoform ratios to genes, the intervals before and after switch, the coordinates of switch points and five measurements to characterize the isoform switch. Table columns can be sorted by clicking the small triangles beside the column names and contents can be searched by typing text in the search box. The explanations for each column are on the top of the table (see <a href="#fig7">Figure 7</a>).
 
-<br>
+
 <h2 id="fig7"> </h2>
 
 ![](https://github.com/wyguo/TSIS/blob/master/vignettes/fig/figures_007.png)
@@ -155,7 +155,7 @@ The output of TSIS analysis can be displayed and exported after scoring or filte
 
 ## Tab panel 3: visualization
 
-<br>
+
 <h2 id="fig8"> </h2>
 
 ![](https://github.com/wyguo/TSIS/blob/master/vignettes/fig/figures_008.png)
@@ -194,7 +194,7 @@ scores.mean2int<-iso.switch(data.exp=data.exp,mapping =mapping,
                      spline.df = 9,verbose = F)
 ```
 
-<br>
+
 
 **Example 2: search intersection points with spline method**
 
@@ -233,7 +233,7 @@ scores.spline2int.filtered<-score.filter(
 )
 ```
 
-<br>
+
 
 **Example 2: only show subset of results according to an isoform list**
 
@@ -252,7 +252,7 @@ scores.mean2int.filtered.subset<-score.filter(
 )
 ```
 
-<br>
+
 
 **Example 3: only show results of the most abundant transcript within a gene**
 
@@ -284,7 +284,7 @@ gridExtra::grid.arrange(g1,g2,ncol=2)
 
 ### Error bar plot
 
-<br>
+
 <h2 id="fig9"> </h2>
 
 ![](https://github.com/wyguo/TSIS/blob/master/vignettes/fig/figures_009.png)
@@ -303,7 +303,7 @@ plotTSIS(data2plot = data.exp,scores = scores.mean2int.filtered,
          errorbar.width = 0.2,spline = F,spline.df = NULL,ribbon.plot = F)
 ```
 
-<br>
+
 <h2 id="fig9"> </h2>
 
 ![](https://github.com/wyguo/TSIS/blob/master/vignettes/fig/figures_010.png)
@@ -324,7 +324,7 @@ plotTSIS(data2plot = data.exp,scores = scores.mean2int.filtered,
          errorbar.width = 0.2,spline = F,spline.df = NULL,ribbon.plot = T)
 ```
 
-<br>
+
 <h2 id="fig10"> </h2>
 
 ![](https://github.com/wyguo/TSIS/blob/master/vignettes/fig/figures_010.png)
