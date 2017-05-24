@@ -24,10 +24,11 @@ subtitle: User manual
 knitr::opts_chunk$set(cache = TRUE,eval=F,echo = T)
 file.type='html'
 ```
-#Description
+# Description
 [TSIS](https://github.com/wyguo/TSIS) is an R package for detecting transcript isoform switches in time-series data. Transcript isoform switches occur when a pair of alternatively spliced isoforms reverse the order of their relative expression levels as shown in <a href="#fig1">Figure 1</a>. TSIS characterizes the transcript switch by 1) defining the isoform switch time-points for any pair of transcript isoforms within a gene, 2) describing the switch using five different features or metrics, 3) filtering the results with user’s specifications and 4) visualizing the results using different plots for the user to examine further details of the switches. All the functions are available in the forms of a graphic interface implemented by [Shiny App](https://shiny.rstudio.com/)  (a web application framework for R) ([Chang, et al., 2016](https://shiny.rstudio.com/)), in which users can implement the analysis easily. The tool can also be run using command lines without graphic interface. This tutorial will cover both in the following sections.
 
 <h2 id="fig1"> </h2>
+
 ```{r,results='asis',echo=F,eval=TRUE}
 if(file.type=='html')
   cat('<img src="fig/figures_001.png" width="900px />')
@@ -56,21 +57,21 @@ We define each transcript isoform switch by 1) the switch point $P_i$  , 2) time
 <br>
 $$S_1 (iso_i,iso_j |I_1,I_2)=|p(iso_i>iso_j |I_1)+p(iso_i<iso_j |I_2)-1|,$$
 <br>
-Where $p(iso_i>iso_j │I_1)$ and $p(iso_i<iso_j │I_2)$ are the frequencies/probabilities that the samples of one isoform is greater or less than in the other in corresponding intervals.
+Where $p(iso_i > iso_j │ I_1)$ and $p(iso_i < iso_j │ I_2)$ are the frequencies/probabilities that the samples of one isoform is greater or less than in the other in corresponding intervals. Metric 1 indicates the probably of the switch, with values ranging from 0 to 1. Higher values indicate a higher chance that there is an isoform switch happened between $I_1$ and $I_2$. 
 - Metric 2: Instead of rank differences as in [iso-kTSP](https://bitbucket.org/regulatorygenomicsupf/iso-ktsp) to avoid possible ties, we directly use the average abundance differences. The sum of mean differences of samples in intervals $I_1$ and $I_2$ are calculated as 
 <br>
-$$S_2 (iso_i,iso_j |I_1,I_2)=d(iso_i,iso_j│I_1 )+d(iso_i,iso_j |I_2)$$
+$$S_2 (iso_i,iso_j | I_1,I_2)=d(iso_i,iso_j │ I_1 )+d(iso_i,iso_j | I_2)$$
 <br>
 Where $d(iso_i,iso_j|I_k)$ is the average expression difference in interval $I_k, k=1,2$ defined as
 <br>
-$$d(iso_i, iso_j|I_k)=\frac{1}{|I_k|}\sum_{m_{I_k}}\left|exp(iso_i|s_{m_{I_k}},I_k)-exp(iso_j|s_{m_{I_k}},I_k)\right|$$
+$$d(iso_i, iso_j|I_k)=\frac{1}{|I_k|}\sum_{m_{I_k}}\left|exp(iso_i | s_{m_{I_k}},I_k)-exp(iso_j | s_{m_{I_k}},I_k)\right|$$
 <br>
-$|I_k|$ is the number of samples in interval $I_k$ and $exp(iso_i|s_{m_{I_k}},I_k)$ is the expression of $iso_i$ of sample $s_{m_{I_k}}$ in interval $I_k$.
-- Metric 3 measures the significance of the differences between the isoform abundances in the intervals before and after the switch using paired t-tests to generate p-values for each interval.
-- Metric 4 is a measure of whether the effect of the switch is transient or long lived. It indicates the number of time-points in the flanking intervals $I_1$ and $I_2$. 
-- Metric 5: Isoforms with high negative correlations across the time-points may identify important regulation in alternative splicing. Thus we also calculated the Pearson correlation of two isoforms across the whole time-series.  .  
+$|I_k|$ is the number of samples in interval $I_k$ and $exp(iso_i|s_{m_{I_k}},I_k)$ is the expression of $iso_i$ of sample $s_{m_{I_k}}$ in interval $I_k$. Metric 2 measures the differences of abundances between the isoforms before and after the switch. Using this metric, the users are able to investigate the isoform switches that are associated with changes of abundances with a certain threshold. Higher abundance differences in both $I_1$ and $I_2$ indicate isoform switches with bigger effects in absolute quantifications.
+- Metric 3 measures the significance of the differences between the isoform abundances in the intervals before and after the switch using paired t-tests to generate p-values for each interval. Small p values indicate significant differences between the isoform quantifications. The isoform switch with small p values in both intervals will be of higher confidence.
+- Metric 4 is a measure of whether the effect of the switch is transient or long lived. It indicates the number of time-points in the flanking intervals $I_1$ and $I_2$. A switch with a short interval (e.g. one time-point) could arise from noisy data, thus the switches with longer intervals indicate real and long lasting changes in alternative splicing regulations.
+- Metric 5: Isoforms with high negative correlations across the time-points may identify important common regulation for both isoforms in alternative splicing. Thus we also calculated the Pearson correlation of two isoforms across the whole time-series. 
  
-#Installation and loading
+# Installation and loading
 
 ## Check before installation 
 Due to an issue with [devtools](https://cran.r-project.org/web/packages/devtools/index.html), if R software is installed in a directory whose name has a space character in it, e.g. in "C:\\Program Files", users may get error message "'C:\\Program' is not recognized as an internal or external command". This issue has to be solved by making sure that R is installed in a directory whose name has no space characters. Users can check the R installation location by typing
@@ -102,7 +103,7 @@ TSIS.data.example()
 ```
 The data will be saved in a folder "example data" in the working directory. <a href="#fig3">Figure 3</a> shows the examples of input data in csv format. 
 
-#TSIS Shiny App 
+# TSIS Shiny App 
 To make the implementation more user friendly, TSIS analysis is integrated into a [Shiny App](https://shiny.rstudio.com/) ([Chang, et al., 2016](https://shiny.rstudio.com/)). By typing 
 ```{r}
 TSIS.app(data.size.max = 100) 
@@ -112,11 +113,12 @@ in R console after loading TSIS package, where “data.size.max” is the maximu
 ## Tab panel 1: Manual
 The first tab panel includes this user manual.
 
-##Tab panel 2: Isoform switch analysis
+## Tab panel 2: Isoform switch analysis
 There are four sections in this panel (see <a href="#fig2">Figure 2</a>).), namely Input data files, Parameter settings, Density/Frequency of switch and output metrics table of isoform switch.
 
 <br>
 <h2 id="fig2"> </h2>
+
 ```{r,results='asis',echo=F,eval=TRUE}
 if(file.type=='html')
   cat('<img src="fig/figures_002.png" width="900px"  />')
@@ -130,7 +132,7 @@ if(file.type=='readme')
 
 **Figure 2:** Second tab panel in TSIS Shiny App. (A) is the three tab panels of the app; (B) is the data input interface; (C) is the interface for TSIS parameter setting; (D) provides the density/frequency plots of isoform switch time and (E) shows the output of TSIS analysis.
 
-###Input data files
+### Input data files
 Three *.csv format input files can be provided for [TSIS](https://github.com/wyguo/TSIS) analysis. 
 
 - Time-series isoform expression data with first row indicating the replicate labels and second row indicating the time-points. The remaining lines are isoform names in the first column followed by the expression values (see <a href="#fig3">Figure 3(A)</a>).
@@ -139,6 +141,7 @@ Three *.csv format input files can be provided for [TSIS](https://github.com/wyg
 
 <br>
 <h2 id="fig3"> </h2>
+
 ```{r,results='asis',echo=F,eval=TRUE}
 if(file.type=='html')
   cat('<img src="fig/figures_003.png" width="900px"  />')
@@ -156,6 +159,7 @@ if(file.type=='readme')
 
 <br>
 <h2 id="fig4"> </h2>
+
 ```{r,results='asis',echo=F,eval=TRUE}
 if(file.type=='html')
   cat('<img src="fig/figures_004.png" width="900px"  />')
@@ -169,7 +173,7 @@ if(file.type=='readme')
 
 **Figure 4: ** Interface for input information. (A) Input transcript isoform expression and gene-isoform mapping data, (B) is an opened window to select files after clicking “Browser” and (C) is the interface to load isoform names of interest.
 
-###Parameter settings
+### Parameter settings
 
 #### Scoring parameters
 
@@ -180,6 +184,7 @@ The section in <a href="#fig2">Figure 2(C)</a> and <a href="#fig5">Figure 5</a> 
 
 <br>
 <h2 id="fig5"> </h2>
+
 ```{r,results='asis',echo=F,eval=TRUE}
 if(file.type=='html')
   cat('<img src="fig/figures_005.png" width="900px"  />')
@@ -200,6 +205,7 @@ Note: The plot is made by using [plotly]( https://plot.ly/r/) R package. Users c
 
 <br>
 <h2 id="fig6"> </h2>
+
 ```{r,results='asis',echo=F,eval=TRUE}
 if(file.type=='html')
   cat('<img src="fig/figures_006.png" width="900px"  />')
@@ -236,6 +242,7 @@ if(file.type=='readme')
 
 <br>
 <h2 id="fig8"> </h2>
+
 ```{r,results='asis',echo=F,eval=TRUE}
 if(file.type=='html')
   cat('<img src="fig/figures_008.png" width="900px"  />')
@@ -289,7 +296,7 @@ scores.spline2int<-iso.switch(data.exp=data.exp,mapping =mapping,
                      spline.df = 10,verbose = F)
 ```
 
-##Filtering
+## Filtering
 **Example 1: general filtering with cut-offs**
 
 ```{r,eval=F}
@@ -311,7 +318,7 @@ scores.spline2int.filtered<-score.filter(
   cor.cutoff = 0.5,data.exp = NULL,mapping = NULL,
   sub.isoform.list = NULL,sub.isoform = F,max.ratio = F,
   x.value.limit = c(9,17) 
-))
+)
 ```
 
 <br>
@@ -343,9 +350,9 @@ scores.mean2int.filtered.maxratio<-score.filter(
 )
 ```
 
-##Make plots
+## Make plots
 
-###Switch time points density/frequency
+### Switch time points density/frequency
 
 ```{r}
 library(gridExtra)
@@ -358,7 +365,7 @@ g2<-switch.density(scores.mean2int.filtered$x.value,make.plotly = F,
 gridExtra::grid.arrange(g1,g2,ncol=2)
 ```
 
-###Error bar plot
+### Error bar plot
 
 <br>
 <h2 id="fig9"> </h2>
@@ -388,6 +395,7 @@ plotTSIS(data2plot = data.exp,scores = scores.mean2int.filtered,
 
 <br>
 <h2 id="fig9"> </h2>
+
 ```{r,results='asis',echo=F,eval=TRUE}
 if(file.type=='html')
   cat('<img src="fig/figures_010.png" width="900px"  />')
@@ -400,7 +408,7 @@ if(file.type=='readme')
 ```
 
 
-###Ribbon plot
+### Ribbon plot
 
 ```{r}
 plotTSIS(data2plot = data.exp,scores = scores.mean2int.filtered,
@@ -428,7 +436,7 @@ if(file.type=='readme')
 ```
 
 
-#References
+# References
 Chang, W., et al. 2016. shiny: Web Application Framework for R. https://CRAN.R-project.org/package=shiny
 
 Hastie, T.J. and Tibshirani, R.J. Generalized additive models. Chapter 7 of Statistical Models in S eds. Wadsworth & Brooks/Cole 1992.
