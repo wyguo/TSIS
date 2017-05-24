@@ -3,6 +3,12 @@ title: 'TSIS: an R package to infer time-series isoform switch of alternative sp
 author: "Wenbin Guo"
 date: '`r Sys.Date()`'
 output:
+  word_document:
+    toc: yes
+    toc_depth: '3'
+  pdf_document:
+    toc: yes
+    toc_depth: '3'
   html_document:
     code_folding: show
     fig_caption: yes
@@ -11,12 +17,6 @@ output:
     toc: yes
     toc_depth: 3
     toc_float: no
-  pdf_document:
-    toc: yes
-    toc_depth: '3'
-  word_document:
-    toc: yes
-    toc_depth: '3'
 subtitle: User manual
 ---
 
@@ -56,19 +56,19 @@ We define each transcript isoform switch by 1) the switch point $P_i$  , 2) time
 <br>
 $$S_1 (iso_i,iso_j |I_1,I_2)=|p(iso_i>iso_j |I_1)+p(iso_i<iso_j |I_2)-1|,$$
 <br>
-Where $p(iso_i>iso_j │I_1)$ and $p(iso_i<iso_j │I_2)$ are the frequencies/probabilities that the samples of one isoform is greater or less than in the other in corresponding intervals.
+Where $p(iso_i > iso_j │ I_1)$ and $p(iso_i < iso_j │ I_2)$ are the frequencies/probabilities that the samples of one isoform is greater or less than in the other in corresponding intervals. Metric 1 indicates the probably of the switch, with values ranging from 0 to 1. Higher values indicate a higher chance that there is an isoform switch happened between $I_1$ and $I_2$. 
 - Metric 2: Instead of rank differences as in [iso-kTSP](https://bitbucket.org/regulatorygenomicsupf/iso-ktsp) to avoid possible ties, we directly use the average abundance differences. The sum of mean differences of samples in intervals $I_1$ and $I_2$ are calculated as 
 <br>
-$$S_2 (iso_i,iso_j |I_1,I_2)=d(iso_i,iso_j│I_1 )+d(iso_i,iso_j |I_2)$$
+$$S_2 (iso_i,iso_j | I_1,I_2)=d(iso_i,iso_j │ I_1 )+d(iso_i,iso_j | I_2)$$
 <br>
 Where $d(iso_i,iso_j|I_k)$ is the average expression difference in interval $I_k, k=1,2$ defined as
 <br>
-$$d(iso_i, iso_j|I_k)=\frac{1}{|I_k|}\sum_{m_{I_k}}\left|exp(iso_i|s_{m_{I_k}},I_k)-exp(iso_j|s_{m_{I_k}},I_k)\right|$$
+$$d(iso_i, iso_j|I_k)=\frac{1}{|I_k|}\sum_{m_{I_k}}\left|exp(iso_i | s_{m_{I_k}},I_k)-exp(iso_j | s_{m_{I_k}},I_k)\right|$$
 <br>
-$|I_k|$ is the number of samples in interval $I_k$ and $exp(iso_i|s_{m_{I_k}},I_k)$ is the expression of $iso_i$ of sample $s_{m_{I_k}}$ in interval $I_k$.
-- Metric 3 measures the significance of the differences between the isoform abundances in the intervals before and after the switch using paired t-tests to generate p-values for each interval.
-- Metric 4 is a measure of whether the effect of the switch is transient or long lived. It indicates the number of time-points in the flanking intervals $I_1$ and $I_2$. 
-- Metric 5: Isoforms with high negative correlations across the time-points may identify important regulation in alternative splicing. Thus we also calculated the Pearson correlation of two isoforms across the whole time-series.  .  
+$|I_k|$ is the number of samples in interval $I_k$ and $exp(iso_i|s_{m_{I_k}},I_k)$ is the expression of $iso_i$ of sample $s_{m_{I_k}}$ in interval $I_k$. Metric 2 measures the differences of abundances between the isoforms before and after the switch. Using this metric, the users are able to investigate the isoform switches that are associated with changes of abundances with a certain threshold. Higher abundance differences in both $I_1$ and $I_2$ indicate isoform switches with bigger effects in absolute quantifications.
+- Metric 3 measures the significance of the differences between the isoform abundances in the intervals before and after the switch using paired t-tests to generate p-values for each interval. Small p values indicate significant differences between the isoform quantifications. The isoform switch with small p values in both intervals will be of higher confidence.
+- Metric 4 is a measure of whether the effect of the switch is transient or long lived. It indicates the number of time-points in the flanking intervals $I_1$ and $I_2$. A switch with a short interval (e.g. one time-point) could arise from noisy data, thus the switches with longer intervals indicate real and long lasting changes in alternative splicing regulations.
+- Metric 5: Isoforms with high negative correlations across the time-points may identify important common regulation for both isoforms in alternative splicing. Thus we also calculated the Pearson correlation of two isoforms across the whole time-series. 
  
 #Installation and loading
 
