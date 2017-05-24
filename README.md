@@ -103,7 +103,7 @@ Three *.csv format input files can be provided for [TSIS](https://github.com/wyg
 
 ![](https://github.com/wyguo/TSIS/blob/master/vignettes/fig/figures_003.png)
 
-**Figure 3: ** The format of input csv files for (A) transcript isoform expression, (B) two column table of gene-isoform mapping and (C) A list of isoform names of interest.
+**Figure 3:** The format of input csv files for (A) transcript isoform expression, (B) two column table of gene-isoform mapping and (C) A list of isoform names of interest.
 
 <a href="#fig2">Figure 2(B)</a>  and <a href="#fig4">Figure 4(A)</a> shows the data input interface for time-series isoform expression and gene-isoform mapping. By clicking the "Browse…" button, a window is open for data loading (see <a href="#fig4">Figure 4(B)</a>). Users can use the interface shown in <a href="#fig4">Figure 4(C)</a>  to load the names of subset of isoforms. 
 
@@ -112,7 +112,7 @@ Three *.csv format input files can be provided for [TSIS](https://github.com/wyg
 
 ![](https://github.com/wyguo/TSIS/blob/master/vignettes/fig/figures_004.png)
 
-**Figure 4: ** Interface for input information. (A) Input transcript isoform expression and gene-isoform mapping data, (B) is an opened window to select files after clicking “Browser” and (C) is the interface to load isoform names of interest.
+**Figure 4:** Interface for input information. (A) Input transcript isoform expression and gene-isoform mapping data, (B) is an opened window to select files after clicking “Browser” and (C) is the interface to load isoform names of interest.
 
 ### Parameter settings
 
@@ -147,6 +147,7 @@ The output of TSIS analysis can be displayed and exported after scoring or filte
 
 <br>
 <h2 id="fig7"> </h2>
+
 ![](https://github.com/wyguo/TSIS/blob/master/vignettes/fig/figures_007.png)
 
 
@@ -194,6 +195,7 @@ scores.mean2int<-iso.switch(data.exp=data.exp,mapping =mapping,
 ```
 
 <br>
+
 **Example 2: search intersection points with spline method**
 
 ```r
@@ -232,6 +234,7 @@ scores.spline2int.filtered<-score.filter(
 ```
 
 <br>
+
 **Example 2: only show subset of results according to an isoform list**
 
 
@@ -250,6 +253,7 @@ scores.mean2int.filtered.subset<-score.filter(
 ```
 
 <br>
+
 **Example 3: only show results of the most abundant transcript within a gene**
 
 
@@ -282,6 +286,7 @@ gridExtra::grid.arrange(g1,g2,ncol=2)
 
 <br>
 <h2 id="fig9"> </h2>
+
 ![](https://github.com/wyguo/TSIS/blob/master/vignettes/fig/figures_009.png)
 
 
@@ -321,6 +326,7 @@ plotTSIS(data2plot = data.exp,scores = scores.mean2int.filtered,
 
 <br>
 <h2 id="fig10"> </h2>
+
 ![](https://github.com/wyguo/TSIS/blob/master/vignettes/fig/figures_010.png)
 
 
