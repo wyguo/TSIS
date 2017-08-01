@@ -152,7 +152,7 @@ iso.switch<-function(data.exp,mapping,times,rank=F,
     message(' Spline fitting expression ...')
     if(is.null(spline.df))
       spline.df<-floor(2*(length(unique(times)-1))/3)
-    data2intersect<-t(apply(data.exp,1,function(x) ts.spline(x,times  = unique(times),df = spline.df)))
+    data2intersect<-t(apply(data.exp,1,function(x) ts.spline(x,times  = times,df = spline.df)))
   } else {
     data2intersect<-t(rowmean(t(data.exp),group = times))
   }
@@ -375,7 +375,7 @@ iso.switch.shiny<-function(data.exp,mapping,times,rank=F,
     message(' Spline fitting expression ...')
     if(is.null(spline.df))
       spline.df<-floor(2*(length(unique(times)-1))/3)
-    data2intersect<-t(apply(data.exp,1,function(x) ts.spline(x,times  = unique(times),df = spline.df)))
+    data2intersect<-t(apply(data.exp,1,function(x) ts.spline(x,times  = times,df = spline.df)))
   } else {
     data2intersect<-t(rowmean(t(data.exp),group = times))
   }
