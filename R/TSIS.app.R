@@ -19,6 +19,7 @@ TSIS.app <- function(data.size.max=100) {
   library(plotly)
   # library(TSIS)
 
+
   message('Generating tutorial...')
   message(paste0('Tutorial is saved in ',getwd(),'/tutorial'))
   message('Starting Shiny App...')
@@ -470,7 +471,9 @@ TSIS.app <- function(data.size.max=100) {
 
 
 
-             output$score.table <- shiny::renderDataTable(options=list(pageLength=10,aoColumnDefs = list(list(sClass="alignLeft",aTargets="_all")) ),{
+             output$score.table <- shiny::renderDataTable(options=list(pageLength=20,
+                                                                       aoColumnDefs = list(list(sClass="alignLeft",aTargets="_all")),
+                                                                       scrollX=TRUE,scrollY="500px"),{
                if(is.null(score.show$scores))
                  return()
 
@@ -508,7 +511,7 @@ TSIS.app <- function(data.size.max=100) {
                  return()
 
                switch.density(x=score.show$scores$x.value,time.points = unique(times()),plot.type = input$densityplot.type,make.plotly = T,
-                              show.line = input$show.density.line,title = '')
+                              show.line = input$show.density.line,title = '',autosize = F,width=250,height=250)
              })
 
 
@@ -519,10 +522,9 @@ TSIS.app <- function(data.size.max=100) {
                },
                content = function(file,format=input$densityplot.format) {
                  if(format=='html')
-                   suppressWarnings(htmlwidgets::saveWidget(as.widget(
+                   suppressWarnings(htmlwidgets::saveWidget(
                      switch.density(x=score.show$scores$x.value,time.points = unique(times()),plot.type = input$densityplot.type,make.plotly = T,
-                                    show.line = input$show.density.line,title = '')
-                   ), file=file,selfcontained=T))
+                                    show.line = input$show.density.line,title = ''), file=file,selfcontained=T))
                  else ggsave(file,
                              switch.density(x=score.show$scores$x.value,time.points = unique(times()),plot.type = input$densityplot.type,make.plotly = F,
                                             show.line = input$show.density.line,title = ''),
@@ -555,7 +557,7 @@ TSIS.app <- function(data.size.max=100) {
                if(is.null(g()))
                  return()
 
-               ggplotly(g())
+               ggplotly(g(),autosize = F,width=1000,height=500)
              })
              #
 
@@ -566,7 +568,8 @@ TSIS.app <- function(data.size.max=100) {
                },
                content = function(file,format=input$plot1.format) {
                  if(format=='html')
-                   suppressWarnings(htmlwidgets::saveWidget(as.widget(ggplotly(g())), file=file,selfcontained=T))
+                   suppressWarnings(htmlwidgets::saveWidget(ggplotly(g(),autosize = F,width=1000,height=500),
+                                                            file=file,selfcontained=T))
                  else ggsave(file, g(),width = 25,height = 12,units = "cm")
                })
 
@@ -609,7 +612,9 @@ TSIS.app <- function(data.size.max=100) {
 
 
 
-             output$isoform.pairs.to.plot <- shiny::renderDataTable(options=list(pageLength=10,aoColumnDefs = list(list(sClass="alignLeft",aTargets="_all")) ),{
+             output$isoform.pairs.to.plot <- shiny::renderDataTable(options=list(pageLength=10,
+                                                                                 aoColumnDefs = list(list(sClass="alignLeft",aTargets="_all")),
+                                                                                 scrollX=TRUE,scrollY="400px"),{
                if(is.null(score.show$scores))
                  return()
 

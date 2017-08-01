@@ -96,7 +96,7 @@ plotTSIS<-function(data2plot,scores=NULL,iso1=NULL,iso2=NULL,gene.name=NULL,y.la
   } else{
     if(spline){
       values<-by(data2plot$value,INDICES = data2plot$isoforms,simplify = T,
-                 FUN = function(x) ts.spline(x,times = times,df=spline.df,se.fit=T))
+                 FUN = function(x) ts.spline(x,times = unique(times),df=spline.df,se.fit=T))
       x1=data.frame(mean.Group.1=paste0(iso1,'_at_',unique(times)),mean.x=values[[iso1]]$fit,error=values[[iso1]]$se.fit)
       x2=data.frame(mean.Group.1=paste0(iso2,'_at_',unique(times)),mean.x=values[[iso2]]$fit,error=values[[iso2]]$se.fit)
       data2plot<-rbind(x1,x2)

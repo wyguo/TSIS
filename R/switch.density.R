@@ -7,7 +7,7 @@
 #' @param plot.type the plot types. Options are "density" for density bar plot and "frequency" for frequency bar plot.
 #' @param show.line logical, to show density or frequency line or not?
 #' @param titile the title of the plot.
-#' @param ... additional parameters pass to \code{\link{density}}
+#' @param ... additional parameters pass to \code{\link{plotly::ggplotly}}
 #'
 #' @return density plot in ggplot2 format or \code{\link{plotly}} format if \code{make.plotly=T}
 #'
@@ -16,7 +16,11 @@
 
 
 
-switch.density<-function(x,time.points,make.plotly=T,plot.type='density',show.line=T,title="Density of switch points",...){
+switch.density<-function(x,time.points,
+                         make.plotly=T,
+                         plot.type='density',
+                         show.line=T,
+                         title="Density of switch points",...){
 
   ##plot type
   plot.type<-match.arg(plot.type,c('density','frequency'))
@@ -38,7 +42,7 @@ switch.density<-function(x,time.points,make.plotly=T,plot.type='density',show.li
   g<-g+coord_cartesian(xlim=c(min(time.points),max(time.points)))+labs(x='Switch time points',title=title)
 
   if(make.plotly)
-    plotly::ggplotly(g) else g
+    plotly::ggplotly(g,...) else g
 }
 
 

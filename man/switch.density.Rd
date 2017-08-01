@@ -19,7 +19,7 @@ or general plot (FALSE)?. See details in \code{\link{ggplotly}} in \code{\link{p
 
 \item{show.line}{logical, to show density or frequency line or not?}
 
-\item{...}{additional parameters pass to \code{\link{density}}}
+\item{...}{additional parameters pass to \code{\link{plotly::ggplotly}}}
 
 \item{titile}{the title of the plot.}
 }
