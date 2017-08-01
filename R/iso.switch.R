@@ -72,8 +72,8 @@
 #'     Finally, Isoforms with high negative correlations across the time points may point to the splicing regulation have antagonistic effects on the switched isoforms. Thus they are of great interest for investigation of alternative splicing regulations. As an additional score, we calculated the Pearson correlation of two isoforms across the whole time series.
 #'   }
 #' }
-#' 
-#' For TSIS analysis details and examples, please go the the user manual on Github: \url{https://github.com/wyguo/TSIS}. 
+#'
+#' For TSIS analysis details and examples, please go the the user manual on Github: \url{https://github.com/wyguo/TSIS}.
 #'
 #' @param data.exp  Time-series isoform expression data with first row indicating the replicate labels and second row indicating the time points. The remained lines are isoform names in the first column followed by the expression values. All the replicates for each time point should be grouped together and the time points follow the sequential order.
 #' @param mapping gene and isoform mapping table with gene names in first column  and transcript isoform names in the second column
@@ -90,7 +90,7 @@
 #' @references
 #'   1. Sebestyen E, Zawisza M, Eyras E: Detection of recurrent alternative splicing switches in tumor samples reveals novel signatures of cancer.
 #'   Nucleic Acids Res 2015, 43(3):1345-1356.
-#'   
+#'
 #'   2. Hastie, T.J. and Tibshirani, R.J. Generalized additive models. Chapter 7 of Statistical Models in S eds. Wadsworth & Brooks/Cole 1990.
 #'
 #' @return  a data frame of scores. The column names:
@@ -152,7 +152,7 @@ iso.switch<-function(data.exp,mapping,times,rank=F,
     message(' Spline fitting expression ...')
     if(is.null(spline.df))
       spline.df<-floor(2*(length(unique(times)-1))/3)
-    data2intersect<-t(apply(data.exp,1,function(x) ts.spline(x,times  = times,df = spline.df)))
+    data2intersect<-t(apply(data.exp,1,function(x) ts.spline(x,times  = unique(times),df = spline.df)))
   } else {
     data2intersect<-t(rowmean(t(data.exp),group = times))
   }
@@ -375,7 +375,7 @@ iso.switch.shiny<-function(data.exp,mapping,times,rank=F,
     message(' Spline fitting expression ...')
     if(is.null(spline.df))
       spline.df<-floor(2*(length(unique(times)-1))/3)
-    data2intersect<-t(apply(data.exp,1,function(x) ts.spline(x,times  = times,df = spline.df)))
+    data2intersect<-t(apply(data.exp,1,function(x) ts.spline(x,times  = unique(times),df = spline.df)))
   } else {
     data2intersect<-t(rowmean(t(data.exp),group = times))
   }
@@ -391,7 +391,7 @@ iso.switch.shiny<-function(data.exp,mapping,times,rank=F,
     if(verbose)
       pb <- txtProgressBar(min = 0, max = length(genes), style = 3,width = 75)
     for(i in 1:length(genes)){
-      
+
       sub.gene<-genes[i]
       sub.isoform<-as.vector(isoforms0[which(genes0==sub.gene)])
 
@@ -430,7 +430,7 @@ iso.switch.shiny<-function(data.exp,mapping,times,rank=F,
 
         iso.intersections<-c(iso.intersections,setNames(object = list(iso.inter),nm = paste0(iso1,'_vs_',iso2)))
       }
-      
+
       incProgress(1/length(genes), detail = paste(i, ' of ', length(genes)))
       Sys.sleep(0)
       if(verbose)
@@ -460,7 +460,7 @@ iso.switch.shiny<-function(data.exp,mapping,times,rank=F,
     if(verbose)
       pb <- txtProgressBar(min = 0, max = length(iso.names), style = 3,width = 75)
     for(i in 1:length(iso.names)){
-      
+
       #  i=1
       # i=which(grepl('AT1G01060.2_vs_AT1G01060.3',x = iso.names))
       iso<-unlist(strsplit(iso.names[i],'_vs_'))
@@ -543,7 +543,7 @@ iso.switch.shiny<-function(data.exp,mapping,times,rank=F,
                         prob=score1,diff=score2,cor=cor(as.numeric(data.exp[iso1,]),as.numeric(data.exp[iso2,])),row.names = NULL)
 
       iso.scores<-rbind(score,iso.scores)
-      
+
       incProgress(1/length(iso.names), detail = paste(i, ' of ', length(iso.names)))
       Sys.sleep(0)
       if(verbose)
