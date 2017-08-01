@@ -18,6 +18,6 @@ ts.spline<-function(x,times,df=5,...){
   times<-as.numeric(times)
   x<-data.frame(times=times,value=as.numeric(x))
   fit<-lm(value~splines::ns(times,df=df),data=x)
-  predict(fit,data.frame(times=t.start:t.end),...)
+  predict(fit,data.frame(times=times),...)
 }
 
