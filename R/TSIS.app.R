@@ -539,8 +539,8 @@ TSIS.app <- function(data.size.max=100) {
                if(is.null(input$iso1) | is.null(input$iso2) | is.null(data.exp()))
                  return()
 
-               iso1<-input$iso1
-               iso2<-input$iso2
+               iso1<-trimws(input$iso1)
+               iso2<-trimws(input$iso2)
                g<-plotTSIS(data2plot = data.exp()[c(iso1,iso2),],
                            iso1 = iso1,
                            iso2 = iso2,
@@ -585,7 +585,7 @@ TSIS.app <- function(data.size.max=100) {
 
 
              folderInput <- eventReactive(input$plotmultiiso,{
-               x<-paste0(getwd(),'/',input$folder2save)
+               x<-paste0(getwd(),'/',trimws(input$folder2save))
                if(!file.exists(x))
                  dir.create(x)
                x
