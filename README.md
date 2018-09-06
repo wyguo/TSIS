@@ -18,7 +18,7 @@ vignette: >
 
 If you use TSIS in your work, please cite: 
 
-Wenbin Guo, Cristiane P. G. Calixto, John W.S. Brown, Runxuan Zhang,"TSIS: an R package to infer alternative splicing isoform switches for time-series data", Bioinformatics, https://doi.org/10.1093/bioinformatics/btx411, 2017. 
+Wenbin Guo, Cristiane P. G. Calixto, John W.S. Brown, Runxuan Zhang, "TSIS: an R package to infer alternative splicing isoform switches for time-series data", Bioinformatics, https://doi.org/10.1093/bioinformatics/btx411, 2017. 
 
 
 <h2 id="fig1"> </h2>
