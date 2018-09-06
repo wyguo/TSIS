@@ -16,6 +16,11 @@ vignette: >
 # Description
 [TSIS](https://github.com/wyguo/TSIS) is an R package for detecting transcript isoform switches in time-series data. Transcript isoform switches occur when a pair of alternatively spliced isoforms reverse the order of their relative expression levels as shown in <a href="#fig1">Figure 1</a>. TSIS characterizes the transcript switch by 1) defining the isoform switch time-points for any pair of transcript isoforms within a gene, 2) describing the switch using five different features or metrics, 3) filtering the results with user’s specifications and 4) visualizing the results using different plots for the user to examine further details of the switches. All the functions are available in the forms of a graphic interface implemented by [Shiny App](https://shiny.rstudio.com/)  (a web application framework for R) ([Chang, et al., 2016](https://shiny.rstudio.com/)), in which users can implement the analysis easily. The tool can also be run using command lines without graphic interface. This tutorial will cover both in the following sections. This manual can be downloaded from: https://github.com/wyguo/TSIS/blob/master/vignettes/tutorial-shiny.zip.
 
+If you use TSIS in your work, please cite: 
+
+Wenbin Guo, Cristiane P. G. Calixto, John W.S. Brown, Runxuan Zhang,"TSIS: an R package to infer alternative splicing isoform switches for time-series data", Bioinformatics, https://doi.org/10.1093/bioinformatics/btx411, 2017. 
+
+
 <h2 id="fig1"> </h2>
 
 ![](https://github.com/wyguo/TSIS/blob/master/vignettes/fig/figures_001.png)
