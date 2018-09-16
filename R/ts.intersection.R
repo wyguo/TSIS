@@ -7,19 +7,22 @@
 #'
 #' @export
 #'
-ts.intersection<-function(x1,x2){
-  # Points always intersect when above=TRUE, then FALSE or reverse
-  # Find points where x1 is above x2.
-  above<-x1>x2
-  intersect.points<-which(diff(above)!=0)
-  if(length(intersect.points)==0)
+ts.intersection<-function(x1,x2,times){
+  y <- sort(unique(times),decreasing = F)
+  d1 <- x1
+  d2 <- x2
+  poi <- which(diff(d1 > d2) != 0) 
+  if(length(poi)==0)
     return(NULL)
-  # Find the slopes for each line segment.
-  x1.slopes<-x1[intersect.points+1]-x1[intersect.points]
-  x2.slopes<-x2[intersect.points+1]-x2[intersect.points]
-  # Find the intersection for each segment.
-  x.points<-intersect.points + ((x2[intersect.points] - x1[intersect.points]) / (x1.slopes-x2.slopes))
-  y.points<-x1[intersect.points] + (x1.slopes*(x.points-intersect.points))
+  intersect.points <- y[poi]
+  slope1 <- (d1[poi]-d1[poi+1])/(y[poi]-y[poi+1])
+  slope2 <- (d2[poi]-d2[poi+1])/(y[poi]-y[poi+1])
+  x.points <- intersect.points + ((d2[poi] - d1[poi])/(slope1 - slope2))
+  y.points <- d1[poi] + (slope1 * (x.points - intersect.points))
+  x.points <- round(x.points,3)
+  y.points <- round(y.points,3)
+  # x.points
+  # y.points
   ##intersection points
   intersection.points=data.frame(x.points=x.points,y.points=y.points,row.names = NULL)
   intersection.points<-intersection.points[!duplicated(intersection.points),]
