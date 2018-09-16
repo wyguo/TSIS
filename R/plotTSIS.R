@@ -76,7 +76,6 @@ plotTSIS<-function(data2plot,scores=NULL,iso1=NULL,iso2=NULL,gene.name=NULL,y.la
   
   data2plot<-data.frame(rbind(data.frame(isoforms=iso1,times=times,value=as.numeric(data2plot[iso1,])),
                               data.frame(isoforms=iso2,times=times,value=as.numeric(data2plot[iso2,]))))
-  data2plot <- data2plot0
   ##ribbon plot
   if(ribbon.plot){
     if(spline){
