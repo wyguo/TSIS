@@ -45,92 +45,94 @@
 #' @seealso \code{\link{ggplotly}}, \code{\link{iso.switch}}, \code{\link{score.filter}}, \code{\link{data.error}}, \code{\link{geom_smooth}}, \code{\link{ns}}
 #'
 plotTSIS<-function(data2plot,scores=NULL,iso1=NULL,iso2=NULL,gene.name=NULL,y.lab='Expression',make.plotly=F,
-                  times,prob.cutoff=0.5,x.lower.boundary=9,x.upper.boundary=17,show.region=T,show.scores=T,
-                  error.type='stderr',show.errorbar=T,errorbar.width=0.2,errorbar.size=0.5,line.width=1,
-                  point.size=3,marker.size=1,
-                  spline=F,spline.df=NULL,ribbon.plot=F){
-
+                   times,prob.cutoff=0.5,x.lower.boundary=9,x.upper.boundary=17,show.region=T,show.scores=T,
+                   error.type='stderr',show.errorbar=T,errorbar.width=1,errorbar.size=0.5,line.width=1,
+                   point.size=3,marker.size=1,
+                   spline=F,spline.df=NULL,ribbon.plot=F){
+  
   require(ggplot2)
-
+  
   if(is.null(spline.df))
     spline.df<-floor((unique(times)-2)*2/3)
-
+  
   gg_color_hue <- function(n) {
     hues = seq(15, 375, length = n + 1)
     hcl(h = hues, l = 65, c = 100)[1:n]
   }
-
+  
   y.upper <- function(x){mean(x) + data.error(x)}
   y.lower<-function(x){mean(x) - data.error(x)}
-
-
+  
+  
   if(is.null(iso1) | is.null(iso2)){
     iso1<-rownames(data2plot)[1]
     iso2<-rownames(data2plot)[2]
   }
-
+  
   data2plot<-data2plot[c(iso1,iso2),]
-
+  
   if(is.null(gene.name))
     gene.name<-paste0(iso1,'_vs_',iso2)
-
+  
   data2plot<-data.frame(rbind(data.frame(isoforms=iso1,times=times,value=as.numeric(data2plot[iso1,])),
                               data.frame(isoforms=iso2,times=times,value=as.numeric(data2plot[iso2,]))))
+  data2plot <- data2plot0
   ##ribbon plot
   if(ribbon.plot){
     if(spline){
       data2plot<-data.frame(data2plot[,1:2],mean=data2plot$value,error=0)
-      data2plot$times<-factor(data2plot$times,levels = unique(data2plot$times))
+      # data2plot$times<-factor(data2plot$times,levels = unique(data2plot$times))
       g<-ggplot(data2plot, aes(x=times, y=mean,group=isoforms,color=isoforms,fill=isoforms,shape=isoforms)) +
         geom_point(size=marker.size) +theme_bw()+
         geom_smooth(method = "lm",formula = y ~ splines::ns(x, spline.df),size=line.width)
     } else {
       data2plot<-data.frame(data2plot[,1:2],mean=data2plot$value,error=0)
-      data2plot$times<-factor(data2plot$times,levels = unique(data2plot$times))
-      g=ggplot(data2plot, aes(x=times, y=mean,group=isoforms,color=isoforms,fill=isoforms,shape=isoforms)) +
+      # data2plot$times<-factor(data2plot$times,levels = unique(data2plot$times))
+      g <- ggplot(data2plot, aes(x=times, y=mean,group=isoforms,color=isoforms,fill=isoforms,shape=isoforms)) +
         geom_point(size=marker.size) +theme_bw()+
         stat_summary(fun.y=mean,geom='line',size=line.width)+
         stat_summary(fun.y=mean,geom = 'ribbon',fun.ymax = y.upper,fun.ymin = y.lower,alpha=0.3,colour=NA)
     }
-  ##error bar plots
+    ##error bar plots
   } else{
     if(spline){
       values<-by(data2plot$value,INDICES = data2plot$isoforms,simplify = T,
                  FUN = function(x) ts.spline(x,times = times,df=spline.df,se.fit=T))
-      x1=data.frame(mean.Group.1=paste0(iso1,'_at_',unique(times)),mean.x=values[[iso1]]$fit,error=values[[iso1]]$se.fit)
-      x2=data.frame(mean.Group.1=paste0(iso2,'_at_',unique(times)),mean.x=values[[iso2]]$fit,error=values[[iso2]]$se.fit)
+      x1 <- data.frame(isoforms=iso1,times=unique(times),
+                       mean=values[[iso1]]$fit,
+                       error=values[[iso1]]$se.fit)
+      x2 <- data.frame(isoforms=iso2,times=unique(times),
+                       mean=values[[iso2]]$fit,
+                       error=values[[iso2]]$se.fit)
       data2plot<-rbind(x1,x2)
     } else {
-      data2plot<-with(data2plot,{
-        data.frame(
-          mean=aggregate(value,by = list(interaction(isoforms,times,sep = '_at_')),mean),
-          error=aggregate(value,by = list(interaction(isoforms,times,sep = '_at_')),function(x) data.error(x,error.type = error.type))[,-1]
-        )
+      data2plot <- by(data2plot,INDICES = interaction(data2plot$isoforms,data2plot$times,sep = '_at_'),function(x){
+        data.frame(isoforms=unique(x$isoforms),
+                   times=unique(x$times),
+                   mean=mean(x$value),
+                   error=data.error(x$value,error.type = error.type))
       })
-
+      data2plot <- do.call(rbind,data2plot)
     }
-
-
-    data2plot<-data.frame(do.call(rbind,strsplit(as.vector(data2plot[,1]),split = '_at_')),data2plot[,-1])
-    colnames(data2plot)<-c('isoforms','times','mean','error')
-    data2plot$times<-factor(data2plot$times,levels = unique(data2plot$times))
-
+    # colnames(data2plot)<-c('isoforms','times','mean','error')
+    
+    
     g<-ggplot(data2plot,aes(x=times,y=mean,group=isoforms,shape=isoforms,color=isoforms))+theme_bw()+
-      geom_line(size=line.width)+geom_point(size=point.size,aes(fill=isoforms))
+      geom_line(size=line.width)+geom_point(size=point.size,aes(fill=isoforms))+
+      scale_x_continuous(breaks = unique(times),labels = unique(times))
     if(show.errorbar)
-      g<-g+geom_errorbar(data=data2plot,aes(ymin=mean-error,ymax=mean+error),width=errorbar.width,color='black',size=errorbar.size)
+      g<-g+geom_errorbar(data=data2plot,aes(ymin=mean-error,ymax=mean+error),width=errorbar.width,color='black',
+                         size=errorbar.size)
   }
-
-
-
+  
   if(is.null(scores))
     idx=NULL else idx<-which(scores$iso1 %in% c(iso1,iso2) & scores$iso2 %in% c(iso1,iso2) & scores$prob>=prob.cutoff)
-
+  
   if(length(idx)==0){
     g<-g } else {
       sub.scores<-scores[idx,]
       data2points<-data.frame(isoforms='switch_points',times=sub.scores$x.value,mean=sub.scores$y.value,error=0)
-
+      
       g<-g+geom_point(data=data2points,aes(x=times,y=mean,color=isoforms,fill=isoforms,shape=isoforms),size=point.size)+
         scale_color_manual(values=c(gg_color_hue(2),rep('black',length(idx))),breaks=c(iso1,iso2,rep('switch_points',length(idx))))+
         scale_fill_manual(values=c(gg_color_hue(2),rep('black',length(idx))),breaks=c(iso1,iso2,rep('switch_points',length(idx))))+
@@ -139,7 +141,7 @@ plotTSIS<-function(data2plot,scores=NULL,iso1=NULL,iso2=NULL,gene.name=NULL,y.la
         g<-g+annotate('text',x = 1.1*sub.scores$x.value, y =sub.scores$y.value+max(data2plot$mean)/20,
                       label = paste0('prob=',round(sub.scores$prob,2),'; diff=',round(sub.scores$diff,2),'; cor=',round(sub.scores$cor,2)))
     }
-
+  
   if(show.region){
     g<-g+annotate("rect", xmin = x.lower.boundary, xmax = x.upper.boundary, ymin = -Inf, ymax = Inf,alpha = 0.2,color='skyblue',fill='skyblue')+
       annotate("text",x=mean(c(x.upper.boundary,x.lower.boundary)),
@@ -147,9 +149,11 @@ plotTSIS<-function(data2plot,scores=NULL,iso1=NULL,iso2=NULL,gene.name=NULL,y.la
       geom_vline(xintercept = c(x.lower.boundary,x.upper.boundary),linetype=3,lwd=1,color='skyblue',alpha=1)
   }
   g<-g+labs(title=paste("Isoforms of gene:",gene.name),x='Time points',y=y.lab)
-
+  
   if(make.plotly)
     plotly::ggplotly(g) else g
 }
+
+
 
 
