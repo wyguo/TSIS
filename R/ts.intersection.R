@@ -24,7 +24,8 @@ ts.intersection<-function(x1,x2,times){
   # x.points
   # y.points
   ##intersection points
-  intersection.points=data.frame(x.points=x.points,y.points=y.points,row.names = NULL)
-  intersection.points<-intersection.points[!duplicated(intersection.points),]
+  intersection.points <- data.frame(x.points=x.points,y.points=y.points,row.names = NULL)
+  dup.idx <- which(duplicated(intersection.points) | duplicated(intersection.points,fromLast = T))
+  intersection.points<-intersection.points[-dup.idx,]
   return(intersection.points)
 }
