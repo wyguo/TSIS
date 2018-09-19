@@ -135,7 +135,7 @@ plotTSIS<-function(data2plot,scores=NULL,iso1=NULL,iso2=NULL,gene.name=NULL,y.la
       g<-g+geom_point(data=data2points,aes(x=times,y=mean,color=isoforms,fill=isoforms,shape=isoforms),size=point.size)+
         scale_color_manual(values=c(gg_color_hue(2),rep('black',length(idx))),breaks=c(iso1,iso2,rep('switch_points',length(idx))))+
         scale_fill_manual(values=c(gg_color_hue(2),rep('black',length(idx))),breaks=c(iso1,iso2,rep('switch_points',length(idx))))+
-        scale_shape_manual(values=c(15,17,rep(16,length(idx))))
+        scale_shape_manual(values=c(15,17,rep(16,length(idx))),breaks=c(iso1,iso2,rep('switch_points',length(idx))))
       if(show.scores)
         g<-g+annotate('text',x = 1.1*sub.scores$x.value, y =sub.scores$y.value+max(data2plot$mean)/20,
                       label = paste0('prob=',round(sub.scores$prob,2),'; diff=',round(sub.scores$diff,2),'; cor=',round(sub.scores$cor,2)))

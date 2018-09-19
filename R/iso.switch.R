@@ -247,7 +247,7 @@ iso.switch<-function(data.exp,mapping,times,rank=F,
     colnames(n.inters)<-colnames(iso.intersections[[iso.names[i]]])[-c(1:2)]
     inters=as.numeric(n.inters[1,])
     
-    interval=cut(times,unique(c(t.start,as.numeric(inters),t.end)),include.lowest = T,dig.lab = 3)
+    interval=cut(times,unique(c(t.start,as.numeric(inters),t.end)),include.lowest = T,dig.lab = 5)
     # sub.data2swith=data.frame(interval=interval,t(data.exp.rank[c(iso1,iso2),]),iso.idx=c(-1,1)[as.numeric(interval)%%2+1])
     sub.data2swith=data.frame(interval=interval,t(data2switch[c(iso1,iso2),]))
     ##add a column of sign of differences
@@ -311,9 +311,20 @@ iso.switch<-function(data.exp,mapping,times,rank=F,
     colnames(inter.lr)<-c('before.interval','after.interval')
     
     
-    score<-data.frame(iso1=iso1,iso2=iso2,iso.mean.ratio,inter.lr,x.value=as.numeric(n.inters[1,]),y.value=as.numeric(n.inters[2,]),
-                      score1.2side,score2.2side,score3,score4,
-                      prob=score1,diff=score2,cor=cor(as.numeric(data.exp[iso1,]),as.numeric(data.exp[iso2,])),row.names = NULL)
+    score<-data.frame(iso1=iso1,
+                      iso2=iso2,
+                      iso.mean.ratio,
+                      inter.lr,
+                      x.value=as.numeric(n.inters[1,]),
+                      y.value=as.numeric(n.inters[2,]),
+                      score1.2side,
+                      score2.2side,
+                      score3,
+                      score4,
+                      prob=score1,
+                      diff=score2,
+                      cor=cor(as.numeric(data.exp[iso1,]),as.numeric(data.exp[iso2,])),
+                      row.names = NULL)
     
     iso.scores<-rbind(score,iso.scores)
     if(verbose)
@@ -475,7 +486,7 @@ iso.switch.shiny<-function(data.exp,mapping,times,rank=F,
       colnames(n.inters)<-colnames(iso.intersections[[iso.names[i]]])[-c(1:2)]
       inters=as.numeric(n.inters[1,])
       
-      interval=cut(times,unique(c(t.start,as.numeric(inters),t.end)),include.lowest = T,dig.lab = 3)
+      interval=cut(times,unique(c(t.start,as.numeric(inters),t.end)),include.lowest = T,dig.lab = 5)
       # sub.data2swith=data.frame(interval=interval,t(data.exp.rank[c(iso1,iso2),]),iso.idx=c(-1,1)[as.numeric(interval)%%2+1])
       sub.data2swith=data.frame(interval=interval,t(data2switch[c(iso1,iso2),]))
       ##add a column of sign of differences

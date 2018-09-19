@@ -19,16 +19,11 @@ ts.intersection<-function(x1,x2,times){
   slope2 <- (d2[poi]-d2[poi+1])/(y[poi]-y[poi+1])
   x.points <- intersect.points + ((d2[poi] - d1[poi])/(slope1 - slope2))
   y.points <- d1[poi] + (slope1 * (x.points - intersect.points))
-  x.points <- round(x.points,3)
-  y.points <- round(y.points,3)
-  # x.points
-  # y.points
-  ##intersection points
   intersection.points <- data.frame(x.points=x.points,y.points=y.points,row.names = NULL)
-  dup.idx <- which(duplicated(intersection.points) | duplicated(intersection.points,fromLast = T))
-  if(length(dup.idx)>0)
-    intersection.points<-intersection.points[-dup.idx,]
+  # dup.idx <- which(duplicated(intersection.points) | duplicated(intersection.points,fromLast = T))
+  # if(length(dup.idx)>0)
+  #   intersection.points<-intersection.points[-dup.idx,]
 
-  # intersection.points<-intersection.points[!duplicated(intersection.points),]
+  intersection.points<-intersection.points[!duplicated(round(intersection.points,5)),]
   return(intersection.points)
 }
