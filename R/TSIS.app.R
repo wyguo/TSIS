@@ -43,7 +43,7 @@ TSIS.app <- function(data.size.max=100) {
                           host = "127.0.0.1",
                           port = 8888),
            ui = navbarPage("Time-series isoform switch",
-                           tags$head(includeScript("vignettes/google-analytics.js")),
+                           # tags$head(includeScript("google-analytics.js")),
                            ##Page 1
                            tabPanel("Manual",
                                     htmlOutput("tutorial")
