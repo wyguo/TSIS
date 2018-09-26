@@ -17,6 +17,7 @@ TSIS.app <- function(data.size.max=100) {
   # require(shinyFiles)
   library(shinythemes)
   library(plotly)
+  library(TSIS)
   # library(TSIS)
 
 
@@ -38,9 +39,11 @@ TSIS.app <- function(data.size.max=100) {
 
   ##shiny app
 
-  shinyApp(options = list(launch.browser=T),
+  shinyApp(options = list(launch.browser=T,
+                          host = "127.0.0.1",
+                          port = 8888),
            ui = navbarPage("Time-series isoform switch",
-
+                           tags$head(includeScript("vignettes/google-analytics.js")),
                            ##Page 1
                            tabPanel("Manual",
                                     htmlOutput("tutorial")
@@ -676,8 +679,7 @@ TSIS.app <- function(data.size.max=100) {
 
 
              #
-           }
-                                      )
+           })
 }
 
 
