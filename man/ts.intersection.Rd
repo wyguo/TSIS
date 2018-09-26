@@ -4,7 +4,7 @@
 \alias{ts.intersection}
 \title{Searching for intersection points of two time-series}
 \usage{
-ts.intersection(x1, x2)
+ts.intersection(x1, x2, times)
 }
 \arguments{
 \item{x1}{a vector of values for first time-series}
