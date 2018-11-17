@@ -39,9 +39,7 @@ TSIS.app <- function(data.size.max=100) {
 
   ##shiny app
 
-  shinyApp(options = list(launch.browser=T,
-                          host = "127.0.0.1",
-                          port = 8888),
+  shinyApp(options = list(launch.browser=T),
            ui = navbarPage("Time-series isoform switch",
                            tags$head(includeScript(system.file("google-analytics.js", package = "TSIS"))),
                            # tags$head(tags$script(src="google-analytics.js")),
