@@ -1077,7 +1077,7 @@ data.size.max=100
 message('Starting Shiny App...')
 
 ##shiny app
-shinyApp(options = list(launch.browser=T),
+shinyApp(
          ui = navbarPage("Time-series isoform switch",
                          # tags$head(tags$script(src="google-analytics.js")),
                          ##Page 1
