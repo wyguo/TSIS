@@ -28,8 +28,20 @@ shinyApp(options = list(launch.browser=T),
                          # tags$head(tags$script(src="google-analytics.js")),
                          ##Page 1
                          tabPanel("Manual",
-                                  tags$head(includeScript("google-analytics.js")),
-                                  HTML('<a href="https://github.com/wyguo/TSIS" target="_blank">https://github.com/wyguo/TSIS</a>')
+                                  tags$head(includeScript("https://raw.githubusercontent.com/wyguo/TSIS/master/inst/google-analytics.js")),
+                                  # tags$head(tags$script(src="https://raw.githubusercontent.com/wyguo/TSIS/master/inst/google-analytics.js")),
+                                  HTML('User manual: <a href="https://github.com/wyguo/TSIS" target="_blank">https://github.com/wyguo/TSIS</a>'),
+                                  br(),
+                                  HTML('Example data are in two csv files, data.exp.csv and mapping.csv: <a href="https://github.com/wyguo/TSIS" target="_blank">https://github.com/wyguo/TSIS</a>'),
+                                  hr(),
+                                  HTML('<b>If you use TSIS in your work, please cite:</b>'),
+                                  br(),
+                                  HTML('Wenbin Guo, Cristiane P. G. Calixto, John W.S. Brown, Runxuan Zhang, "TSIS: an R package to infer alternative splicing isoform switches for time-series data", Bioinformatics, https://doi.org/10.1093/bioinformatics/btx411, 2017.'),
+                                  br(),
+                                  br(),
+                                  HTML('<b>The paper for TSIS application in RNA-seq data from study of Arabidopsis in response to cold:</b>'),
+                                  br(),
+                                  HTML('Calixto,C.P.G., Guo,W., James,A.B., Tzioutziou,N.A., Entizne,J.C., Panter,P.E., Knight,H., Nimmo,H., Zhang,R., and Brown,J.W.S. (2018) Rapid and dynamic alternative splicing impacts the Arabidopsis cold response transcriptome. Plant Cell.')
                                   
                          ),
                          ##Page 2
