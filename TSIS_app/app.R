@@ -3,6 +3,7 @@ library(shiny)
 # require(shinyFiles)
 library(shinythemes)
 library(plotly)
+######################################################################################################
 ##TSIS
 sourceDir <- function(path, trace = TRUE, ...) {
   for (nm in list.files(path, pattern = '*.R')) {
@@ -12,6 +13,10 @@ sourceDir <- function(path, trace = TRUE, ...) {
   }
 }
 sourceDir(path = 'R',encoding = 'UTF-8')
+
+######################################################################################################
+
+######################################################################################################
 
 data.size.max=100
 
