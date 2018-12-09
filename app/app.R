@@ -1084,7 +1084,9 @@ shinyApp(
                          tabPanel("Manual",
                                   tags$head(includeScript("https://raw.githubusercontent.com/wyguo/TSIS/master/inst/google-analytics.js")),
                                   # tags$head(tags$script(src="https://raw.githubusercontent.com/wyguo/TSIS/master/inst/google-analytics.js")),
-                                  HTML('User manual can be found on: <a href="https://github.com/wyguo/TSIS" target="_blank">https://github.com/wyguo/TSIS</a>')
+                                  HTML('User manual: <a href="https://github.com/wyguo/TSIS" target="_blank">https://github.com/wyguo/TSIS</a>'),
+                                  br(),
+                                  HTML('Example data are two csv files, data.exp.csv and mapping.csv: <a href="https://github.com/wyguo/TSIS" target="_blank">https://github.com/wyguo/TSIS</a>')
                                   
                          ),
                          ##Page 2
