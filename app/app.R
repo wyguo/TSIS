@@ -135,6 +135,7 @@ shinyApp(options = list(launch.browser=T),
                                                         br(),
                                                         br(),
                                                         downloadButton('download.densityplot', 'Save',class="btn btn-primary")
+                                                        # shinySaveButton(id = 'download.densityplot', label = 'Save file', title = "Save file as...", filetype = "txt")
                                                  )
                                                )
                                                )
