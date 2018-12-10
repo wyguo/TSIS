@@ -11,6 +11,1061 @@ package.check <- lapply(packages, FUN = function(x) {
 library(shiny)
 library(ggplot2)
 library(zoo)
+######################################################################################################
+##TSIS
+# sourceDir <- function(path, trace = TRUE, ...) {
+#   for (nm in list.files(path, pattern = '*.R')) {
+#     #if(trace) cat(nm,":")
+#     source(file.path(path, nm), ...)
+#     #if(trace) cat("/n")
+#   }
+# }
+# sourceDir(path = 'R',encoding = 'UTF-8')
+
+#' Calculate standard deviation or standard errors
+#'
+#' Calculate standard deviation or standard errors from a numerical vector.
+#'
+#' @param x a numerical vector
+#' @param error.type method used to calculate data error. Options include "sd" for standard deviation and "stderr" for standard error.
+#'
+#' @return data error
+#' @seealso \code{\link{sd}}
+#'
+#' @examples
+#'
+#' set.seed(2000)
+#' x=rnorm(1000,mean=0,sd=1)
+#' ##standard error
+#' data.error(x,error.type = 'stderr')
+#' ##standard deviation
+#' data.error(x,error.type = 'sd')
+#'
+#' @export
+#'
+
+
+data.error<-function(x,error.type='stderr') {
+  if(error.type=='stderr')
+    error<-sqrt(var(x,na.rm=TRUE)/length(na.omit(x)))
+  if(error.type=='sd')
+    error<-sd(na.omit(x))
+  return(error)
+}
+
+########################
+#' Isoform switch analysis for time-series data
+#'
+#' This function is used to search and score transcript isoform switch in time-series expression.
+#'
+#' @details The detailed steps:
+#'
+#' \if{html}{\figure{figures001.png}{options: width="80\%" alt="Figure: figures_001.png"}}
+#' \if{latex}{\figure{figures001.pdf}{options: width=7cm}}
+#'
+#' \bold{Figure 1:} Isoform switch analysis methods. Expression data with 3 replicates for
+#' each condition/time point is simulated for isoforms \eqn{iso_i} and \eqn{iso_j}.
+#' The points in the plots represent the samples and the black lines connect the average
+#' of samples. (A) is the iso-kTSP algorithm for comparisons of two conditions \eqn{c_1} and \eqn{c_2}.
+#' Time-Series Isoform Switch (TSIS) tool is designed for detection and characterization of
+#' isoform switches for time series data shown in figure (B). The time-series with 6 time
+#' points is divided into 4 intervals by the intersection points of average expression.
+#'
+#' \bold{Step 1: determine switch points.}
+#'
+#' Given that a pair of isoforms \eqn{iso_i} and \eqn{iso_j} may have a number of switches
+#' in a time-series, we have offered two approaches to search for the switch time points in TSIS:
+#'
+#' \itemize{
+#'     \item{The first approach takes the average values of the replicates for each time point
+#'     for each transcript isoform. Then it searches for the cross points of the average
+#'     value of two isoforms across the time points (seen in Figure 1(B)).
+#'     }
+#'     \item{The second approach uses natural spline curves to fit the time-series data
+#'     for each transcript isoform and find cross points
+#'       of the fitted curves for each pair of isoforms.
+#'    }
+#' }
+#'
+#' In most cases, these two methods produce very similar results. However, average values
+#' of expression may lose precision without having information of backward and forward time points.
+#' The spline method fit time-series of expression with control points (depending on spline
+#' degree of freedom provided) and weights of several neighbours to obtain designed precision
+#' (Hastie and Tibshirani, 1990). The spline method is useful to find global trends in the time-series data
+#' when the data is very noisy. But it may lack details of isoform switch in the local region.
+#' It is recommended that users use both average and spline method to search for the switch
+#' points and examine manually when inconsistent results were produced by the above two methods.
+#'
+#'
+#' \bold{Step 2: define switch scoring measures}
+#'
+#' We define each transcript isoform switch by 1) the switch point \eqn{P_i},
+#' 2) time points between switch points \eqn{P_(i-1)}  and \eqn{P_i}  as interval  \eqn{I_1}
+#' before switch \eqn{P_i}  and 3) time points between switch points \eqn{P_i}  and \eqn{P_(i+1)}
+#' as interval \eqn{I_2}  after the switch \eqn{P_i}  (see Figure 1(B)). We defined five measurements
+#' to characterize each isoform switch. The first two are the probability/frequency of switch and
+#' the sum of average sample differences before and after switch, which are similar to Score 1 and
+#' Score 2 in iso-kTSP method (Sebestyen, et al., 2015) (see Figure 1(A))).
+#'
+#' \itemize{
+#'   \item{
+#'     Firstly, for a switch point \eqn{P_i}  of two isoforms \eqn{iso_i}  and \eqn{iso_j}  with interval \eqn{I_1}  before the switch and  interval \eqn{I_2}  after the switch ( Figure1 (B)), Score 1 is defined as
+#'     \deqn{S_1 (iso_i,iso_j |I_1,I_2)=|p(iso_i>iso_j |I_1)+p(iso_i<iso_j |I_2)-1|,}
+#'     Where \eqn{p(iso_i>iso_j |I_1)} and \eqn{p(iso_i<iso_j |I_2)} are the frequencies/probabilities that the samples of one isoform is greater or less than in the other in corresponding intervals.
+#'   }
+#'   \item{
+#'     Secondly, instead of rank differences as in iso-kTSP to avoid possible ties, we directly use the average abundance differences. The sum of mean differences of samples in intervals \eqn{I_1} and \eqn{I_2} are calculated as
+#'     \deqn{S_2 (iso_i,iso_j |I_1,I_2)=d(iso_i,iso_j |I_1)+d(iso_i,iso_j |I_2)}
+#'     Where \eqn{d(iso_i,iso_j |I_k)} is the average expression difference in interval \eqn{I_k,k=1,2} defined as
+#'     \deqn{d(iso_i, iso_j |I_k)=\frac{1}{|I_k|}\sum_{m_{I_k}} |exp(iso_i |s_{m_{I_k}},I_k)-exp(iso_j |s_{m_{I_k}},I_k) |}
+#'     \eqn{|I_k |} is the number of samples in interval \eqn{I_k} and \eqn{exp(iso_i |s_(m_(I_k ) ),I_k)} is the expression of \eqn{iso_i} of sample \eqn{s_(m_(I_k ) )} in interval \eqn{I_k}. }
+#'   \item{
+#'     Thirdly, paired t-tests were carried out to test if there are significant differences for the two switched isoforms within the intervals before and after the switch.  }
+#'   \item{
+#'     Fourthly, the numbers of time points in intervals \eqn{I_1} and \eqn{I_2} were also provided, which indicate whether this switch is transient or a long lived change.
+#'   }
+#'   \item{
+#'     Finally, Isoforms with high negative correlations across the time points may point to the splicing regulation have antagonistic effects on the switched isoforms. Thus they are of great interest for investigation of alternative splicing regulations. As an additional score, we calculated the Pearson correlation of two isoforms across the whole time series.
+#'   }
+#' }
+#'
+#' For TSIS analysis details and examples, please go the the user manual on Github: \url{https://github.com/wyguo/TSIS}.
+#'
+#' @param data.exp  Time-series isoform expression data with first row indicating the replicate labels and second row indicating the time points. The remained lines are isoform names in the first column followed by the expression values. All the replicates for each time point should be grouped together and the time points follow the sequential order.
+#' @param mapping gene and isoform mapping table with gene names in first column  and transcript isoform names in the second column
+#' @param times a numeric vector of time labellings of all the relicated samples, e.g. 1,1,1,2,2,2,3,3,3,...
+#' @param rank logical (TRUE or FALSE). Should isoform expression be converted to rank of isoform expression in sample basis?
+#' @param min.t.points if the number of time points in all intervals < \code{min.t.points},
+#'   this pair of isoforms are not switch candidates since they only have transient switches.
+#' @param min.difference If the mean of differences of average isoform expression or spline fitted expression < \code{min.difference},
+#'   this pair of isoforms are supposed to tied together and they are not considered as switch candidates.
+#' @param spline logical, whether to use spline method to fit isoform expression (TRUE) or mean expression of time points (FALSE).
+#' @param spline.df the degree of freedom used in spline method. See \code{\link{ns}} in \code{\link{splines}} for details.
+#' @param verbose logical, to track the running progressing (TRUE) or not (FALSE).
+#'
+#' @references
+#'   1. Sebestyen E, Zawisza M, Eyras E: Detection of recurrent alternative splicing switches in tumor samples reveals novel signatures of cancer.
+#'   Nucleic Acids Res 2015, 43(3):1345-1356.
+#'
+#'   2. Hastie, T.J. and Tibshirani, R.J. Generalized additive models. Chapter 7 of Statistical Models in S eds. Wadsworth & Brooks/Cole 1990.
+#'
+#' @return  a data frame of scores. The column names:
+#'     \itemize{
+#'       \item{ iso1,iso2: }{ the isoform pairs.}
+#'       \item{ iso1.mean.ratio, iso2.mean.ratio: }{ the mean ratios of isoforms to their gene.}
+#'       \item{ left.interval, left.interval: }{ The intervals before and after switch points.}
+#'       \item{ x.value, y.value: }{ The values of x axis (time) and y axis (expression) coordinates of the switch points.}
+#'       \item{ left.prob, right.prob: }{ the frequencies/probabilities that the samples of an isoform is greater or less than the other in left and right intervals, respectively.}
+#'       \item{ left.dist, right.diff: }{ the average sample differences in intervals before and after switch, respectively.}
+#'       \item{ left.pval, right.pval: }{ the paired t-test p-values of the samples in the intervals before and after switch points.}
+#'       \item{ left.t.points, right.t.points: }{ the number of time points in intervals before and after the switch points.}
+#'       \item{ prob: }{ Score1: the probability/frequency of switch. }
+#'       \item{ diff: }{ Score2: the sum of average sample differences before and after switch.}
+#'       \item{ cor: }{ Pearson correlation of two isoforms. }
+#'     }
+#' @export
+#'
+
+
+iso.switch<-function(data.exp,mapping,times,rank=F,
+                     min.t.points=2,min.difference=1,spline=F,spline.df=NULL,verbose=T){
+  
+  if(nrow(data.exp)!=nrow(mapping))
+    stop("Gene-isoform mapping table does not match to isoform expression table")
+  
+  start.time <- Sys.time()
+  ##Step 1: Checking data information
+  ##genes more than 2 transcripts
+  genes0<-as.vector(mapping[,1])
+  isoforms0<-as.vector(mapping[,2])
+  
+  ##expression ratio aboundance
+  data2intersect.ratio<-apply(data.exp,1,mean)
+  data2intersect.ratio<-rowratio(x = data2intersect.ratio,group = genes0)
+  
+  #choose genes with more than 2 transcripts
+  idx<-table(genes0)[unique(genes0)]
+  genes<-names(idx)[idx>1]
+  isoforms<-isoforms0[which(genes0 %in% genes)]
+  data.exp<-data.exp[isoforms,]
+  if(rank)
+    data2switch<-apply(data.exp,2,rank) else data2switch=data.exp
+  
+  
+  
+  message('Summarising input information ... ')
+  message(' Input genes: ', length(unique(genes0)))
+  message(' Genes with more than 2 isoforms: ', length(genes))
+  message(' Average isoforms per gene for switch analysis: ', round(length(isoforms)/length(genes),3))
+  
+  
+  
+  ##step 2: Pickign isoform-pairs with intersection points...
+  message(paste0('Step 1: Search for intersection points with ',if(spline) 'Spline method...' else 'Mean expression...'))
+  ##Average values of time points
+  ##data for searching isoform swtich points
+  if(spline){
+    message(' Spline fitting expression ...')
+    if(is.null(spline.df))
+      spline.df<-floor(2*(length(unique(times)-1))/3)
+    data2intersect<-t(apply(data.exp,1,function(x) ts.spline(x,times  = times,df = spline.df)))
+  } else {
+    data2intersect<-t(rowmean(t(data.exp),group = times))
+  }
+  
+  
+  ##Find intersection points
+  message(' Searching ...')
+  iso.intersections<-list()
+  t.start<-min(times)
+  t.end<-max(times)
+  
+  if(verbose)
+    pb <- txtProgressBar(min = 0, max = length(genes), style = 3,width = 75)
+  for(i in 1:length(genes)){
+    Sys.sleep(0)
+    
+    sub.gene<-genes[i]
+    sub.isoform<-as.vector(isoforms0[which(genes0==sub.gene)])
+    
+    onegene<-data2intersect[sub.isoform,]
+    comb<-combn(sub.isoform,2)
+    # iso.intersections<-list()
+    for(j in 1:ncol(comb)){
+      iso1<-comb[1,j]
+      iso2<-comb[2,j]
+      ##
+      x1=onegene[iso1,]
+      x2=onegene[iso2,]
+      
+      if(max(abs(x1-x2))<min.difference)
+        next
+      
+      ##intersection points
+      iso.inter <- ts.intersection(x1 = x1, x2 = x2,times = times)
+      if(is.null(iso.inter))
+        next
+      iso.inter<-iso.inter[iso.inter$x.points<t.end & iso.inter$x.points>t.start,]
+      ##check if have intersection points
+      if(nrow(iso.inter)==0)
+        next
+      
+      ##check if the switching lasting more than 2 consecutive time points
+      check.consecutive<-c(t.start,iso.inter$x.points,t.end)
+      check.consecutive<-data.frame(low=check.consecutive[-length(check.consecutive)],up=check.consecutive[-1])
+      check.consecutive$low<-ceiling(check.consecutive$low)
+      check.consecutive$up<-floor(check.consecutive$up)
+      check.consecutive<-check.consecutive$up-check.consecutive$low+1
+      
+      if(max(check.consecutive)<min.t.points)
+        next
+      
+      iso.inter<-data.frame(iso1=iso1,iso2=iso2,t(iso.inter))
+      colnames(iso.inter)<-c('iso1','iso2',paste0('switch',1:(ncol(iso.inter)-2)))
+      
+      iso.intersections<-c(iso.intersections,setNames(object = list(iso.inter),nm = paste0(iso1,'_vs_',iso2)))
+    }
+    if(verbose)
+      setTxtProgressBar(pb, i)
+  }
+  if(verbose)
+    close(pb)
+  
+  message(' ',paste0(length(iso.intersections),' pairs of isoforms have intersection points.'))
+  
+  
+  
+  
+  
+  message('Step 2: Calculate scores for isoform switch ...')
+  message(' Score 1: Switch frequencies/probabilities')
+  message(' Score 2: Sum of average sample differences before and after switch.')
+  message(' Score 3: P-values of sample differences before and after switch')
+  message(' Score 4: Time points in each intervals')
+  message(' Score 5: Pearson correlation of isoforms')
+  ##step 2: calculate probablities
+  
+  iso.names<-names(iso.intersections)
+  
+  iso.scores<-data.frame()
+  
+  if(verbose)
+    pb <- txtProgressBar(min = 0, max = length(iso.names), style = 3,width = 75)
+  for(i in 1:length(iso.names)){
+    Sys.sleep(0)
+    #  i=1
+    # i=which(grepl('AT1G01060.2_vs_AT1G01060.3',x = iso.names))
+    iso<-unlist(strsplit(iso.names[i],'_vs_'))
+    iso1<-iso[1]
+    iso2<-iso[2]
+    #generate dataset for iso for isoform switch analysis
+    n.inters<-data.frame(iso.intersections[[iso.names[i]]][,-c(1:2)])
+    colnames(n.inters)<-colnames(iso.intersections[[iso.names[i]]])[-c(1:2)]
+    inters=as.numeric(n.inters[1,])
+    
+    interval=cut(times,unique(c(t.start,as.numeric(inters),t.end)),include.lowest = T,dig.lab = 5)
+    # sub.data2swith=data.frame(interval=interval,t(data.exp.rank[c(iso1,iso2),]),iso.idx=c(-1,1)[as.numeric(interval)%%2+1])
+    sub.data2swith=data.frame(interval=interval,t(data2switch[c(iso1,iso2),]))
+    ##add a column of sign of differences
+    
+    diff.sign<-sign(sub.data2swith[,2]-sub.data2swith[,3])
+    interval.idx<-as.numeric(interval) %%2
+    interval.idx[interval.idx==0]<--1
+    diff.sign<-diff.sign*interval.idx
+    sub.data2swith$diff.sign<-diff.sign
+    x0<-diff.sign[diff.sign!=0][1]
+    #Define scores
+    
+    
+    s<-by(data = sub.data2swith,INDICES =sub.data2swith[,1],FUN = function(x){
+      ##score1:
+      prob<-length(x[,4][x[,4]==x0])/length(x[,4])
+      prob[is.na(prob)]<-0
+      ##score2:
+      x.diff<-x[,2]-x[,3]
+      diff.mean<-mean(x.diff)
+      # ##score3:
+      pval<-t.test(x[,3],x[,2],paired = T)$p.value
+      pval[is.na(pval)]<-1
+      #score4:
+      # inter.length<-nrow(x)/nrep
+      y<-as.character(x$interval[1])
+      y<-as.numeric(unlist(strsplit(substr(x = y,start = 2,stop = nchar(y)-1),',',fixed = T)))
+      inter.length <- length(which(unique(times)>=ceiling(min(y)) & unique(times)<= floor(max(y))))
+      x<-data.frame(prob=prob,diff=diff.mean,pval=pval,inter.length=inter.length)
+      x
+    },simplify = T)
+    s<-t(do.call(rbind,s))
+    
+    if(ncol(s)<3)
+      lf.idx<-1:2 else lf.idx<-c(1,rep(2:(ncol(s)-1),each=2),ncol(s))
+    
+    ##score 1: prob
+    score1.2side<-matrix(s[1,lf.idx],ncol=2,byrow = T)
+    colnames(score1.2side)<-c('before.prob','after.prob')
+    score1<-rollapply(as.numeric(s[1,]), width = 2, FUN = function(x) abs(sum(x)-1))
+    
+    ##score 2: difference
+    score2<-abs(diff(s[2,]))
+    score2.2side<-matrix(s[2,lf.idx],ncol=2,byrow = T)
+    colnames(score2.2side)<-c('before.diff','after.diff')
+    
+    ##score 3: p-value
+    score3<-matrix(s[3,lf.idx],ncol=2,byrow = T)
+    colnames(score3)<-c('before.pval','after.pval')
+    
+    ##score 4: interval length
+    score4<-matrix(s[4,lf.idx],ncol=2,byrow = T)
+    colnames(score4)<-c('before.t.points','after.t.points')
+    
+    
+    ###average ratio
+    iso.mean.ratio<-data.frame(iso1.mean.ratio=data2intersect.ratio[iso1],iso2.mean.ratio=data2intersect.ratio[iso2])
+    
+    ###before and after intervals
+    inter.lr<-matrix(unique(interval)[lf.idx],ncol=2,byrow = T)
+    colnames(inter.lr)<-c('before.interval','after.interval')
+    
+    
+    score<-data.frame(iso1=iso1,
+                      iso2=iso2,
+                      iso.mean.ratio,
+                      inter.lr,
+                      x.value=as.numeric(n.inters[1,]),
+                      y.value=as.numeric(n.inters[2,]),
+                      score1.2side,
+                      score2.2side,
+                      score3,
+                      score4,
+                      prob=score1,
+                      diff=score2,
+                      cor=cor(as.numeric(data.exp[iso1,]),as.numeric(data.exp[iso2,])),
+                      row.names = NULL)
+    
+    iso.scores<-rbind(score,iso.scores)
+    if(verbose)
+      setTxtProgressBar(pb, i)
+  }
+  if(verbose)
+    close(pb)
+  ##sort
+  iso.scores<-iso.scores[order(iso.scores$prob,decreasing = T),]
+  
+  end.time <- Sys.time()
+  time.taken <- end.time - start.time
+  message(paste0('Time for analysis: ',round(time.taken,3),' ',attributes(time.taken)$units))
+  
+  message('Done!!! ')
+  return(data.frame(iso.scores,row.names = NULL))
+}
+
+
+#' @export
+#'
+
+iso.switch.shiny<-function(data.exp,mapping,times,rank=F,
+                           min.t.points=2,min.difference=1,spline=F,spline.df=NULL,verbose=T){
+  
+  if(nrow(data.exp)!=nrow(mapping))
+    stop("Gene-isoform mapping table does not match to isoform expression table")
+  
+  start.time <- Sys.time()
+  ##Step 1: Checking data information
+  ##genes more than 2 transcripts
+  genes0<-as.vector(mapping[,1])
+  isoforms0<-as.vector(mapping[,2])
+  
+  ##expression ratio aboundance
+  data2intersect.ratio<-apply(data.exp,1,mean)
+  data2intersect.ratio<-rowratio(x = data2intersect.ratio,group = genes0)
+  
+  #choose genes with more than 2 transcripts
+  idx<-table(genes0)[unique(genes0)]
+  genes<-names(idx)[idx>1]
+  isoforms<-isoforms0[which(genes0 %in% genes)]
+  data.exp<-data.exp[isoforms,]
+  if(rank)
+    data2switch<-apply(data.exp,2,rank) else data2switch=data.exp
+  
+  
+  
+  message('Summarising input information ... ')
+  message(' Input genes: ', length(unique(genes0)))
+  message(' Genes with more than 2 isoforms: ', length(genes))
+  message(' Average isoforms per gene for switch analysis: ', round(length(isoforms)/length(genes),3))
+  
+  
+  
+  ##step 2: Pickign isoform-pairs with intersection points...
+  message(paste0('Step 1: Search for intersection points with ',if(spline) 'Spline method...' else 'Mean expression...'))
+  ##Average values of time points
+  ##data for searching isoform swtich points
+  if(spline){
+    message(' Spline fitting expression ...')
+    if(is.null(spline.df))
+      spline.df<-floor(2*(length(unique(times)-1))/3)
+    data2intersect<-t(apply(data.exp,1,function(x) ts.spline(x,times  = times,df = spline.df)))
+  } else {
+    data2intersect<-t(rowmean(t(data.exp),group = times))
+  }
+  
+  
+  ##Find intersection points
+  message(' Searching ...')
+  iso.intersections<-list()
+  t.start<-min(times)
+  t.end<-max(times)
+  
+  withProgress(message = 'Searching intersections: ',value=0,{
+    if(verbose)
+      pb <- txtProgressBar(min = 0, max = length(genes), style = 3,width = 75)
+    for(i in 1:length(genes)){
+      
+      sub.gene<-genes[i]
+      sub.isoform<-as.vector(isoforms0[which(genes0==sub.gene)])
+      
+      onegene<-data2intersect[sub.isoform,]
+      comb<-combn(sub.isoform,2)
+      # iso.intersections<-list()
+      for(j in 1:ncol(comb)){
+        iso1<-comb[1,j]
+        iso2<-comb[2,j]
+        ##
+        x1=onegene[iso1,]
+        x2=onegene[iso2,]
+        
+        if(max(abs(x1-x2))<min.difference)
+          next
+        
+        ##intersection points
+        iso.inter <- ts.intersection(x1 = x1, x2 = x2,times = times)
+        if(is.null(iso.inter))
+          next
+        iso.inter<-iso.inter[iso.inter$x.points<t.end & iso.inter$x.points>t.start,]
+        ##check if have intersection points
+        if(nrow(iso.inter)==0)
+          next
+        
+        ##check if the switching lasting more than 2 consecutive time points
+        check.consecutive<-c(t.start,iso.inter$x.points,t.end)
+        check.consecutive<-data.frame(low=check.consecutive[-length(check.consecutive)],up=check.consecutive[-1])
+        check.consecutive$low<-ceiling(check.consecutive$low)
+        check.consecutive$up<-floor(check.consecutive$up)
+        check.consecutive<-check.consecutive$up-check.consecutive$low+1
+        
+        if(max(check.consecutive)<min.t.points)
+          next
+        
+        iso.inter<-data.frame(iso1=iso1,iso2=iso2,t(iso.inter))
+        colnames(iso.inter)<-c('iso1','iso2',paste0('switch',1:(ncol(iso.inter)-2)))
+        
+        iso.intersections<-c(iso.intersections,setNames(object = list(iso.inter),nm = paste0(iso1,'_vs_',iso2)))
+      }
+      
+      incProgress(1/length(genes), detail = paste(i, ' of ', length(genes)))
+      Sys.sleep(0)
+      if(verbose)
+        setTxtProgressBar(pb, i)
+    }
+    if(verbose)
+      close(pb)
+  })
+  
+  message(' ',paste0(length(iso.intersections),' pairs of isoforms have intersection points.'))
+  
+  
+  
+  message('Step 2: Calculate scores for isoform switch ...')
+  message(' Score 1: Switch frequencies/probabilities')
+  message(' Score 2: Sum of average sample differences before and after switch.')
+  message(' Score 3: P-values of sample differences before and after switch')
+  message(' Score 4: Time points in each intervals')
+  message(' Score 5: Pearson correlation of isoforms')
+  ##step 2: calculate probablities
+  
+  iso.names<-names(iso.intersections)
+  
+  iso.scores<-data.frame()
+  
+  withProgress(message = 'Scoring isoforms: ',value=0,{
+    if(verbose)
+      pb <- txtProgressBar(min = 0, max = length(iso.names), style = 3,width = 75)
+    for(i in 1:length(iso.names)){
+      
+      #  i=1
+      # i=which(grepl('AT1G01060.2_vs_AT1G01060.3',x = iso.names))
+      iso<-unlist(strsplit(iso.names[i],'_vs_'))
+      iso1<-iso[1]
+      iso2<-iso[2]
+      #generate dataset for iso for isoform switch analysis
+      n.inters<-data.frame(iso.intersections[[iso.names[i]]][,-c(1:2)])
+      colnames(n.inters)<-colnames(iso.intersections[[iso.names[i]]])[-c(1:2)]
+      inters=as.numeric(n.inters[1,])
+      
+      interval=cut(times,unique(c(t.start,as.numeric(inters),t.end)),include.lowest = T,dig.lab = 5)
+      # sub.data2swith=data.frame(interval=interval,t(data.exp.rank[c(iso1,iso2),]),iso.idx=c(-1,1)[as.numeric(interval)%%2+1])
+      sub.data2swith=data.frame(interval=interval,t(data2switch[c(iso1,iso2),]))
+      ##add a column of sign of differences
+      
+      diff.sign<-sign(sub.data2swith[,2]-sub.data2swith[,3])
+      interval.idx<-as.numeric(interval) %%2
+      interval.idx[interval.idx==0]<--1
+      diff.sign<-diff.sign*interval.idx
+      sub.data2swith$diff.sign<-diff.sign
+      x0<-diff.sign[diff.sign!=0][1]
+      #Define scores
+      
+      
+      s<-by(data = sub.data2swith,INDICES =sub.data2swith[,1],FUN = function(x){
+        ##score1:
+        prob<-length(x[,4][x[,4]==x0])/length(x[,4])
+        prob[is.na(prob)]<-0
+        ##score2:
+        x.diff<-x[,2]-x[,3]
+        diff.mean<-mean(x.diff)
+        # ##score3:
+        pval<-t.test(x[,3],x[,2],paired = T)$p.value
+        pval[is.na(pval)]<-1
+        #score4:
+        # inter.length<-nrow(x)/nrep
+        
+        y<-as.character(x$interval[1])
+        y<-as.numeric(unlist(strsplit(substr(x = y,start = 2,stop = nchar(y)-1),',',fixed = T)))
+        inter.length <- length(which(unique(times)>=ceiling(min(y)) & unique(times)<= floor(max(y))))
+        x<-data.frame(prob=prob,diff=diff.mean,pval=pval,inter.length=inter.length)
+        x
+      },simplify = T)
+      s<-t(do.call(rbind,s))
+      
+      if(ncol(s)<3)
+        lf.idx<-1:2 else lf.idx<-c(1,rep(2:(ncol(s)-1),each=2),ncol(s))
+      
+      ##score 1: prob
+      score1.2side<-matrix(s[1,lf.idx],ncol=2,byrow = T)
+      colnames(score1.2side)<-c('before.prob','after.prob')
+      score1<-rollapply(as.numeric(s[1,]), width = 2, FUN = function(x) abs(sum(x)-1))
+      
+      ##score 2: difference
+      score2<-abs(diff(s[2,]))
+      score2.2side<-matrix(s[2,lf.idx],ncol=2,byrow = T)
+      colnames(score2.2side)<-c('before.diff','after.diff')
+      
+      ##score 3: p-value
+      score3<-matrix(s[3,lf.idx],ncol=2,byrow = T)
+      colnames(score3)<-c('before.pval','after.pval')
+      
+      ##score 4: interval length
+      score4<-matrix(s[4,lf.idx],ncol=2,byrow = T)
+      colnames(score4)<-c('before.t.points','after.t.points')
+      
+      
+      ###average ratio
+      iso.mean.ratio<-data.frame(iso1.mean.ratio=data2intersect.ratio[iso1],iso2.mean.ratio=data2intersect.ratio[iso2])
+      
+      ###before and after intervals
+      inter.lr<-matrix(unique(interval)[lf.idx],ncol=2,byrow = T)
+      colnames(inter.lr)<-c('before.interval','after.interval')
+      
+      
+      score<-data.frame(iso1=iso1,iso2=iso2,iso.mean.ratio,inter.lr,x.value=as.numeric(n.inters[1,]),y.value=as.numeric(n.inters[2,]),
+                        score1.2side,score2.2side,score3,score4,
+                        prob=score1,diff=score2,cor=cor(as.numeric(data.exp[iso1,]),as.numeric(data.exp[iso2,])),row.names = NULL)
+      
+      iso.scores<-rbind(score,iso.scores)
+      
+      incProgress(1/length(iso.names), detail = paste(i, ' of ', length(iso.names)))
+      Sys.sleep(0)
+      if(verbose)
+        setTxtProgressBar(pb, i)
+    }
+    if(verbose)
+      close(pb)
+  })
+  ##sort
+  ##sort
+  iso.scores<-iso.scores[order(iso.scores$prob,decreasing = T),]
+  
+  end.time <- Sys.time()
+  time.taken <- end.time - start.time
+  message(paste0('Time for analysis: ',round(time.taken,3),' ',attributes(time.taken)$units))
+  
+  message('Done!!! ')
+  return(data.frame(iso.scores,row.names = NULL))
+}
+
+#######################
+#' Plot time-series switches of a pair of isoforms
+#'
+#' @param data2plot the transcript isoform expression data for switch plots with rows of isoforms and columns of samples. See \code{TSIS.data$data.exp} for details.
+#' @param scores the output scores of functions \code{\link{iso.switch}} and \code{\link{score.filter}}. Default is NULL. To show score labels on the plot,
+#' the scores must be provided.
+#' @param iso1,iso2 character string names of isoforms to plot.
+#' the input \code{data2plot} must be a data frame of two rows and the row names are used as isoforms to plot.
+#' @param gene.name a character string of gene name to show as the title of the plot. If \code{gene.name=NULL}, the plot title will be "iso1_vs_iso2".
+#' @param y.lab the y axis label of the plot, default is "Expression".
+#' @param make.plotly logical, to plot \code{\link{plotly}} format figures (TRUE) or ggplot2 format figures(FALSE)?. See details in \code{\link{ggplotly}} in \code{\link{plotly}} R pacakge.
+#' @param times a numeric vector of time labellings of all the relicated samples, e.g. 1,1,1,2,2,2,3,3,3,...
+#' @param prob.cutoff the cut-off of switch frequencies/probabilities to label the switch points.
+#' @param x.lower.boundary,x.upper.boundary Specifies the time frame of interest to investigate the isoform switches.
+#' @param show.region logical, to highlight the time frame under investigation (TRUE) or not (FALSE)?
+#' @param show.scores logical, to show score labels on the plot (TRUE) or not (FALSE)? The \code{scores} object must be provided.
+#' @param error.type the error type used to show the error bar in the plots. Options are "stderr" for standard error and "sd" for standard deviation. See details in \code{\link{data.error}}.
+#' @param show.errorbar logical, to show error bar (TRUE) or not (FALSE) in the error bar plot.
+#' @param errorbar.width,errorbar.size the width and size of error bars. See detials in \code{\link{geom_errorbar}} in \code{\link{ggplot2}} R pacakge.
+#' @param line.width,point.size line width and point marker size of the plots.
+#' @param spline logical, to plot the spline smoothed lines (TRUE) or the lines of mean expression (FALSE).
+#' @param spline.df the degree of freedom used for spline.  The value must be the same as in the function \code{\link{iso.switch}}. See spline details in \code{\link{geom_smooth}} in \code{\link{ggplot2}}
+#' and \code{\link{ns}} in \code{\link{splines}}.
+#' @param ribbon.plot logcial, to make ribbon plot (TRUE) or error bar plot (FALSE). See ribbon plot details in \code{\link{geom_smooth}} in \code{\link{ggplot2}} R pacakge.
+#'
+#'
+#'
+#' @examples
+#'
+#' #generate random datasets
+#' set.seed(100)
+#' data2plot<-data.frame(matrix(abs(rnorm(60)),nrow=2),row.names = c('iso1','iso2'))
+#' #error bar plot
+#' plotTSIS(data2plot=data2plot,scores=NULL,iso1=NULL,iso2=NULL,gene.name=NULL,
+#'         y.lab='Expression',make.plotly=F,times=rep(1:10,each=3),prob.cutoff=0.5,x.lower.boundary=3,
+#'         x.upper.boundary=8,show.region=T,error.type='stderr',ribbon.plot = F)
+#'
+#' #ribbon plot
+#' plotTSIS(data2plot=data2plot,scores=NULL,iso1=NULL,iso2=NULL,gene.name=NULL,
+#'          y.lab='Expression',make.plotly=F,times=rep(1:10,each=3),prob.cutoff=0.5,x.lower.boundary=3,
+#'          x.upper.boundary=8,show.region=T,error.type='stderr',ribbon.plot = T)
+#'
+#' @return a ggplot2 or \code{\link{ggplotly}} (if \code{plotly=TRUE}) plot.
+#' @export
+#'
+#' @seealso \code{\link{ggplotly}}, \code{\link{iso.switch}}, \code{\link{score.filter}}, \code{\link{data.error}}, \code{\link{geom_smooth}}, \code{\link{ns}}
+#'
+plotTSIS<-function(data2plot,scores=NULL,iso1=NULL,iso2=NULL,gene.name=NULL,y.lab='Expression',make.plotly=F,
+                   times,prob.cutoff=0.5,x.lower.boundary=9,x.upper.boundary=17,show.region=T,show.scores=T,
+                   error.type='stderr',show.errorbar=T,errorbar.width=0.1,errorbar.size=0.5,line.width=1,
+                   point.size=3,marker.size=1,
+                   spline=F,spline.df=NULL,ribbon.plot=F){
+  
+  require(ggplot2)
+  
+  if(is.null(spline.df))
+    spline.df<-floor((unique(times)-2)*2/3)
+  
+  gg_color_hue <- function(n) {
+    hues = seq(15, 375, length = n + 1)
+    hcl(h = hues, l = 65, c = 100)[1:n]
+  }
+  
+  y.upper <- function(x){mean(x) + data.error(x)}
+  y.lower<-function(x){mean(x) - data.error(x)}
+  
+  
+  if(is.null(iso1) | is.null(iso2)){
+    iso1<-rownames(data2plot)[1]
+    iso2<-rownames(data2plot)[2]
+  }
+  
+  data2plot<-data2plot[c(iso1,iso2),]
+  
+  if(is.null(gene.name))
+    gene.name<-paste0(iso1,'_vs_',iso2)
+  
+  data2plot<-data.frame(rbind(data.frame(isoforms=iso1,times=times,value=as.numeric(data2plot[iso1,])),
+                              data.frame(isoforms=iso2,times=times,value=as.numeric(data2plot[iso2,]))))
+  ##ribbon plot
+  if(ribbon.plot){
+    if(spline){
+      data2plot<-data.frame(data2plot[,1:2],mean=data2plot$value,error=0)
+      # data2plot$times<-factor(data2plot$times,levels = unique(data2plot$times))
+      g<-ggplot(data2plot, aes(x=times, y=mean,group=isoforms,color=isoforms,fill=isoforms,shape=isoforms)) +
+        geom_point(size=marker.size) +theme_bw()+
+        geom_smooth(method = "lm",formula = y ~ splines::ns(x, spline.df),size=line.width)
+    } else {
+      data2plot<-data.frame(data2plot[,1:2],mean=data2plot$value,error=0)
+      # data2plot$times<-factor(data2plot$times,levels = unique(data2plot$times))
+      g <- ggplot(data2plot, aes(x=times, y=mean,group=isoforms,color=isoforms,fill=isoforms,shape=isoforms)) +
+        geom_point(size=marker.size) +theme_bw()+
+        stat_summary(fun.y=mean,geom='line',size=line.width)+
+        stat_summary(fun.y=mean,geom = 'ribbon',fun.ymax = y.upper,fun.ymin = y.lower,alpha=0.3,colour=NA)
+    }
+    ##error bar plots
+  } else{
+    if(spline){
+      values<-by(data2plot$value,INDICES = data2plot$isoforms,simplify = T,
+                 FUN = function(x) ts.spline(x,times = times,df=spline.df,se.fit=T))
+      x1 <- data.frame(isoforms=iso1,times=unique(times),
+                       mean=values[[iso1]]$fit,
+                       error=values[[iso1]]$se.fit)
+      x2 <- data.frame(isoforms=iso2,times=unique(times),
+                       mean=values[[iso2]]$fit,
+                       error=values[[iso2]]$se.fit)
+      data2plot<-rbind(x1,x2)
+    } else {
+      data2plot <- by(data2plot,INDICES = interaction(data2plot$isoforms,data2plot$times,sep = '_at_'),function(x){
+        data.frame(isoforms=unique(x$isoforms),
+                   times=unique(x$times),
+                   mean=mean(x$value),
+                   error=data.error(x$value,error.type = error.type))
+      })
+      data2plot <- do.call(rbind,data2plot)
+    }
+    # colnames(data2plot)<-c('isoforms','times','mean','error')
+    
+    
+    g<-ggplot(data2plot,aes(x=times,y=mean,group=isoforms,shape=isoforms,color=isoforms))+theme_bw()+
+      geom_line(size=line.width)+geom_point(size=point.size,aes(fill=isoforms))+
+      scale_x_continuous(breaks = unique(times),labels = unique(times))
+    if(show.errorbar)
+      g<-g+geom_errorbar(data=data2plot,aes(ymin=mean-error,ymax=mean+error),width=errorbar.width,color='black',
+                         size=errorbar.size)
+  }
+  
+  if(is.null(scores))
+    idx=NULL else idx<-which(scores$iso1 %in% c(iso1,iso2) & scores$iso2 %in% c(iso1,iso2) & scores$prob>=prob.cutoff)
+  
+  if(length(idx)==0){
+    g<-g } else {
+      sub.scores<-scores[idx,]
+      data2points<-data.frame(isoforms='switch_points',times=sub.scores$x.value,mean=sub.scores$y.value,error=0)
+      
+      g<-g+geom_point(data=data2points,aes(x=times,y=mean,color=isoforms,fill=isoforms,shape=isoforms),size=point.size)+
+        scale_color_manual(values=c(gg_color_hue(2),rep('black',length(idx))),breaks=c(iso1,iso2,rep('switch_points',length(idx))))+
+        scale_fill_manual(values=c(gg_color_hue(2),rep('black',length(idx))),breaks=c(iso1,iso2,rep('switch_points',length(idx))))+
+        scale_shape_manual(values=c(15,17,rep(16,length(idx))),breaks=c(iso1,iso2,rep('switch_points',length(idx))))
+      if(show.scores)
+        g<-g+annotate('text',x = 1.1*sub.scores$x.value, y =sub.scores$y.value+max(data2plot$mean)/20,
+                      label = paste0('prob=',round(sub.scores$prob,2),'; diff=',round(sub.scores$diff,2),'; cor=',round(sub.scores$cor,2)))
+    }
+  
+  if(show.region){
+    g<-g+annotate("rect", xmin = x.lower.boundary, xmax = x.upper.boundary, ymin = -Inf, ymax = Inf,alpha = 0.2,color='skyblue',fill='skyblue')+
+      annotate("text",x=mean(c(x.upper.boundary,x.lower.boundary)),
+               y=max(data2plot$mean+data2plot$error),label='Region for investigation',color='blue',size=5)+
+      geom_vline(xintercept = c(x.lower.boundary,x.upper.boundary),linetype=3,lwd=1,color='skyblue',alpha=1)
+  }
+  g<-g+labs(title=paste("Isoforms of gene:",gene.name),x='Time points',y=y.lab)
+  
+  if(make.plotly)
+    plotly::ggplotly(g) else g
+}
+
+#####################
+#' Calculate column mean of a matrix or data frame based on a grouping variable
+#'
+#' Compute column means across rows of a numeric matrix-like object for each level
+#' of a grouping variable.
+#' @param x a matrix or data frame.
+#' @param group a vector of factor giving grouping, with one element per row of x.
+#' @param reorder if TRUE, then the result will be in order of \code{sort(unique(group))}.
+#' @param na.rm logical (TRUE or FALSE). Should NA (including NaN) values be replaced by value 0?
+#' @return \code{rowmean} returns a matrix or data frame containing the means. There
+#' will be one row per unique value of group.
+#'
+#' @examples
+#' x <- matrix(runif(50), ncol = 5)
+#' group <- sample(1:4, 10, TRUE)
+#' xmean <- rowmean(x, group)
+#'
+#' @export
+#' @seealso \code{\link{rowsum}}, \code{\link{rowratio}}
+rowmean<-function(x,group,na.rm=T){
+  order.idx<-as.character(unique(group))
+  # if (reorder)
+  #   order.idx<-gtools::mixedsort(order.idx)
+  
+  counts <- table(group)[order.idx]
+  sums <- rowsum(x, group = group)[order.idx,]
+  means <- (diag(1/counts)) %*% as.matrix(sums)
+  rownames(means) <- order.idx
+  if (na.rm)
+    means[is.na(means)] <- 0
+  return(means)
+}
+
+
+
+#####################
+#' Calculate column raito of a matrix or data frame based on a grouping variable
+#'
+#' Compute column ratio across rows of a numeric matrix-like object for each level
+#' of a grouping variable.
+#' @param x a matrix or data frame.
+#' @param group a vector of factor giving grouping, with one element per row of x.
+#' @param reorder if TRUE, then the result will be in order of row names of x. If row names of x is null, the
+#' results is not reordered.
+#' @param na.rm logical (TRUE or FALSE). Should NA (including NaN) values be replaced by value 0?
+#' @return \code{rowratio} returns a matrix or data frame containing the ratios. There
+#' will be one row per unique value of group.
+#'
+#' @examples
+#' x <- matrix(runif(50), ncol = 5)
+#' group <- sample(1:4, 10, TRUE)
+#' xratio <- rowratio(x, group)
+#'
+#' @export
+#'
+#' @seealso \code{\link{rowsum}}, \code{\link{rowmean}}
+
+rowratio<-function(x,group,na.rm=T){
+  y<-rowsum(x,group = group)
+  y<-y[group,]
+  ratio=x/y
+  rownames(ratio)<-rownames(x)
+  if(na.rm)
+    ratio[is.na(ratio)]<-0
+  # if(reorder & !is.null(rownames(ratio)))
+  #   ratio<-ratio[gtools::mixedsort(rownames(ratio)),]
+  return(ratio)
+}
+
+
+#######################
+#' Filtering the scores for isoform switch
+#'
+#' Filtering the scores output from \code{\link{iso.switch}}.
+#'
+#' Users can set cut-offs, such as for the probability/frequency of switch and sum of average differences, to further refine the switch results.
+#'
+#' @param scores the scores object output from \code{\link{iso.switch}}.
+#' @param prob.cutoff,diff.cutoff,t.points.cutoff,pval.cutoff,cor.cutoff the cut-offs corresponding to switch frequencies/probablities,
+#' sum of average sample differences, p-value and time points cut-offs for both intervals before and after switch and Pearson correlation.
+#' @param data.exp,mapping the expression and gene-isoform mapping data.
+#' @param sub.isoform.list a vector of isoforms to output the corresponding results (see \code{TSIS.data$sub.isoforms}).
+#' @param sub.isoform logical, to output subset of the results(TRUE) or not (FALSE). If TRUE, \code{sub.isoform.list} must be provided.
+#' @param max.ratio logical, to show maximum abundant isoform results(TRUE) or not (FALSE). If TRUE, data.exp and mapping data must be
+#' provided to calculate the isoform ratios to the genes using  \code{\link{rowratio}}.
+#' @param x.value.limit the region of x axis (time) for investigation.
+#'
+#' @export
+#'
+#' @return a table of scores after filtering.
+#'
+score.filter<-function(scores,prob.cutoff=0.5,diff.cutoff=1,t.points.cutoff=2,pval.cutoff=0.01,cor.cutoff=0.5,
+                       data.exp=NULL,mapping=NULL,sub.isoform.list=NULL,sub.isoform=F,max.ratio=F,
+                       x.value.limit=c(9,17)){
+  
+  if((is.null(data.exp) | is.null(mapping)) & max.ratio){
+    msg<-data.frame('Expression data and mapping data are not provided.',row.names = NULL)
+    colnames(msg)<-'Warnings:'
+    return(msg)
+  } else if(is.null(sub.isoform.list) & sub.isoform){
+    msg<-data.frame('Subset of isoform names is not provided.',row.names = NULL)
+    colnames(msg)<-'Warnings:'
+    return(msg)
+  } else {
+    scores=scores[which(scores$before.t.points>=t.points.cutoff
+                        & scores$after.t.points >= t.points.cutoff
+                        & scores$prob>prob.cutoff
+                        & scores$diff >diff.cutoff
+                        & scores$before.pval <pval.cutoff
+                        & scores$after.pval<pval.cutoff
+                        & abs(scores$cor)>cor.cutoff
+                        & scores$x.value >=x.value.limit[1]
+                        & scores$x.value <=x.value.limit[2]),]
+    scores<-scores[order(scores[,'prob'],decreasing = T),]
+    rownames(scores)<-NULL
+    
+    ##subsets of the data
+    
+    if(sub.isoform & nrow(scores)>0)
+      scores<-scores[which(scores$iso1 %in% sub.isoform.list | scores$iso2 %in% sub.isoform.list),]
+    
+    if(max.ratio & nrow(scores)>0){
+      genes0<-mapping[,1]
+      isoforms0<-mapping[,2]
+      
+      ##expression ratio aboundance
+      data.exp.mean.ratio<-apply(data.exp,1,mean)
+      data.exp.mean.ratio<-data.frame(usage=rowratio(x = data.exp.mean.ratio,group = genes0))
+      max.ratio.idx<-by(data.exp.mean.ratio,INDICES = genes0,function(x){
+        rownames(x)[x==max(x)]
+      },simplify = F)
+      max.ratio.idx<-do.call(cbind,max.ratio.idx)
+      scores<-scores[which(scores$iso1 %in% max.ratio.idx | scores$iso2 %in% max.ratio.idx),]
+    }
+    return(scores)
+    
+  }
+  
+  
+}
+
+
+############################
+#' Density plot
+#'
+#' @param x a numeric vector to plot th density.
+#' @param time.points a numeric vector of the time points of time-series, e.g. 1,2,3,...
+#' @param make.plotly logical, to plot \code{\link{plotly}} format figures (TRUE)
+#' or general plot (FALSE)?. See details in \code{\link{ggplotly}} in \code{\link{plotly}} R pacakge.
+#' @param plot.type the plot types. Options are "density" for density bar plot and "frequency" for frequency bar plot.
+#' @param show.line logical, to show density or frequency line or not?
+#' @param titile the title of the plot.
+#' @param ... additional parameters pass to \code{\link{plotly::ggplotly}}
+#'
+#' @return density plot in ggplot2 format or \code{\link{plotly}} format if \code{make.plotly=T}
+#'
+#' @export
+#'
+
+
+
+switch.density<-function(x,time.points,
+                         make.plotly=T,
+                         plot.type='density',
+                         show.line=T,
+                         title="Density of switch points",...){
+  
+  ##plot type
+  plot.type<-match.arg(plot.type,c('density','frequency'))
+  
+  data2plot<-data.frame(x=x+0.001)
+  
+  if(plot.type=='density'){
+    ##density plot
+    g<-ggplot(data2plot,aes(x,fill=1))+geom_histogram(aes(y=..density..),breaks=time.points,closed='left')+theme_bw()+theme(legend.position='none')
+    if(show.line)
+      g<-g+stat_density(geom='line',size=1,color='red')
+  } else {
+    ##frequency plot
+    g<-ggplot(data2plot,aes(x,fill=1))+geom_histogram(aes(y=..count..),breaks=time.points,closed='left')+theme_bw()+theme(legend.position='none')
+    if(show.line)
+      g<-g+geom_freqpoly(binwidth=1,color='red',size=1)
+  }
+  
+  g<-g+coord_cartesian(xlim=c(min(time.points),max(time.points)))+labs(x='Switch time points',title=title)
+  
+  if(make.plotly)
+    plotly::ggplotly(g,...) else g
+}
+
+
+###################
+#' Searching for intersection points of two time-series
+#'
+#' @param x1 a vector of values for first time-series
+#' @param x2 a vector of values for second time-series
+#'
+#' @return a data frame of intersection points. The first and second columns are x and y coordinates values of intersections, respectively.
+#'
+#' @export
+#'
+ts.intersection<-function(x1,x2,times){
+  y <- sort(unique(times),decreasing = F)
+  d1 <- x1
+  d2 <- x2
+  poi <- which(diff(d1 > d2) != 0) 
+  if(length(poi)==0)
+    return(NULL)
+  intersect.points <- y[poi]
+  slope1 <- (d1[poi]-d1[poi+1])/(y[poi]-y[poi+1])
+  slope2 <- (d2[poi]-d2[poi+1])/(y[poi]-y[poi+1])
+  x.points <- intersect.points + ((d2[poi] - d1[poi])/(slope1 - slope2))
+  y.points <- d1[poi] + (slope1 * (x.points - intersect.points))
+  intersection.points <- data.frame(x.points=x.points,y.points=y.points,row.names = NULL)
+  # dup.idx <- which(duplicated(intersection.points) | duplicated(intersection.points,fromLast = T))
+  # if(length(dup.idx)>0)
+  #   intersection.points<-intersection.points[-dup.idx,]
+  
+  intersection.points<-intersection.points[!duplicated(round(intersection.points,5)),]
+  return(intersection.points)
+}
+
+
+#############
+#' Fit a time-series with spline curve
+#'
+#' @param x a vector of time-series expression
+#' @param times a numeric vector of time labellings of all the relicated samples, e.g. 1,1,1,2,2,2,3,3,3,...
+#' @param nrep number of replicates.
+#' @param df degree of freedom used in \code{\link{ns}} in \code{\link{splines}} package.
+#' @param ... additional arguments passed to \code{\link{predict}}.
+#'
+#' @return predictions results returned from \code{\link{predict}}.
+#'
+#' @seealso \code{\link{lm}}, \code{\link{ns}}, \code{\link{predict}}
+#'
+#' @export
+#'
+
+ts.spline<-function(x,times,df=5,...){
+  df<-min(df,length(times)-2)
+  times<-as.numeric(times)
+  x<-data.frame(times=times,value=as.numeric(x))
+  fit<-lm(value~splines::ns(times,df=df),data=x)
+  predict(fit,data.frame(times=unique(times)),...)
+}
+
+##############
+#' Save TSIS.data data into csv files
+#'
+#' @param dir directory to save data. If the directory does not exist, a new folder will be created with the provided name.
+#'
+#' @return Three csv tables of corresponding data in TSIS.data.
+#' @export
+#' @examples
+#' TSIS.data.example(dir='data')
+
+
+TSIS.data.example<-function(dir='.'){
+  # if(!file.exists(dir))
+  #   dir.create(dir)
+  
+  download.file('https://github.com/wyguo/TSIS/raw/master/data/example_data.zip',
+                destfile = 'example data.zip',quiet = T)
+  unzip('example data.zip',exdir = '.')
+  invisible(file.remove('example data.zip'))
+  
+  return('Done!')
+}
+
+
+
+
+
+
+
+
 
 
 ######################################################################################################
@@ -22,10 +1077,8 @@ data.size.max=100
 message('Starting Shiny App...')
 
 ##shiny app
-shinyApp(options = list(launch.browser=T),
+shinyApp(
          ui = navbarPage("Time-series isoform switch",
-                         # tags$head(tags$script(src="google-analytics.js")),
-                         ##Page 1
                          tabPanel("Manual",
                                   tags$head(includeScript("https://raw.githubusercontent.com/wyguo/TSIS/master/inst/google-analytics.js")),
                                   # tags$head(tags$script(src="https://raw.githubusercontent.com/wyguo/TSIS/master/inst/google-analytics.js")),
@@ -96,7 +1149,7 @@ shinyApp(options = list(launch.browser=T),
                                              ),
                                              titlePanel('Density/Frequency of switch'),
                                              wellPanel(
-                                               plotlyOutput('density',height = "300px"),
+                                               plotOutput('density',height = "300px"),
                                                HTML('<b>Figure:</b> Density/Frequency plot of switch time points. The plot is made based
                                                     on the occurring time points of isoform switches after scoring and filtering.'),
                                                fluidRow(
@@ -114,8 +1167,8 @@ shinyApp(options = list(launch.browser=T),
                                                fluidRow(
                                                  column(6,
                                                         radioButtons("densityplot.format", label = h5("Select format to save:"),
-                                                                     choices = list("html" = 'html', "png" = "png", "pdf" = 'pdf'),
-                                                                     selected = 'html',inline = T)
+                                                                     choices = list("png" = "png", "pdf" = 'pdf'),
+                                                                     selected = 'png',inline = T)
                                                  ),
                                                  column(6,
                                                         br(),
@@ -266,15 +1319,15 @@ shinyApp(options = list(launch.browser=T),
                                              # p(h4('Select format to save:')),
                                              # selectInput('plot1.format','',c('html','png','pdf')),
                                              radioButtons("plot1.format", label = h4("Select format to save:"),
-                                                          choices = list("html" = 'html', "png" = "png", "pdf" = 'pdf'),
-                                                          selected = 'html',inline = T),
+                                                          choices = list("png" = "png", "pdf" = 'pdf'),
+                                                          selected = 'png',inline = T),
                                              downloadButton('download.1plot', 'Save',class="btn btn-primary")
                                              
                                            )
                                     ),
                                     column(10,
                                            wellPanel(
-                                             plotlyOutput('plot.isoform',width = 'auto',height = '550px')
+                                             plotOutput('plot.isoform',width = 'auto',height = '550px')
                                            )
                                     )
                                   ),
@@ -506,12 +1559,14 @@ shinyApp(options = list(launch.browser=T),
            
            ##plot the density
            # height = 400, width = 600
-           output$density <- renderPlotly({
+           output$density <- renderPlot({
              if(is.null(score.show$scores))
                return()
              
-             switch.density(x=score.show$scores$x.value,time.points = unique(times()),plot.type = input$densityplot.type,make.plotly = T,
-                            show.line = input$show.density.line,title = '',autosize = F,width=250,height=250)
+             switch.density(x=score.show$scores$x.value,time.points = unique(times()),
+                            plot.type = input$densityplot.type,make.plotly = F,
+                            show.line = input$show.density.line,title = '',
+                            autosize = F,width=250,height=250)
            })
            
            
@@ -544,22 +1599,23 @@ shinyApp(options = list(launch.browser=T),
              g<-plotTSIS(data2plot = data.exp()[c(iso1,iso2),],
                          iso1 = iso1,
                          show.region = input$show.color.region,
-                         iso2 = iso2,
+                         iso2 = iso2,make.plotly = F,
                          scores = scores.filtered(),
                          show.scores = input$show.scores,times = times(),
                          x.lower.boundary=input$x.lower.boundary,
                          x.upper.boundary=input$x.upper.boundary,
                          prob.cutoff=input$prob.cutoff.switch.points,
-                         y.lab = 'Expression',spline=(input$method.intersection=='Spline'),spline.df = input$spline.df,ribbon.plot = (input$ribbon.plot=='Ribbon')
+                         y.lab = 'Expression',spline=(input$method.intersection=='Spline'),
+                         spline.df = input$spline.df,ribbon.plot = (input$ribbon.plot=='Ribbon')
                          
              )
            })
            
-           output$plot.isoform<-renderPlotly({
+           output$plot.isoform<-renderPlot({
              if(is.null(g()))
                return()
-             
-             ggplotly(g(),autosize = F,width=1000,height=500)
+             print(g())
+             # ggplotly(g(),autosize = F,width=1000,height=500)
            })
            #
            
@@ -640,7 +1696,7 @@ shinyApp(options = list(launch.browser=T),
              withProgress(message = 'Making plots...',value=0,{
                for(i in 1:length(iso1s)){
                  gs<-plotTSIS(data2plot = data.exp()[c(iso1s[i],iso2s[i]),],line.width= 1,
-                              iso1 = NULL,
+                              iso1 = NULL,make.plotly = F,
                               iso2 = NULL,
                               scores = data2plot(),times=times(),
                               x.lower.boundary=input$x.lower.boundary,
