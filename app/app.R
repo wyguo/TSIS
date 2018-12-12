@@ -340,12 +340,12 @@ shinyApp(options = list(launch.browser=T),
          
          server = function(input, output,session) {
            options(shiny.maxRequestSize = data.size.max*1024^2)
-           shinyFileChoose(input, 'filedata', roots=c(wd='/srv/shiny-server'), filetypes=c('txt', 'csv'))
-           shinyFileChoose(input, 'filetarget', roots=c(wd='/srv/shiny-server'), filetypes=c('txt', 'csv'))
-           shinyFileChoose(input, 'filesubtarget', roots=c(wd='/srv/shiny-server'), filetypes=c('txt', 'csv'))
+           shinyFileChoose(input, 'filedata', roots=c(wd=getwd()), filetypes=c('txt', 'csv'))
+           shinyFileChoose(input, 'filetarget', roots=c(wd=getwd()), filetypes=c('txt', 'csv'))
+           shinyFileChoose(input, 'filesubtarget', roots=c(wd=getwd()), filetypes=c('txt', 'csv'))
            
            data.exp0<-reactive({
-             inFile.data <- parseFilePaths(roots=c(wd='/srv/shiny-server'), input$filedata)
+             inFile.data <- parseFilePaths(roots=c(wd=getwd()), input$filedata)
              if (is.null(inFile.data))
                return(NULL)
              data.exp0<-read.csv(file=as.character(inFile.data$datapath),header=F)
@@ -380,7 +380,7 @@ shinyApp(options = list(launch.browser=T),
            })
            
            mapping<-reactive({
-             inFile.mapping <- parseFilePaths(roots=c(wd='/srv/shiny-server'), input$filetarget)
+             inFile.mapping <- parseFilePaths(roots=c(wd=getwd()), input$filetarget)
              if (is.null(inFile.mapping))
                return(NULL)
              mapping <- read.csv(file=as.character(inFile.mapping$datapath),header=T)
@@ -399,7 +399,7 @@ shinyApp(options = list(launch.browser=T),
            
            sub.isoform.list<-reactive({
              # infile.subtarget<-input$file.subtarget
-             inFile.sublist <- parseFilePaths(roots=c(wd='/srv/shiny-server'), input$filesubtarget)
+             inFile.sublist <- parseFilePaths(roots=c(wd=getwd()), input$filesubtarget)
              if (is.null(inFile.sublist))
                return(NULL)
              if(input$sub.isoforms.ft=='TRUE' & !is.null(inFile.sublist))
@@ -567,13 +567,14 @@ shinyApp(options = list(launch.browser=T),
                          y.lab = 'Expression',spline=(input$method.intersection=='Spline'),spline.df = input$spline.df,ribbon.plot = (input$ribbon.plot=='Ribbon')
                          
              )
+             return(g)
            })
            
            output$plot.isoform<-renderPlot({
              if(is.null(g()))
                return()
              
-             ggplotly(g(),autosize = F,width=1000,height=500)
+             g()
            })
            #
            
@@ -598,7 +599,7 @@ shinyApp(options = list(launch.browser=T),
            
            
            folderInput <- eventReactive(input$plotmultiiso,{
-             x<-paste0('/srv/shiny-server','/',trimws(input$folder2save))
+             x<-paste0(getwd(),'/',trimws(input$folder2save))
              if(!file.exists(x))
                dir.create(x)
              x
