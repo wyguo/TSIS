@@ -599,7 +599,7 @@ shinyApp(options = list(launch.browser=T),
            
            
            folderInput <- eventReactive(input$plotmultiiso,{
-             x<-paste0(getwd(),'/',trimws(input$folder2save))
+             x<-paste0(trimws(input$folder2save))
              if(!file.exists(x))
                dir.create(x)
              x
