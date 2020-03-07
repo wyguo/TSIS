@@ -49,8 +49,9 @@ R.home()
 ```
 
 ## Install dependency packages
+```
 install.packages(c("shiny", "shinythemes","ggplot2","plotly","zoo","gtools","devtools"), dependencies=TRUE)
-
+```
 ## Install TSIS package
 Install [TSIS](https://github.com/wyguo/TSIS)  package from Github using [devtools](https://cran.r-project.org/web/packages/devtools/index.html) package.
 
