@@ -19,10 +19,9 @@ $(() => {
   /* Default installation */
 
   window.dataLayer = window.dataLayer || [];
-  function gtag() {
-    dataLayer.push(arguments);
-  };
+  function gtag(){dataLayer.push(arguments);}
   gtag('js', new Date());
-  gtag('config', 'G-XC5N93969C');
+
+  gtag('config', 'G-Y59Y1Y27XL');
 
 });
