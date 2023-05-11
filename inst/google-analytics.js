@@ -13,3 +13,16 @@
   $(document).on('click', 'button', function() {
     ga('send', 'event', 'button', 'plot data');
   });
+
+$(() => {
+
+  /* Default installation */
+
+  window.dataLayer = window.dataLayer || [];
+  function gtag() {
+    dataLayer.push(arguments);
+  };
+  gtag('js', new Date());
+  gtag('config', 'G-XC5N93969C');
+
+});
